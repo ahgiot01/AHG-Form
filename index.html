@@ -1,4 +1,3 @@
-cat > /mnt/user-data/outputs/fo_report_form.html << 'ENDHTML'
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -8,49 +7,68 @@ cat > /mnt/user-data/outputs/fo_report_form.html << 'ENDHTML'
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0e13; --s1: #141720; --s2: #1c2030; --s3: #242840; --bd: #2a2f45; --bd2: #363c58;
-  --tx: #dde3f5; --tm: #7b85a8; --td: #3a4060;
-  --ac: #4f7cff; --ac2: rgba(79,124,255,.14);
-  --gr: #27d47b; --gr2: rgba(39,212,123,.12);
-  --am: #ffb020; --re: #ff5460;
-  --fo: #00b4d8; --fo2: rgba(0,180,216,.12);
-  --br: #9d60ff; --br2: rgba(157,96,255,.12);
+  --bg: #0c0e13;
+  --s1: #141720;
+  --s2: #1c2030;
+  --s3: #242840;
+  --bd: #2a2f45;
+  --bd2: #363c58;
+  --tx: #dde3f5;
+  --tm: #7b85a8;
+  --td: #3a4060;
+  --ac: #4f7cff;
+  --ac2: rgba(79,124,255,.14);
+  --gr: #27d47b;
+  --gr2: rgba(39,212,123,.12);
+  --am: #ffb020;
+  --re: #ff5460;
+  --fo: #00b4d8;
+  --fo2: rgba(0,180,216,.12);
+  --br: #9d60ff;
+  --br2: rgba(157,96,255,.12);
   --r: 10px; --r2: 7px;
-  --fn: 'Sarabun', sans-serif; --mo: 'IBM Plex Mono', monospace;
+  --fn: 'Sarabun', sans-serif;
+  --mo: 'IBM Plex Mono', monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html{font-size:15px;} body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+html{font-size:15px;}
+body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
 
-/* TOPBAR */
+/* ── TOPBAR ── */
 .tb{background:var(--s1);border-bottom:1px solid var(--bd);height:50px;display:flex;align-items:center;padding:0 12px;gap:10px;position:sticky;top:0;z-index:200;}
 .tb-dot{width:7px;height:7px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);flex-shrink:0;animation:blink 2.5s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .tb-title{font-weight:700;font-size:14px;flex:1;letter-spacing:.02em;}
 .tb-cfg{background:none;border:none;color:var(--tm);font:12px var(--fn);cursor:pointer;text-decoration:underline;white-space:nowrap;}
 
-/* TAB BAR */
+/* ── TAB SWITCHER ── */
 .tab-bar{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);position:sticky;top:50px;z-index:190;}
 .tab-btn{flex:1;padding:11px 0;border:none;background:transparent;font:600 13px var(--fn);color:var(--tm);cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;}
 .tab-btn.act-fo{color:var(--fo);border-color:var(--fo);}
 .tab-btn.act-br{color:var(--br);border-color:var(--br);}
 
-/* LAYOUT */
+/* ── LAYOUT ── */
 .layout{padding:10px 10px 80px;max-width:600px;margin:0 auto;}
 .pane{display:none;} .pane.active{display:block;}
 
-/* PATIENT HEADER CARD */
+/* ── PATIENT HEADER CARD ── */
 .ph{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:8px;}
+.ph-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .ph-row3{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;}
 .cn-wrap{display:flex;gap:6px;align-items:center;}
 .cn-wrap input{flex:1;}
 .btn-lk{height:36px;min-width:36px;background:var(--ac);border:none;border-radius:var(--r2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
-.btn-lk:active{transform:scale(.93);} .btn-lk.loading{background:var(--s3);color:var(--tm);}
-.spin{display:none;animation:sp .6s linear infinite;} @keyframes sp{to{transform:rotate(360deg)}}
+.btn-lk:active{transform:scale(.93);}
+.btn-lk.loading{background:var(--s3);color:var(--tm);}
+.spin{display:none;animation:sp .6s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
 .btn-lk.loading .li{display:none;} .btn-lk.loading .spin{display:inline;}
 
 /* patient result card */
 .pc{background:var(--gr2);border:1px solid rgba(39,212,123,.22);border-radius:var(--r2);padding:10px 12px;display:none;margin-top:8px;gap:10px;align-items:center;}
-.pc.vis{display:flex;} .pc-ico{font-size:28px;flex-shrink:0;} .pc-info{flex:1;min-width:0;}
+.pc.vis{display:flex;}
+.pc-ico{font-size:28px;flex-shrink:0;}
+.pc-info{flex:1;min-width:0;}
 .pc-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pc-sub{font-size:11px;color:var(--tm);margin-top:1px;}
 .pc-badge{background:var(--ac);color:#fff;font:700 18px var(--mo);border-radius:6px;padding:4px 10px;text-align:center;flex-shrink:0;line-height:1.1;}
@@ -63,9 +81,10 @@ html{font-size:15px;} body{font-family:var(--fn);background:var(--bg);color:var(
 
 /* manual row */
 .mt-btn{background:none;border:none;color:var(--tm);font:12px var(--fn);cursor:pointer;text-decoration:underline;padding:2px 0;display:block;margin-top:6px;}
-.mf{display:none;margin-top:8px;} .mf .frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mf{display:none;margin-top:8px;}
+.mf .frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-/* FIELD */
+/* ── FIELD ── */
 .field{display:flex;flex-direction:column;gap:4px;}
 .field label{font-size:11px;font-weight:600;color:var(--tm);letter-spacing:.03em;display:flex;align-items:center;gap:4px;}
 .field label .unit{font:400 9px var(--mo);color:var(--td);background:var(--s3);padding:1px 4px;border-radius:3px;}
@@ -74,47 +93,55 @@ html{font-size:15px;} body{font-family:var(--fn);background:var(--bg);color:var(
 .fi:focus{border-color:var(--ac);background:var(--s3);}
 .fi::placeholder{color:var(--td);}
 .fi.af{border-color:rgba(39,212,123,.4);color:var(--gr);}
-.fi.err{border-color:var(--re);background:rgba(255,84,96,.05);}
 select.fi{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%237b85a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;background-size:10px;padding-right:26px;}
 select.fi option{background:#1c2030;}
 textarea.fi{resize:none;min-height:64px;line-height:1.5;}
 input[readonly].fi{color:var(--tm);cursor:default;}
 
-/* ACCORDION SECTION */
+/* ── ACCORDION SECTION ── */
 .acc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:7px;overflow:hidden;}
 .acc-head{display:flex;align-items:center;padding:11px 13px;cursor:pointer;gap:10px;user-select:none;-webkit-user-select:none;}
 .acc-head:active{background:var(--s2);}
 .acc-ico{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.ic-fo{background:var(--fo2);color:var(--fo);} .ic-br{background:var(--br2);color:var(--br);} .ic-bs{background:var(--ac2);color:var(--ac);}
+.ic-fo{background:var(--fo2);color:var(--fo);}
+.ic-br{background:var(--br2);color:var(--br);}
+.ic-bs{background:var(--ac2);color:var(--ac);}
 .acc-label{flex:1;font-size:13px;font-weight:700;letter-spacing:.03em;}
 .acc-count{font:11px var(--mo);color:var(--td);background:var(--s3);padding:2px 7px;border-radius:20px;flex-shrink:0;}
 .acc-arr{color:var(--td);font-size:12px;transition:transform .2s;flex-shrink:0;}
-.acc.open .acc-arr{transform:rotate(180deg);} .acc-body{display:none;padding:0 10px 12px;} .acc.open .acc-body{display:block;}
+.acc.open .acc-arr{transform:rotate(180deg);}
+.acc-body{display:none;padding:0 10px 12px;}
+.acc.open .acc-body{display:block;}
 
-/* GRID INSIDE SECTION */
+/* ── GRID INSIDE SECTION ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-top:8px;}
 .g1{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px;}
 .gf{grid-column:1/-1;}
 
-/* SUBSECTION LABEL */
+/* ── SUBSECTION LABEL ── */
 .sub-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--td);padding:10px 0 0;grid-column:1/-1;border-top:1px solid var(--bd);margin-top:4px;}
 .sub-lbl:first-child{border-top:none;margin-top:0;padding-top:0;}
 
-/* SUBMIT BAR */
+/* ── FILLED COUNT indicator ── */
+.prog-bar{height:2px;background:var(--bd);border-radius:1px;margin-top:8px;}
+.prog-fill{height:100%;border-radius:1px;background:var(--ac);transition:width .3s;}
+
+/* ── SUBMIT BAR ── */
 .sub-bar{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:10px 12px;z-index:200;display:flex;align-items:center;gap:10px;}
 .sub-bar-info{flex:1;font-size:11px;color:var(--tm);line-height:1.3;}
 .sub-bar-info strong{color:var(--tx);display:block;font-size:12px;}
 .btn-sub{padding:11px 22px;background:var(--ac);color:#fff;border:none;border-radius:var(--r2);font:700 14px var(--fn);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.btn-sub:active{transform:scale(.96);} .btn-sub:disabled{opacity:.45;cursor:not-allowed;transform:none;}
-.btn-sub.next-mode{background:var(--am);color:#000;}
+.btn-sub:active{transform:scale(.96);}
+.btn-sub:disabled{opacity:.45;cursor:not-allowed;transform:none;}
 
-/* TOAST */
+/* ── TOAST ── */
 .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 16px;font-size:13px;z-index:999;display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s;white-space:nowrap;max-width:92vw;box-shadow:0 6px 24px rgba(0,0,0,.5);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.ok{border-color:rgba(39,212,123,.4);} .toast.err{border-color:rgba(255,84,96,.4);}
+.toast.ok{border-color:rgba(39,212,123,.4);}
+.toast.err{border-color:rgba(255,84,96,.4);}
 
-/* MODAL */
+/* ── MODAL ── */
 .mov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
 .mov.open{opacity:1;pointer-events:all;}
 .mbox{background:var(--s1);border-radius:var(--r) var(--r) 0 0;padding:20px 16px 30px;width:100%;max-height:80vh;overflow-y:auto;transform:translateY(30px);transition:transform .25s;}
@@ -127,26 +154,6 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 .btn-mp{flex:1;padding:11px;border-radius:var(--r2);border:none;background:var(--ac);color:#fff;font:700 13px var(--fn);cursor:pointer;}
 .url-show{font:11px var(--mo);background:var(--bg);border:1px solid var(--bd);border-radius:5px;padding:7px 10px;color:var(--gr);word-break:break-all;margin-top:6px;}
 .url-show.empty{color:var(--td);}
-
-/* ═══ PREVIEW SCREEN ═══ */
-.preview-screen{position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;display:none;}
-.preview-screen.show{display:block;}
-.prv-head{background:var(--s1);border-bottom:1px solid var(--bd);padding:12px 14px;position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;}
-.prv-back{background:none;border:none;color:var(--ac);font:600 14px var(--fn);cursor:pointer;display:flex;align-items:center;gap:5px;}
-.prv-title{flex:1;font-weight:700;font-size:15px;text-align:center;}
-.prv-body{padding:12px 14px 90px;max-width:600px;margin:0 auto;}
-.prv-sec{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;}
-.prv-sec-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.prv-sec-title .ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;}
-.prv-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;}
-.prv-item{display:flex;flex-direction:column;gap:2px;}
-.prv-lbl{font-size:10px;font-weight:600;color:var(--td);letter-spacing:.02em;}
-.prv-val{font-size:13px;color:var(--tx);word-break:break-word;}
-.prv-val.empty{color:var(--td);font-style:italic;}
-.prv-actions{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);padding:12px 14px;z-index:20;display:flex;gap:10px;}
-.btn-prv-edit{flex:1;padding:11px;background:var(--s2);border:1.5px solid var(--bd);color:var(--tx);border-radius:var(--r2);font:600 14px var(--fn);cursor:pointer;}
-.btn-prv-submit{flex:2;padding:11px;background:var(--gr);border:none;color:#000;border-radius:var(--r2);font:700 14px var(--fn);cursor:pointer;}
-.btn-prv-submit:active{transform:scale(.98);}
 </style>
 </head>
 <body>
@@ -166,9 +173,9 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 
 <div class="layout">
 
-<!-- FO PANE -->
+<!-- ══════════════ FO PANE ══════════════ -->
 <div class="pane active" id="p-fo">
-  <form id="frm-fo">
+  <form id="frm-fo" onsubmit="doSubmit(event,'fo')">
 
   <!-- PATIENT HEADER -->
   <div class="ph">
@@ -176,8 +183,8 @@ input[readonly].fi{color:var(--tm);cursor:default;}
       <div class="field">
         <label>CN / Patient ID <span class="req">*</span><span class="af-dot" id="fo-af"></span></label>
         <div class="cn-wrap">
-          <input class="fi" type="text" name="fo_id" id="fo_id" required placeholder="กรอก CN…" inputmode="numeric"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('fo');}" oninput="validateNum(this,'text')">
+          <input class="fi" type="text" name="fo_id" id="fo_id" required placeholder="กรอก CN…"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('fo');}">
           <button type="button" class="btn-lk" id="lk-fo" onclick="lkp('fo')">
             <span class="li">🔍</span><span class="spin">↻</span>
           </button>
@@ -191,122 +198,181 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 
     <div class="pc" id="fo-pc">
       <div class="pc-ico" id="fo-ico">👤</div>
-      <div class="pc-info"><div class="pc-name" id="fo-pname">—</div><div class="pc-sub" id="fo-psub">—</div></div>
+      <div class="pc-info">
+        <div class="pc-name" id="fo-pname">—</div>
+        <div class="pc-sub" id="fo-psub">—</div>
+      </div>
       <div class="pc-badge" id="fo-pvnum">—<small>ครั้งที่</small></div>
     </div>
     <div class="nf" id="fo-nf">⚠ ไม่พบ CN นี้ — กรอกข้อมูลเองได้</div>
 
-    <input type="hidden" name="fo_name" id="fo_name">
-    <input type="hidden" name="fo_age" id="fo_age">
+    <input type="hidden" name="fo_name"   id="fo_name">
+    <input type="hidden" name="fo_age"    id="fo_age">
     <input type="hidden" name="fo_gender" id="fo_gender">
-    <input type="hidden" name="fo_visit" id="fo_visit" value="1">
+    <input type="hidden" name="fo_visit"  id="fo_visit" value="1">
 
     <button type="button" class="mt-btn" id="fo-mtb" onclick="toggleM('fo')">✏ แก้ไขข้อมูลเอง</button>
     <div class="mf" id="fo-mf">
       <div class="frow">
         <div class="field"><label>ชื่อ-สกุล</label><input class="fi" id="fo_nm_m" oninput="g('fo_name').value=this.value"></div>
-        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" inputmode="numeric" id="fo_age_m" min="0" max="120" oninput="g('fo_age').value=this.value;validateNum(this,'num')"></div>
-        <div class="field"><label>เพศ</label><select class="fi" id="fo_sex_m" onchange="g('fo_gender').value=this.value"><option value="">—</option><option>ชาย</option><option>หญิง</option></select></div>
-        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" inputmode="numeric" id="fo_v_m" min="1" oninput="g('fo_visit').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" id="fo_age_m" min="0" max="120" oninput="g('fo_age').value=this.value"></div>
+        <div class="field"><label>เพศ</label>
+          <select class="fi" id="fo_sex_m" onchange="g('fo_gender').value=this.value">
+            <option value="">—</option><option>ชาย</option><option>หญิง</option>
+          </select>
+        </div>
+        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" id="fo_v_m" min="1" oninput="g('fo_visit').value=this.value"></div>
       </div>
     </div>
   </div>
 
-  <!-- CARDIO -->
+  <!-- ① CARDIO -->
   <div class="acc open" id="s-fo-cdo">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">❤️</div><div class="acc-label">Cardio</div><div class="acc-count" id="cnt-fo-cdo">0/3</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g3">
-        <div class="field"><label>2MWT <span class="unit">m.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_2mwt" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>6MWT <span class="unit">m.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_6mwt" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>3min Step <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_3step" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-    </div></div>
-  </div>
-
-  <!-- STRENGTH -->
-  <div class="acc" id="s-fo-str">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">💪</div><div class="acc-label">Strength</div><div class="acc-count" id="cnt-fo-str">0/12</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="sub-lbl gf">Grip Strength</div>
-        <div class="field"><label>ซ้าย <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_grip_l" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>ขวา <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_grip_r" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Pinch Test <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_pinch" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="sub-lbl gf">Upper Body</div>
-        <div class="field"><label>Push Up <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_pushup" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Biceps Curl <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_biceps" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Plank <span class="unit">นาที</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_plank" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="sub-lbl gf">Lower Body</div>
-        <div class="field"><label>5× Sit→Stand <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_5sts" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>30s Sit→Stand <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_30sts" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Squat <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_squat" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Calf Raise <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_calf" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Dead Hang <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_deadhang" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Wall Plank <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_wallplank" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-    </div></div>
-  </div>
-
-  <!-- FLEXIBILITY -->
-  <div class="acc" id="s-fo-flx">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">🤸</div><div class="acc-label">Flexibility</div><div class="acc-count" id="cnt-fo-flx">0/4</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="sub-lbl gf">Chair Sit &amp; Reach</div>
-        <div class="field"><label>ขวา <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chair_r" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>ซ้าย <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chair_l" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>V-Sit &amp; Reach <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_vsit" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Chest Expansion <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-    </div></div>
-  </div>
-
-  <!-- BALANCE -->
-  <div class="acc" id="s-fo-bal">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">⚖️</div><div class="acc-label">Balance</div><div class="acc-count" id="cnt-fo-bal">0/13</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="sub-lbl gf">4 Stages Balance Test <span style="font-size:10px;opacity:.6">(วิ, max 10)</span></div>
-        <div class="field"><label>Feet Together</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_feet" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="sub-lbl gf" style="padding-top:6px;margin-top:0;border:none;opacity:0;height:0;overflow:hidden;"></div>
-        <div class="field"><label>Semi-tandem ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_sl" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Semi-tandem ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_sr" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_tl" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_tr" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>SLS ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_l" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>SLS ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_r" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="sub-lbl gf">Single Leg Stand</div>
-        <div class="field"><label>Open Eyes <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_open" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Close Eyes <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_close" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="sub-lbl gf">Other</div>
-        <div class="field"><label>BESS Score <span class="unit">คะแนน</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_bess" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Y-Test <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_ytest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Sharpened Romberg <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_romberg" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Risk to Fall</label><select class="fi" name="fo_riskfall" onchange="countFilled('fo')"><option value="">—</option><option value="Low">Low</option><option value="High">High</option></select></div>
-    </div></div>
-  </div>
-
-  <!-- GAIT & AGILITY -->
-  <div class="acc" id="s-fo-gat">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">🏃</div><div class="acc-label">Gait &amp; Agility</div><div class="acc-count" id="cnt-fo-gat">0/7</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="field"><label>10m Walk Test <span class="unit">m/s</span></label><input class="fi" type="number" inputmode="decimal" step="0.001" name="fo_10m" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>10 Step Test <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_10step" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>TUG <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_tug" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Quick Feet <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_qft" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>T-Test <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_ttest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem Walk 3m <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_tandemwalk" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Pendulum Jump <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_pendulum" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-    </div></div>
-  </div>
-
-  <!-- BODY COMP -->
-  <div class="acc" id="s-fo-bdy">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">📏</div><div class="acc-label">Body Composition</div><div class="acc-count" id="cnt-fo-bdy">0/2</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_waist" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_hip" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-    </div></div>
-  </div>
-
-  <!-- VITAL SIGNS -->
-  <div class="acc" id="s-fo-vit">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">🩺</div><div class="acc-label">Vital Signs</div><div class="acc-count" id="cnt-fo-vit">0/9</div><div class="acc-arr">▼</div></div>
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">❤️</div>
+      <div class="acc-label">Cardio</div>
+      <div class="acc-count" id="cnt-fo-cdo">0/3</div>
+      <div class="acc-arr">▼</div>
+    </div>
     <div class="acc-body">
+      <div class="g3">
+        <div class="field"><label>2MWT <span class="unit">m.</span></label><input class="fi" type="number" step="0.1" name="fo_2mwt" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>6MWT <span class="unit">m.</span></label><input class="fi" type="number" step="0.1" name="fo_6mwt" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>3min Step <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_3step" placeholder="—" oninput="countFilled('fo')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② STRENGTH -->
+  <div class="acc" id="s-fo-str">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">💪</div>
+      <div class="acc-label">Strength</div>
+      <div class="acc-count" id="cnt-fo-str">0/12</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="sub-lbl gf">Grip Strength</div>
+        <div class="field"><label>ซ้าย <span class="unit">kg.</span></label><input class="fi" type="number" step="0.1" name="fo_grip_l" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>ขวา <span class="unit">kg.</span></label><input class="fi" type="number" step="0.1" name="fo_grip_r" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Pinch Test <span class="unit">kg.</span></label><input class="fi" type="number" step="0.1" name="fo_pinch" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="sub-lbl gf">Upper Body</div>
+        <div class="field"><label>Push Up <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_pushup" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Biceps Curl <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_biceps" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Plank <span class="unit">นาที</span></label><input class="fi" type="number" step="0.01" name="fo_plank" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="sub-lbl gf">Lower Body</div>
+        <div class="field"><label>5× Sit→Stand <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_5sts" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>30s Sit→Stand <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_30sts" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Squat <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_squat" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Calf Raise <span class="unit">ครั้ง</span></label><input class="fi" type="number" name="fo_calf" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Dead Hang <span class="unit">วิ</span></label><input class="fi" type="number" step="0.1" name="fo_deadhang" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Wall Plank <span class="unit">วิ</span></label><input class="fi" type="number" step="0.1" name="fo_wallplank" placeholder="—" oninput="countFilled('fo')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ FLEXIBILITY -->
+  <div class="acc" id="s-fo-flx">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">🤸</div>
+      <div class="acc-label">Flexibility</div>
+      <div class="acc-count" id="cnt-fo-flx">0/4</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="sub-lbl gf">Chair Sit &amp; Reach</div>
+        <div class="field"><label>ขวา <span class="unit">inch</span></label><input class="fi" type="number" step="0.1" name="fo_chair_r" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>ซ้าย <span class="unit">inch</span></label><input class="fi" type="number" step="0.1" name="fo_chair_l" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>V-Sit &amp; Reach <span class="unit">inch</span></label><input class="fi" type="number" step="0.1" name="fo_vsit" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Chest Expansion <span class="unit">cm.</span></label><input class="fi" type="number" step="0.1" name="fo_chest" placeholder="—" oninput="countFilled('fo')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ BALANCE -->
+  <div class="acc" id="s-fo-bal">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">⚖️</div>
+      <div class="acc-label">Balance</div>
+      <div class="acc-count" id="cnt-fo-bal">0/13</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="sub-lbl gf">4 Stages Balance Test <span style="font-size:10px;opacity:.6">(วิ, max 10)</span></div>
+        <div class="field"><label>Feet Together</label><input class="fi" type="number" step="0.01" name="fo_bal_feet" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="sub-lbl gf" style="padding-top:6px;margin-top:0;border:none;opacity:0;height:0;overflow:hidden;"></div>
+        <div class="field"><label>Semi-tandem ซ้าย</label><input class="fi" type="number" step="0.01" name="fo_bal_sl" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Semi-tandem ขวา</label><input class="fi" type="number" step="0.01" name="fo_bal_sr" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Tandem ซ้าย</label><input class="fi" type="number" step="0.01" name="fo_bal_tl" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Tandem ขวา</label><input class="fi" type="number" step="0.01" name="fo_bal_tr" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="field"><label>SLS ซ้าย</label><input class="fi" type="number" step="0.01" name="fo_sls_l" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="field"><label>SLS ขวา</label><input class="fi" type="number" step="0.01" name="fo_sls_r" placeholder="—" min="0" max="10" oninput="countFilled('fo')"></div>
+        <div class="sub-lbl gf">Single Leg Stand</div>
+        <div class="field"><label>Open Eyes <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_sls_open" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Close Eyes <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_sls_close" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="sub-lbl gf">Other</div>
+        <div class="field"><label>BESS Score <span class="unit">คะแนน</span></label><input class="fi" type="number" step="0.1" name="fo_bess" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Y-Test <span class="unit">cm.</span></label><input class="fi" type="number" step="0.1" name="fo_ytest" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Sharpened Romberg <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_romberg" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Risk to Fall</label>
+          <select class="fi" name="fo_riskfall" onchange="countFilled('fo')">
+            <option value="">—</option><option value="Low">Low</option><option value="High">High</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ GAIT & AGILITY -->
+  <div class="acc" id="s-fo-gat">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">🏃</div>
+      <div class="acc-label">Gait &amp; Agility</div>
+      <div class="acc-count" id="cnt-fo-gat">0/7</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="field"><label>10m Walk Test <span class="unit">m/s</span></label><input class="fi" type="number" step="0.001" name="fo_10m" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>10 Step Test <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_10step" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>TUG <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_tug" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Quick Feet <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_qft" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>T-Test <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_ttest" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Tandem Walk 3m <span class="unit">วิ</span></label><input class="fi" type="number" step="0.01" name="fo_tandemwalk" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Pendulum Jump <span class="unit">cm.</span></label><input class="fi" type="number" step="0.1" name="fo_pendulum" placeholder="—" oninput="countFilled('fo')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ BODY COMP -->
+  <div class="acc" id="s-fo-bdy">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">📏</div>
+      <div class="acc-label">Body Composition</div>
+      <div class="acc-count" id="cnt-fo-bdy">0/2</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="number" step="0.1" name="fo_waist" placeholder="—" oninput="countFilled('fo')"></div>
+        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="number" step="0.1" name="fo_hip" placeholder="—" oninput="countFilled('fo')"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ VITAL SIGNS -->
+  <div class="acc" id="s-fo-vit">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-fo">🩺</div>
+      <div class="acc-label">Vital Signs</div>
+      <div class="acc-count" id="cnt-fo-vit">0/9</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <!-- header row -->
       <div style="display:grid;grid-template-columns:64px 1fr 1fr 1fr;gap:6px;margin-top:8px;align-items:end;">
         <div style="font-size:9px;font-weight:700;color:var(--td);text-transform:uppercase;letter-spacing:.08em;padding-bottom:4px;"></div>
         <div style="font-size:10px;font-weight:700;color:var(--tm);text-align:center;">BP</div>
@@ -314,108 +380,188 @@ input[readonly].fi{color:var(--tm);cursor:default;}
         <div style="font-size:10px;font-weight:700;color:var(--tm);text-align:center;">SpO2 <span style="font-size:9px;opacity:.6">%</span></div>
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">ก่อน</div>
-        <input class="fi" type="text" name="fo_bp_pre" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_pre" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_pre" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" name="fo_bp_pre" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_hr_pre" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_spo2_pre" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">หลัง</div>
-        <input class="fi" type="text" name="fo_bp_post" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_post" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_post" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" name="fo_bp_post" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_hr_post" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_spo2_post" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">+3min</div>
-        <input class="fi" type="text" name="fo_bp_post3" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_post3" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_post3" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" name="fo_bp_post3" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_hr_post3" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
+        <input class="fi" type="number" name="fo_spo2_post3" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo')">
       </div>
     </div>
   </div>
 
-  <!-- NOTE -->
+  <!-- ⑧ NOTE -->
   <div class="acc" id="s-fo-nt">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-bs">📝</div><div class="acc-label">Note / Suggestion</div><div class="acc-count" id="cnt-fo-nt">0/2</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g1">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-bs">📝</div>
+      <div class="acc-label">Note / Suggestion</div>
+      <div class="acc-count" id="cnt-fo-nt">0/2</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g1">
         <div class="field"><label>Suggestion</label><input class="fi" type="text" name="fo_suggestion" placeholder="เช่น Good, ข้อสังเกต…" oninput="countFilled('fo')"></div>
         <div class="field"><label>Note</label><textarea class="fi" name="fo_note" placeholder="หมายเหตุเพิ่มเติม…" oninput="countFilled('fo')"></textarea></div>
-    </div></div>
+      </div>
+    </div>
   </div>
 
   </form>
-</div>
+</div><!-- /p-fo -->
 
-<!-- BRAIN PANE -->
+
+<!-- ══════════════ BRAIN PANE ══════════════ -->
 <div class="pane" id="p-br">
-  <form id="frm-br">
+  <form id="frm-br" onsubmit="doSubmit(event,'br')">
+
+  <!-- PATIENT HEADER -->
   <div class="ph">
     <div class="ph-row3">
       <div class="field">
         <label>CN / Patient ID <span class="req">*</span><span class="af-dot" id="br-af"></span></label>
         <div class="cn-wrap">
-          <input class="fi" type="text" name="br_id" id="br_id" required placeholder="กรอก CN…" inputmode="numeric"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('br');}" oninput="validateNum(this,'text')">
-          <button type="button" class="btn-lk" id="lk-br" onclick="lkp('br')"><span class="li">🔍</span><span class="spin">↻</span></button>
+          <input class="fi" type="text" name="br_id" id="br_id" required placeholder="กรอก CN…"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('br');}">
+          <button type="button" class="btn-lk" id="lk-br" onclick="lkp('br')">
+            <span class="li">🔍</span><span class="spin">↻</span>
+          </button>
         </div>
       </div>
-      <div class="field"><label>วันที่ตรวจ <span class="req">*</span></label><input class="fi" type="date" name="br_date" id="br_date" required></div>
+      <div class="field">
+        <label>วันที่ตรวจ <span class="req">*</span></label>
+        <input class="fi" type="date" name="br_date" id="br_date" required>
+      </div>
     </div>
+
     <div class="pc" id="br-pc">
       <div class="pc-ico" id="br-ico">👤</div>
-      <div class="pc-info"><div class="pc-name" id="br-pname">—</div><div class="pc-sub" id="br-psub">—</div></div>
+      <div class="pc-info">
+        <div class="pc-name" id="br-pname">—</div>
+        <div class="pc-sub" id="br-psub">—</div>
+      </div>
       <div class="pc-badge" id="br-pvnum">—<small>ครั้งที่</small></div>
     </div>
     <div class="nf" id="br-nf">⚠ ไม่พบ CN นี้ — กรอกข้อมูลเองได้</div>
-    <input type="hidden" name="br_name" id="br_name">
-    <input type="hidden" name="br_age" id="br_age">
+
+    <input type="hidden" name="br_name"   id="br_name">
+    <input type="hidden" name="br_age"    id="br_age">
     <input type="hidden" name="br_gender" id="br_gender">
-    <input type="hidden" name="br_visit" id="br_visit" value="1">
+    <input type="hidden" name="br_visit"  id="br_visit" value="1">
+
     <button type="button" class="mt-btn" id="br-mtb" onclick="toggleM('br')">✏ แก้ไขข้อมูลเอง</button>
     <div class="mf" id="br-mf">
       <div class="frow">
         <div class="field"><label>ชื่อ-สกุล</label><input class="fi" id="br_nm_m" oninput="g('br_name').value=this.value"></div>
-        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" inputmode="numeric" id="br_age_m" min="0" max="120" oninput="g('br_age').value=this.value;validateNum(this,'num')"></div>
-        <div class="field"><label>เพศ</label><select class="fi" id="br_sex_m" onchange="g('br_gender').value=this.value"><option value="">—</option><option>ชาย</option><option>หญิง</option></select></div>
-        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" inputmode="numeric" id="br_v_m" min="1" oninput="g('br_visit').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" id="br_age_m" min="0" max="120" oninput="g('br_age').value=this.value"></div>
+        <div class="field"><label>เพศ</label>
+          <select class="fi" id="br_sex_m" onchange="g('br_gender').value=this.value">
+            <option value="">—</option><option>ชาย</option><option>หญิง</option>
+          </select>
+        </div>
+        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" id="br_v_m" min="1" oninput="g('br_visit').value=this.value"></div>
       </div>
     </div>
   </div>
 
-  <!-- CQ -->
+  <!-- ① CQ -->
   <div class="acc open" id="s-br-cq">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">🧠</div><div class="acc-label">CQ Score</div><div class="acc-count" id="cnt-br-cq">0/4</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_exf" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_mem" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_ps" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>CQ Overall <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="br_cq_overall" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-    </div></div>
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-br">🧠</div>
+      <div class="acc-label">CQ Score</div>
+      <div class="acc-count" id="cnt-br-cq">0/4</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="number" step="0.1" name="br_cq_exf" min="0" max="100" placeholder="—" oninput="countFilled('br')"></div>
+        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="number" step="0.1" name="br_cq_mem" min="0" max="100" placeholder="—" oninput="countFilled('br')"></div>
+        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="number" step="0.1" name="br_cq_ps" min="0" max="100" placeholder="—" oninput="countFilled('br')"></div>
+        <div class="field"><label>CQ Overall <span class="unit">%</span></label><input class="fi" type="number" step="0.01" name="br_cq_overall" min="0" max="100" placeholder="—" oninput="countFilled('br')"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- TAQ -->
+  <!-- ② TAQ -->
   <div class="acc" id="s-br-taq">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">⚡</div><div class="acc-label">TAQ Score</div><div class="acc-count" id="cnt-br-taq">0/1</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g1" style="max-width:180px">
-        <div class="field"><label>TAQ Score <span class="unit">1–30</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_taq" min="0" max="30" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-    </div></div>
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-br">⚡</div>
+      <div class="acc-label">TAQ Score</div>
+      <div class="acc-count" id="cnt-br-taq">0/1</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g1" style="max-width:180px">
+        <div class="field"><label>TAQ Score <span class="unit">1–30</span></label><input class="fi" type="number" step="0.1" name="br_taq" min="0" max="30" placeholder="—" oninput="countFilled('br')"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- MoCA -->
+  <!-- ③ MoCA -->
   <div class="acc" id="s-br-moca">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">📋</div><div class="acc-label">MoCA Score</div><div class="acc-count" id="cnt-br-moca">0/7</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g2">
-        <div class="field"><label>Visuospatial / Exec <span class="unit">/5</span></label><select class="fi" name="br_moca_vis" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div class="field"><label>Naming <span class="unit">/3</span></label><select class="fi" name="br_moca_nam" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
-        <div class="field"><label>Attention <span class="unit">/6</span></label><select class="fi" name="br_moca_att" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-        <div class="field"><label>Language <span class="unit">/3</span></label><select class="fi" name="br_moca_lang" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
-        <div class="field"><label>Abstraction <span class="unit">/2</span></label><select class="fi" name="br_moca_abs" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option></select></div>
-        <div class="field"><label>Delayed Recall <span class="unit">/5</span></label><select class="fi" name="br_moca_del" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div class="field"><label>Orientation <span class="unit">/6</span></label><select class="fi" name="br_moca_ori" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-    </div></div>
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-br">📋</div>
+      <div class="acc-label">MoCA Score</div>
+      <div class="acc-count" id="cnt-br-moca">0/7</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g2">
+        <div class="field"><label>Visuospatial / Exec <span class="unit">/5</span></label>
+          <select class="fi" name="br_moca_vis" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </div>
+        <div class="field"><label>Naming <span class="unit">/3</span></label>
+          <select class="fi" name="br_moca_nam" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option>
+          </select>
+        </div>
+        <div class="field"><label>Attention <span class="unit">/6</span></label>
+          <select class="fi" name="br_moca_att" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+          </select>
+        </div>
+        <div class="field"><label>Language <span class="unit">/3</span></label>
+          <select class="fi" name="br_moca_lang" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option>
+          </select>
+        </div>
+        <div class="field"><label>Abstraction <span class="unit">/2</span></label>
+          <select class="fi" name="br_moca_abs" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option>
+          </select>
+        </div>
+        <div class="field"><label>Delayed Recall <span class="unit">/5</span></label>
+          <select class="fi" name="br_moca_del" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </div>
+        <div class="field"><label>Orientation <span class="unit">/6</span></label>
+          <select class="fi" name="br_moca_ori" onchange="countFilled('br')">
+            <option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- FAST -->
+  <!-- ④ FAST -->
   <div class="acc" id="s-br-fast">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">📊</div><div class="acc-label">FAST Stage</div><div class="acc-count" id="cnt-br-fast">0/1</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g1">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-br">📊</div>
+      <div class="acc-label">FAST Stage</div>
+      <div class="acc-count" id="cnt-br-fast">0/1</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g1">
         <div class="field"><label>Functional Assessment Scale (FAST)</label>
           <select class="fi" name="br_fast" onchange="countFilled('br')">
             <option value="">— เลือก Stage —</option>
@@ -437,33 +583,44 @@ input[readonly].fi{color:var(--tm);cursor:default;}
             <option value="Stage 7F : Severe dementia">Stage 7F : Severe Dementia</option>
           </select>
         </div>
-    </div></div>
+      </div>
+    </div>
   </div>
 
-  <!-- SUMMARY -->
+  <!-- ⑤ SUMMARY -->
   <div class="acc" id="s-br-sum">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-bs">📝</div><div class="acc-label">Summary / Suggestion</div><div class="acc-count" id="cnt-br-sum">0/2</div><div class="acc-arr">▼</div></div>
-    <div class="acc-body"><div class="g1">
+    <div class="acc-head" onclick="tog(this)">
+      <div class="acc-ico ic-bs">📝</div>
+      <div class="acc-label">Summary / Suggestion</div>
+      <div class="acc-count" id="cnt-br-sum">0/2</div>
+      <div class="acc-arr">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="g1">
         <div class="field"><label>Summary</label><textarea class="fi" name="br_summary" placeholder="เช่น 24/30 MCI, 30/30 Normal…" oninput="countFilled('br')"></textarea></div>
         <div class="field"><label>Suggestion</label><textarea class="fi" name="br_suggestion" placeholder="ข้อเสนอแนะ / หมายเหตุ…" oninput="countFilled('br')"></textarea></div>
-    </div></div>
+      </div>
+    </div>
   </div>
 
   </form>
-</div>
+</div><!-- /p-br -->
 
-</div>
+</div><!-- /layout -->
 
 <!-- SUBMIT BAR -->
 <div class="sub-bar">
-  <div class="sub-bar-info"><strong id="sl">Data2 · FO</strong><span id="filled-info">กรอกแล้ว 0 ช่อง</span></div>
-  <button class="btn-sub next-mode" id="bsub" onclick="triggerNext()">ถ้ดไป ▶</button>
+  <div class="sub-bar-info">
+    <strong id="sl">Data2 · FO</strong>
+    <span id="filled-info">กรอกแล้ว 0 ช่อง</span>
+  </div>
+  <button class="btn-sub" id="bsub" onclick="triggerSub()">▶ ส่งข้อมูล</button>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"><span id="t-ic">✅</span><span id="t-msg">ส่งสำเร็จ</span></div>
 
-<!-- CONFIG MODAL -->
+<!-- CONFIG MODAL (bottom sheet) -->
 <div class="mov" id="mmodal">
   <div class="mbox">
     <h3>⚙ Script URL</h3>
@@ -478,89 +635,37 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   </div>
 </div>
 
-<!-- PREVIEW SCREEN -->
-<div class="preview-screen" id="preview">
-  <div class="prv-head">
-    <button class="prv-back" onclick="closePreview()">← แก้ไข</button>
-    <div class="prv-title" id="prv-title">Preview</div>
-    <div style="width:60px;"></div>
-  </div>
-  <div class="prv-body" id="prv-content"></div>
-  <div class="prv-actions">
-    <button class="btn-prv-edit" onclick="closePreview()">← กลับไปแก้ไข</button>
-    <button class="btn-prv-submit" onclick="confirmSubmit()">✓ ยืนยันส่งข้อมูล</button>
-  </div>
-</div>
-
 <script>
+// ── HELPERS ──
 var at='fo';
 function g(id){return document.getElementById(id);}
 function today(){return new Date().toISOString().slice(0,10);}
 function getCfg(){try{return JSON.parse(localStorage.getItem('fo_cfg')||'{}');}catch(e){return {};}}
 
-function fetchWithTimeout(resource, options = {}, timeout = 15000) {
-  return Promise.race([
-    fetch(resource, options),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('timeout')), timeout)
-    )
-  ]);
-}
-
-// ═══ VALIDATION ═══
-async function lkp(p){
-  var cnEl=g(p==='fo'?'fo_id':'br_id');
-  var cn=cnEl.value.trim();
-  if(!cn){toast('กรุณากรอก CN ก่อน','err');return;}
-
-  var cfg=getCfg();
-  var url=p==='fo'?cfg.fo:cfg.brain;
-  if(!url){toast('กรุณาตั้งค่า Script URL ก่อน','err');openCfg();return;}
-
-  var btn=g('lk-'+p);
-  if(btn.disabled) return;
-
-  btn.disabled=true;btn.classList.add('loading');
-  hideCard(p);
-
-  try{
-    var res=await fetchWithTimeout(url+'?action=lookup&cn='+encodeURIComponent(cn),{},10000);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    var d=await res.json();
-
-    if(d.status==='found'){
-      fillPt(p,d);
-    } else if(d.status==='notfound'){
-      showNF(p);
-      toast('ไม่พบ CN นี้','err');
-    } else {
-      toast('Error','err');
-    }
-  } catch(err){
-    toast('เชื่อมต่อไม่ได้','err');
-    showNF(p);
-  } finally{
-    btn.disabled=false;btn.classList.remove('loading');
-  }
-}
-
+// ── INIT ──
 window.addEventListener('DOMContentLoaded',function(){
   g('fo_date').value=today();
   g('br_date').value=today();
-  countFilled('fo');countFilled('br');
+  countFilled('fo'); countFilled('br');
 });
 
+// ── TABS ──
 function switchTab(t,btn){
   at=t;
   document.querySelectorAll('.pane').forEach(function(el){el.classList.remove('active');});
   g('p-'+(t==='fo'?'fo':'br')).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('act-fo','act-br');});
   btn.classList.add('act-'+t);
-  g('sl').textContent=t==='fo'?'Data2 · FO':'Data · Brain';
+  g('sl').textContent = t==='fo'?'Data2 · FO':'Data · Brain';
 }
 
-function tog(head){head.parentElement.classList.toggle('open');}
+// ── ACCORDION ──
+function tog(head){
+  var acc=head.parentElement;
+  acc.classList.toggle('open');
+}
 
+// ── FILLED COUNTER ──
 var filledCounts={fo:0,br:0};
 function countFilled(t){
   var frm=g('frm-'+(t==='fo'?'fo':'br'));
@@ -572,29 +677,31 @@ function countFilled(t){
   filledCounts[t]=total;
   if(at===t) g('filled-info').textContent='กรอกแล้ว '+total+' ช่อง';
 
-  var secs=t==='fo'
-    ?[{id:'s-fo-cdo',cnt:'cnt-fo-cdo'},{id:'s-fo-str',cnt:'cnt-fo-str'},{id:'s-fo-flx',cnt:'cnt-fo-flx'},
-      {id:'s-fo-bal',cnt:'cnt-fo-bal'},{id:'s-fo-gat',cnt:'cnt-fo-gat'},{id:'s-fo-bdy',cnt:'cnt-fo-bdy'},
-      {id:'s-fo-vit',cnt:'cnt-fo-vit'},{id:'s-fo-nt',cnt:'cnt-fo-nt'}]
-    :[{id:'s-br-cq',cnt:'cnt-br-cq'},{id:'s-br-taq',cnt:'cnt-br-taq'},{id:'s-br-moca',cnt:'cnt-br-moca'},
-      {id:'s-br-fast',cnt:'cnt-br-fast'},{id:'s-br-sum',cnt:'cnt-br-sum'}];
+  // update per-section counts
+  var secs = t==='fo'
+    ? [{id:'s-fo-cdo',cnt:'cnt-fo-cdo'},{id:'s-fo-str',cnt:'cnt-fo-str'},{id:'s-fo-flx',cnt:'cnt-fo-flx'},
+       {id:'s-fo-bal',cnt:'cnt-fo-bal'},{id:'s-fo-gat',cnt:'cnt-fo-gat'},{id:'s-fo-bdy',cnt:'cnt-fo-bdy'},
+       {id:'s-fo-vit',cnt:'cnt-fo-vit'},{id:'s-fo-nt',cnt:'cnt-fo-nt'}]
+    : [{id:'s-br-cq',cnt:'cnt-br-cq'},{id:'s-br-taq',cnt:'cnt-br-taq'},{id:'s-br-moca',cnt:'cnt-br-moca'},
+       {id:'s-br-fast',cnt:'cnt-br-fast'},{id:'s-br-sum',cnt:'cnt-br-sum'}];
 
   secs.forEach(function(s){
     var sec=g(s.id); if(!sec) return;
-    var secTotal=0,secFilled=0;
+    var secTotal=0, secFilled=0;
     sec.querySelectorAll('input[name]:not([type=hidden]),select[name],textarea[name]').forEach(function(el){
       secTotal++;
       if(el.value && el.value.trim()!=='') secFilled++;
     });
     var cEl=g(s.cnt); if(cEl){
       cEl.textContent=secFilled+'/'+secTotal;
-      cEl.style.color=secFilled===secTotal && secTotal>0?'var(--gr)':(secFilled>0?'var(--am)':'');
+      cEl.style.color = secFilled===secTotal && secTotal>0 ? 'var(--gr)' : (secFilled>0 ? 'var(--am)' : '');
     }
   });
 }
 
+// ── MANUAL TOGGLE ──
 function toggleM(p){
-  var el=g(p+'-mf'),btn=g(p+'-mtb');
+  var el=g(p+'-mf'), btn=g(p+'-mtb');
   var open=el.style.display==='none'||el.style.display==='';
   el.style.display=open?'block':'none';
   btn.textContent=open?'▲ ซ่อน':'✏ แก้ไขข้อมูลเอง';
@@ -606,6 +713,7 @@ function toggleM(p){
   }
 }
 
+// ── LOOKUP ──
 async function lkp(p){
   var cnEl=g(p==='fo'?'fo_id':'br_id');
   var cn=cnEl.value.trim();
@@ -615,7 +723,7 @@ async function lkp(p){
   if(!url){toast('กรุณาตั้งค่า Script URL ก่อน','err');openCfg();return;}
 
   var btn=g('lk-'+p);
-  btn.disabled=true;btn.classList.add('loading');
+  btn.disabled=true; btn.classList.add('loading');
   hideCard(p);
 
   try{
@@ -637,7 +745,7 @@ async function lkp(p){
     showNF(p);
     if(g(p+'-mf').style.display!=='block') toggleM(p);
   } finally{
-    btn.disabled=false;btn.classList.remove('loading');
+    btn.disabled=false; btn.classList.remove('loading');
   }
 }
 
@@ -651,7 +759,7 @@ function fillPt(p,d){
   var pc=g(p+'-pc');
   g(p+'-ico').textContent=d.gender==='หญิง'?'👩':(d.gender==='ชาย'?'👨':'👤');
   g(p+'-pname').textContent=d.name||'(ไม่มีชื่อ)';
-  g(p+'-psub').textContent=(d.age?'อายุ '+d.age+' ปี · ':'')+(d.gender||'')+' · CN: '+d.cn;
+  g(p+'-psub').textContent=(d.age?'อายุ '+d.age+' ปี · ':'')+( d.gender||'')+' · CN: '+d.cn;
   g(p+'-pvnum').innerHTML=vn+'<small>ครั้งที่'+(isNew?' 🟡':'')+'</small>';
   pc.classList.add('vis');
   pc.classList.toggle('new-v',isNew===true);
@@ -671,101 +779,21 @@ function showNF(p){
   g(p+'_visit').value=1;
 }
 
-// ═══ PREVIEW ═══
-function triggerNext(){
+// ── SUBMIT ──
+function triggerSub(){
   var fid=at==='fo'?'frm-fo':'frm-br';
-  var frm=g(fid);
-  if(!frm.checkValidity()){
-    frm.reportValidity();
-    return;
-  }
-  showPreview();
+  g(fid).requestSubmit();
 }
 
-function showPreview(){
-  var t=at;
-  var frm=g('frm-'+(t==='fo'?'fo':'br'));
-  var data={};
-  new FormData(frm).forEach(function(v,k){data[k]=v;});
-
-  // build preview
-  var html='';
-  var p=t==='fo'?'fo':'br';
-
-  // Patient info
-  html+='<div class="prv-sec">';
-  html+='<div class="prv-sec-title"><div class="ic ic-bs">👤</div>ข้อมูลผู้รับบริการ</div>';
-  html+='<div class="prv-row">';
-  html+='<div class="prv-item"><div class="prv-lbl">CN</div><div class="prv-val">'+escH(data[p+'_id']||'')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">วันที่ตรวจ</div><div class="prv-val">'+escH(data[p+'_date']||'')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">ชื่อ-สกุล</div><div class="prv-val">'+escH(data[p+'_name']||'(ไม่ระบุ)')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">อายุ</div><div class="prv-val">'+escH(data[p+'_age']||'—')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">เพศ</div><div class="prv-val">'+escH(data[p+'_gender']||'—')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">ครั้งที่</div><div class="prv-val">'+escH(data[p+'_visit']||'—')+'</div></div>';
-  html+='</div></div>';
-
-  if(t==='fo'){
-    // FO sections
-    var foSecs=[
-      {title:'Cardio',ic:'❤️',fields:['fo_2mwt','fo_6mwt','fo_3step']},
-      {title:'Strength',ic:'💪',fields:['fo_grip_l','fo_grip_r','fo_pinch','fo_pushup','fo_biceps','fo_plank','fo_5sts','fo_30sts','fo_squat','fo_calf','fo_deadhang','fo_wallplank']},
-      {title:'Flexibility',ic:'🤸',fields:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-      {title:'Balance',ic:'⚖️',fields:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r','fo_sls_open','fo_sls_close','fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
-      {title:'Gait & Agility',ic:'🏃',fields:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
-      {title:'Body Composition',ic:'📏',fields:['fo_waist','fo_hip']},
-      {title:'Vital Signs',ic:'🩺',fields:['fo_bp_pre','fo_hr_pre','fo_spo2_pre','fo_bp_post','fo_hr_post','fo_spo2_post','fo_bp_post3','fo_hr_post3','fo_spo2_post3']},
-      {title:'Note / Suggestion',ic:'📝',fields:['fo_suggestion','fo_note']},
-    ];
-    foSecs.forEach(function(sec){
-      var secHtml='';
-      sec.fields.forEach(function(fname){
-        var v=data[fname];
-        if(v && v.trim()!=='') secHtml+='<div class="prv-item"><div class="prv-lbl">'+fieldLabel(fname)+'</div><div class="prv-val">'+escH(v)+'</div></div>';
-      });
-      if(secHtml){
-        html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-fo">'+sec.ic+'</div>'+sec.title+'</div><div class="prv-row">'+secHtml+'</div></div>';
-      }
-    });
-  } else {
-    // Brain sections
-    var brSecs=[
-      {title:'CQ Score',ic:'🧠',fields:['br_cq_exf','br_cq_mem','br_cq_ps','br_cq_overall']},
-      {title:'TAQ Score',ic:'⚡',fields:['br_taq']},
-      {title:'MoCA Score',ic:'📋',fields:['br_moca_vis','br_moca_nam','br_moca_att','br_moca_lang','br_moca_abs','br_moca_del','br_moca_ori']},
-      {title:'FAST Stage',ic:'📊',fields:['br_fast']},
-      {title:'Summary / Suggestion',ic:'📝',fields:['br_summary','br_suggestion']},
-    ];
-    brSecs.forEach(function(sec){
-      var secHtml='';
-      sec.fields.forEach(function(fname){
-        var v=data[fname];
-        if(v && v.trim()!=='') secHtml+='<div class="prv-item"><div class="prv-lbl">'+fieldLabel(fname)+'</div><div class="prv-val">'+escH(v)+'</div></div>';
-      });
-      if(secHtml){
-        html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-br">'+sec.ic+'</div>'+sec.title+'</div><div class="prv-row">'+secHtml+'</div></div>';
-      }
-    });
-  }
-
-  g('prv-content').innerHTML=html;
-  g('prv-title').textContent=t==='fo'?'Preview — FO Report':'Preview — Brain Report';
-  g('preview').classList.add('show');
-}
-
-function closePreview(){
-  g('preview').classList.remove('show');
-}
-
-async function confirmSubmit(){
-  var t=at;
+async function doSubmit(e,t){
+  e.preventDefault();
   var cfg=getCfg();
   var url=t==='fo'?cfg.fo:cfg.brain;
-  if(!url){toast('กรุณาตั้งค่า Script URL','err');closePreview();openCfg();return;}
-
+  if(!url){toast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
   var p=t==='fo'?'fo':'br';
-  if(!g(p==='fo'?'fo_id':'br_id').value.trim()){toast('กรุณากรอก CN','err');closePreview();return;}
+  if(!g(p==='fo'?'fo_id':'br_id').value.trim()){toast('กรุณากรอก CN','err');return;}
 
-  var frm=g('frm-'+(t==='fo'?'fo':'br')), data={};
+  var frm=e.target, data={};
   new FormData(frm).forEach(function(v,k){data[k]=v;});
   var dateKey=t==='fo'?'fo_date':'br_date';
   data.timestamp=(data[dateKey]||today())+'T00:00:00.000Z';
@@ -773,8 +801,7 @@ async function confirmSubmit(){
   data.action='submit';
 
   var btn=g('bsub');
-  btn.disabled=true;btn.textContent='⏳ กำลังส่ง…';
-  closePreview();
+  btn.disabled=true; btn.textContent='⏳ กำลังส่ง…';
 
   try{
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
@@ -788,42 +815,14 @@ async function confirmSubmit(){
   } catch(err){
     toast('ส่งไม่สำเร็จ: '+err.message,'err');
   } finally{
-    btn.disabled=false;btn.textContent='ถัดไป ▶';
+    btn.disabled=false; btn.textContent='▶ ส่งข้อมูล';
   }
 }
 
-function fieldLabel(fname){
-  var labels={
-    fo_2mwt:'2MWT',fo_6mwt:'6MWT',fo_3step:'3min Step',
-    fo_grip_l:'Grip L',fo_grip_r:'Grip R',fo_pinch:'Pinch',fo_pushup:'Push Up',fo_biceps:'Biceps Curl',
-    fo_plank:'Plank',fo_5sts:'5× STS',fo_30sts:'30s STS',fo_squat:'Squat',fo_calf:'Calf Raise',fo_deadhang:'Dead Hang',fo_wallplank:'Wall Plank',
-    fo_chair_r:'Chair R',fo_chair_l:'Chair L',fo_vsit:'V-Sit',fo_chest:'Chest Exp',
-    fo_bal_feet:'Feet Together',fo_bal_sl:'Semi L',fo_bal_sr:'Semi R',fo_bal_tl:'Tandem L',fo_bal_tr:'Tandem R',
-    fo_sls_l:'SLS L',fo_sls_r:'SLS R',fo_sls_open:'SLS Open',fo_sls_close:'SLS Close',fo_bess:'BESS',fo_ytest:'Y-Test',fo_romberg:'Romberg',fo_riskfall:'Risk to Fall',
-    fo_10m:'10m Walk',fo_10step:'10 Step',fo_tug:'TUG',fo_qft:'Quick Feet',fo_ttest:'T-Test',fo_tandemwalk:'Tandem Walk',fo_pendulum:'Pendulum',
-    fo_waist:'Waist',fo_hip:'Hip',
-    fo_bp_pre:'BP ก่อน',fo_hr_pre:'HR ก่อน',fo_spo2_pre:'SpO2 ก่อน',
-    fo_bp_post:'BP หลัง',fo_hr_post:'HR หลัง',fo_spo2_post:'SpO2 หลัง',
-    fo_bp_post3:'BP +3',fo_hr_post3:'HR +3',fo_spo2_post3:'SpO2 +3',
-    fo_suggestion:'Suggestion',fo_note:'Note',
-    br_cq_exf:'Exec Func',br_cq_mem:'Memory',br_cq_ps:'Proc Speed',br_cq_overall:'CQ Overall',
-    br_taq:'TAQ',
-    br_moca_vis:'Visuospatial',br_moca_nam:'Naming',br_moca_att:'Attention',br_moca_lang:'Language',br_moca_abs:'Abstraction',br_moca_del:'Delayed',br_moca_ori:'Orientation',
-    br_fast:'FAST Stage',
-    br_summary:'Summary',br_suggestion:'Suggestion',
-  };
-  return labels[fname]||fname;
-}
-
-function escH(s){
-  var div=document.createElement('div');
-  div.textContent=s;
-  return div.innerHTML;
-}
-
+// ── CONFIG ──
 function openCfg(){
   var c=getCfg();
-  g('u-fo').value=c.fo||'';g('u-br').value=c.brain||'';
+  g('u-fo').value=c.fo||''; g('u-br').value=c.brain||'';
   var url=at==='fo'?c.fo:c.brain;
   var pr=g('u-prev');
   if(url){pr.textContent=url;pr.classList.remove('empty');}
@@ -832,12 +831,13 @@ function openCfg(){
 }
 function closeCfg(){g('mmodal').classList.remove('open');}
 function saveCfg(){
-  var fo=g('u-fo').value.trim(),brain=g('u-br').value.trim();
+  var fo=g('u-fo').value.trim(), brain=g('u-br').value.trim();
   localStorage.setItem('fo_cfg',JSON.stringify({fo:fo,brain:brain}));
-  closeCfg();toast('บันทึก URL แล้ว','ok');
+  closeCfg(); toast('บันทึก URL แล้ว','ok');
 }
 g('mmodal').addEventListener('click',function(e){if(e.target===this)closeCfg();});
 
+// ── TOAST ──
 function toast(msg,type){
   type=type||'ok';
   var t=g('toast');
@@ -850,4 +850,3 @@ function toast(msg,type){
 </script>
 </body>
 </html>
-ENDHTML
