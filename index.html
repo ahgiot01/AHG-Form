@@ -498,24 +498,50 @@ function g(id){return document.getElementById(id);}
 function today(){return new Date().toISOString().slice(0,10);}
 function getCfg(){try{return JSON.parse(localStorage.getItem('fo_cfg')||'{}');}catch(e){return {};}}
 
-// ═══ VALIDATION ═══
-function validateNum(el,type){
-  var v=el.value;
-  el.classList.remove('err');
-  if(type==='num'){
-    el.value=v.replace(/[^0-9]/g,'');
-  } else if(type==='decimal'){
-    el.value=v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-  } else if(type==='text'){
-    // CN ให้กรอกตัวเลขได้อย่างเดียว
-    el.value=v.replace(/[^0-9]/g,'');
-  }
+function fetchWithTimeout(resource, options = {}, timeout = 15000) {
+  return Promise.race([
+    fetch(resource, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), timeout)
+    )
+  ]);
 }
-function validateBP(el){
-  var v=el.value;
-  el.classList.remove('err');
-  // BP ให้กรอกเป็น 120/80 format (digits/digits)
-  el.value=v.replace(/[^0-9/]/g,'').replace(/(\/.*)\//, '$1');
+
+// ═══ VALIDATION ═══
+async function lkp(p){
+  var cnEl=g(p==='fo'?'fo_id':'br_id');
+  var cn=cnEl.value.trim();
+  if(!cn){toast('กรุณากรอก CN ก่อน','err');return;}
+
+  var cfg=getCfg();
+  var url=p==='fo'?cfg.fo:cfg.brain;
+  if(!url){toast('กรุณาตั้งค่า Script URL ก่อน','err');openCfg();return;}
+
+  var btn=g('lk-'+p);
+  if(btn.disabled) return;
+
+  btn.disabled=true;btn.classList.add('loading');
+  hideCard(p);
+
+  try{
+    var res=await fetchWithTimeout(url+'?action=lookup&cn='+encodeURIComponent(cn),{},10000);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var d=await res.json();
+
+    if(d.status==='found'){
+      fillPt(p,d);
+    } else if(d.status==='notfound'){
+      showNF(p);
+      toast('ไม่พบ CN นี้','err');
+    } else {
+      toast('Error','err');
+    }
+  } catch(err){
+    toast('เชื่อมต่อไม่ได้','err');
+    showNF(p);
+  } finally{
+    btn.disabled=false;btn.classList.remove('loading');
+  }
 }
 
 window.addEventListener('DOMContentLoaded',function(){
