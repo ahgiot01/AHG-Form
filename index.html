@@ -176,7 +176,7 @@ input[readonly].fi{color:var(--tm);cursor:default;}
         <label>CN / Patient ID <span class="req">*</span><span class="af-dot" id="fo-af"></span></label>
         <div class="cn-wrap">
           <input class="fi" type="text" name="fo_id" id="fo_id" required placeholder="กรอก CN…" inputmode="numeric"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('fo');}" oninput="validateNum(this,'text')">
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('fo');}">
           <button type="button" class="btn-lk" id="lk-fo" onclick="lkp('fo')">
             <span class="li">🔍</span><span class="spin">↻</span>
           </button>
@@ -204,9 +204,9 @@ input[readonly].fi{color:var(--tm);cursor:default;}
     <div class="mf" id="fo-mf">
       <div class="frow">
         <div class="field"><label>ชื่อ-สกุล</label><input class="fi" id="fo_nm_m" oninput="g('fo_name').value=this.value"></div>
-        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" inputmode="numeric" id="fo_age_m" min="0" max="120" oninput="g('fo_age').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="fo_age_m" oninput="g('fo_age').value=this.value"></div>
         <div class="field"><label>เพศ</label><select class="fi" id="fo_sex_m" onchange="g('fo_gender').value=this.value"><option value="">—</option><option>ชาย</option><option>หญิง</option></select></div>
-        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" inputmode="numeric" id="fo_v_m" min="1" oninput="g('fo_visit').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>ครั้งที่</label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="fo_v_m" oninput="g('fo_visit').value=this.value"></div>
       </div>
     </div>
   </div>
@@ -215,9 +215,9 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc open" id="s-fo-cdo">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">❤️</div><div class="acc-label">Cardio</div><div class="acc-count" id="cnt-fo-cdo">0/3</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g3">
-        <div class="field"><label>2MWT <span class="unit">m.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_2mwt" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>6MWT <span class="unit">m.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_6mwt" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>3min Step <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_3step" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
+        <div class="field"><label>2MWT <span class="unit">m.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_2mwt" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>6MWT <span class="unit">m.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_6mwt" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>3min Step <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_3step" placeholder="—" oninput=\"countFilled('fo')\"></div>
     </div></div>
   </div>
 
@@ -226,20 +226,20 @@ input[readonly].fi{color:var(--tm);cursor:default;}
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">💪</div><div class="acc-label">Strength</div><div class="acc-count" id="cnt-fo-str">0/12</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
         <div class="sub-lbl gf">Grip Strength</div>
-        <div class="field"><label>ซ้าย <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_grip_l" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>ขวา <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_grip_r" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Pinch Test <span class="unit">kg.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_pinch" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>ซ้าย <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_grip_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>ขวา <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_grip_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Pinch Test <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_pinch" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Upper Body</div>
-        <div class="field"><label>Push Up <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_pushup" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Biceps Curl <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_biceps" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Plank <span class="unit">นาที</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_plank" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Push Up <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_pushup" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Biceps Curl <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_biceps" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Plank <span class="unit">นาที</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_plank" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Lower Body</div>
-        <div class="field"><label>5× Sit→Stand <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_5sts" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>30s Sit→Stand <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_30sts" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Squat <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_squat" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Calf Raise <span class="unit">ครั้ง</span></label><input class="fi" type="number" inputmode="numeric" name="fo_calf" placeholder="—" oninput="countFilled('fo');validateNum(this,'num')"></div>
-        <div class="field"><label>Dead Hang <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_deadhang" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Wall Plank <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_wallplank" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>5× Sit→Stand <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_5sts" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>30s Sit→Stand <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_30sts" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Squat <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_squat" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Calf Raise <span class="unit">ครั้ง</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_calf" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Dead Hang <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_deadhang" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Wall Plank <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_wallplank" placeholder="—" oninput=\"countFilled('fo')\"></div>
     </div></div>
   </div>
 
@@ -248,10 +248,10 @@ input[readonly].fi{color:var(--tm);cursor:default;}
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">🤸</div><div class="acc-label">Flexibility</div><div class="acc-count" id="cnt-fo-flx">0/4</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
         <div class="sub-lbl gf">Chair Sit &amp; Reach</div>
-        <div class="field"><label>ขวา <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chair_r" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>ซ้าย <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chair_l" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>V-Sit &amp; Reach <span class="unit">inch</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_vsit" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Chest Expansion <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_chest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>ขวา <span class="unit">inch</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_chair_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>ซ้าย <span class="unit">inch</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_chair_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>V-Sit &amp; Reach <span class="unit">inch</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_vsit" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Chest Expansion <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_chest" placeholder="—" oninput=\"countFilled('fo')\"></div>
     </div></div>
   </div>
 
@@ -260,21 +260,21 @@ input[readonly].fi{color:var(--tm);cursor:default;}
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">⚖️</div><div class="acc-label">Balance</div><div class="acc-count" id="cnt-fo-bal">0/13</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
         <div class="sub-lbl gf">4 Stages Balance Test <span style="font-size:10px;opacity:.6">(วิ, max 10)</span></div>
-        <div class="field"><label>Feet Together</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_feet" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Feet Together</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_feet" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf" style="padding-top:6px;margin-top:0;border:none;opacity:0;height:0;overflow:hidden;"></div>
-        <div class="field"><label>Semi-tandem ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_sl" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Semi-tandem ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_sr" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_tl" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_bal_tr" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>SLS ซ้าย</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_l" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>SLS ขวา</label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_r" placeholder="—" min="0" max="10" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Semi-tandem ซ้าย</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_sl" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Semi-tandem ขวา</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_sr" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Tandem ซ้าย</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_tl" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Tandem ขวา</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_tr" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>SLS ซ้าย</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>SLS ขวา</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Single Leg Stand</div>
-        <div class="field"><label>Open Eyes <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_open" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Close Eyes <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_sls_close" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Open Eyes <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_open" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Close Eyes <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_close" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Other</div>
-        <div class="field"><label>BESS Score <span class="unit">คะแนน</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_bess" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Y-Test <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_ytest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Sharpened Romberg <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_romberg" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>BESS Score <span class="unit">คะแนน</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bess" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Y-Test <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_ytest" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Sharpened Romberg <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_romberg" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="field"><label>Risk to Fall</label><select class="fi" name="fo_riskfall" onchange="countFilled('fo')"><option value="">—</option><option value="Low">Low</option><option value="High">High</option></select></div>
     </div></div>
   </div>
@@ -283,13 +283,13 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc" id="s-fo-gat">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">🏃</div><div class="acc-label">Gait &amp; Agility</div><div class="acc-count" id="cnt-fo-gat">0/7</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>10m Walk Test <span class="unit">m/s</span></label><input class="fi" type="number" inputmode="decimal" step="0.001" name="fo_10m" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>10 Step Test <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_10step" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>TUG <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_tug" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Quick Feet <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_qft" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>T-Test <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_ttest" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Tandem Walk 3m <span class="unit">วิ</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="fo_tandemwalk" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Pendulum Jump <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_pendulum" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>10m Walk Test <span class="unit">m/s</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_10m" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>10 Step Test <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_10step" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>TUG <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_tug" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Quick Feet <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_qft" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>T-Test <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_ttest" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Tandem Walk 3m <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_tandemwalk" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Pendulum Jump <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_pendulum" placeholder="—" oninput=\"countFilled('fo')\"></div>
     </div></div>
   </div>
 
@@ -297,8 +297,8 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc" id="s-fo-bdy">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">📏</div><div class="acc-label">Body Composition</div><div class="acc-count" id="cnt-fo-bdy">0/2</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_waist" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="fo_hip" placeholder="—" oninput="countFilled('fo');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_waist" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_hip" placeholder="—" oninput=\"countFilled('fo')\"></div>
     </div></div>
   </div>
 
@@ -314,18 +314,18 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">ก่อน</div>
         <input class="fi" type="text" name="fo_bp_pre" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_pre" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_pre" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_hr_pre" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_spo2_pre" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">หลัง</div>
         <input class="fi" type="text" name="fo_bp_post" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_post" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_post" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_hr_post" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_spo2_post" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
 
         <div style="font-size:10px;font-weight:600;color:var(--tm);padding:3px 0;">+3min</div>
         <input class="fi" type="text" name="fo_bp_post3" placeholder="120/80" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateBP(this)">
-        <input class="fi" type="number" inputmode="numeric" name="fo_hr_post3" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
-        <input class="fi" type="number" inputmode="numeric" name="fo_spo2_post3" placeholder="—" min="0" max="100" style="font-size:13px;padding:8px 8px;" oninput="countFilled('fo');validateNum(this,'num')">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_hr_post3" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
+        <input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" name="fo_spo2_post3" placeholder="—" style="font-size:13px;padding:8px 8px;" oninput=\"countFilled('fo')\">
       </div>
     </div>
   </div>
@@ -351,7 +351,7 @@ input[readonly].fi{color:var(--tm);cursor:default;}
         <label>CN / Patient ID <span class="req">*</span><span class="af-dot" id="br-af"></span></label>
         <div class="cn-wrap">
           <input class="fi" type="text" name="br_id" id="br_id" required placeholder="กรอก CN…" inputmode="numeric"
-                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('br');}" oninput="validateNum(this,'text')">
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();lkp('br');}">
           <button type="button" class="btn-lk" id="lk-br" onclick="lkp('br')"><span class="li">🔍</span><span class="spin">↻</span></button>
         </div>
       </div>
@@ -371,9 +371,9 @@ input[readonly].fi{color:var(--tm);cursor:default;}
     <div class="mf" id="br-mf">
       <div class="frow">
         <div class="field"><label>ชื่อ-สกุล</label><input class="fi" id="br_nm_m" oninput="g('br_name').value=this.value"></div>
-        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="number" inputmode="numeric" id="br_age_m" min="0" max="120" oninput="g('br_age').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>อายุ <span class="unit">ปี</span></label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="br_age_m" oninput="g('br_age').value=this.value"></div>
         <div class="field"><label>เพศ</label><select class="fi" id="br_sex_m" onchange="g('br_gender').value=this.value"><option value="">—</option><option>ชาย</option><option>หญิง</option></select></div>
-        <div class="field"><label>ครั้งที่</label><input class="fi" type="number" inputmode="numeric" id="br_v_m" min="1" oninput="g('br_visit').value=this.value;validateNum(this,'num')"></div>
+        <div class="field"><label>ครั้งที่</label><input class="fi" type="text" inputmode="numeric" pattern="[0-9]*" id="br_v_m" oninput="g('br_visit').value=this.value"></div>
       </div>
     </div>
   </div>
@@ -382,10 +382,10 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc open" id="s-br-cq">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">🧠</div><div class="acc-label">CQ Score</div><div class="acc-count" id="cnt-br-cq">0/4</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_exf" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_mem" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_cq_ps" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
-        <div class="field"><label>CQ Overall <span class="unit">%</span></label><input class="fi" type="number" inputmode="decimal" step="0.01" name="br_cq_overall" min="0" max="100" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
+        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_exf" placeholder="—" oninput=\"countFilled('br')\"></div>
+        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_mem" placeholder="—" oninput=\"countFilled('br')\"></div>
+        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_ps" placeholder="—" oninput=\"countFilled('br')\"></div>
+        <div class="field"><label>CQ Overall <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_overall" placeholder="—" oninput=\"countFilled('br')\"></div>
     </div></div>
   </div>
 
@@ -393,7 +393,7 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc" id="s-br-taq">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">⚡</div><div class="acc-label">TAQ Score</div><div class="acc-count" id="cnt-br-taq">0/1</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g1" style="max-width:180px">
-        <div class="field"><label>TAQ Score <span class="unit">1–30</span></label><input class="fi" type="number" inputmode="decimal" step="0.1" name="br_taq" min="0" max="30" placeholder="—" oninput="countFilled('br');validateNum(this,'decimal')"></div>
+        <div class="field"><label>TAQ Score <span class="unit">1–30</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_taq" placeholder="—" oninput=\"countFilled('br')\"></div>
     </div></div>
   </div>
 
@@ -498,29 +498,92 @@ function today(){return new Date().toISOString().slice(0,10);}
 function getCfg(){try{return JSON.parse(localStorage.getItem('fo_cfg')||'{}');}catch(e){return {};}}
 
 // ═══ VALIDATION ═══
-function validateNum(el,type){
-  var v=el.value;
+// หลักการ: ไม่แตะ .value ระหว่างพิมพ์ (oninput) เพราะทำให้ keyboard กระตุกบนมือถือ
+// ใช้ keydown block + blur cleanup แทน
+
+// block ตัวอักษรที่ไม่ต้องการตั้งแต่ keydown (ก่อน render)
+function numKey(e, allowDot){
+  // ปล่อย: Backspace, Delete, Tab, Enter, Arrow keys, Home, End
+  var ctrl = e.ctrlKey||e.metaKey;
+  if(ctrl) return; // ปล่อย copy/paste/select-all
+  var ok = [
+    'Backspace','Delete','Tab','Enter','Escape',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'Home','End'
+  ];
+  if(ok.indexOf(e.key)>=0) return;
+  // ตัวเลข 0-9
+  if(e.key>='0' && e.key<='9') return;
+  // จุดทศนิยม (ถ้าอนุญาต)
+  if(allowDot && e.key==='.' && e.target.value.indexOf('.')<0) return;
+  // ไม่ผ่าน → block
+  e.preventDefault();
+}
+
+// cleanup ตอน blur: ลบตัวอักษรแปลกที่ paste มา
+function numBlur(el, allowDot){
   el.classList.remove('err');
-  if(type==='num'){
-    el.value=v.replace(/[^0-9]/g,'');
-  } else if(type==='decimal'){
-    el.value=v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-  } else if(type==='text'){
-    // CN ให้กรอกตัวเลขได้อย่างเดียว
-    el.value=v.replace(/[^0-9]/g,'');
+  var v = el.value.trim();
+  if(!v){el.value='';return;}
+  if(allowDot){
+    // เก็บตัวเลขและจุดแรก
+    v = v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+    // ลบ leading zeros ยกเว้น 0.xx
+    v = v.replace(/^0+(\d)/,'$1');
+  } else {
+    v = v.replace(/[^0-9]/g,'');
   }
+  el.value = v;
+  // mark err ถ้าค่าเหลือ empty หลัง clean แต่เคยมีค่า
 }
+
 function validateBP(el){
-  var v=el.value;
+  // BP: อนุญาตเฉพาะ digit และ /
   el.classList.remove('err');
-  // BP ให้กรอกเป็น 120/80 format (digits/digits)
-  el.value=v.replace(/[^0-9/]/g,'').replace(/(\/.*)\//, '$1');
+  var v = el.value.replace(/[^0-9/]/g,'').replace(/(\/.*)\//, '$1');
+  if(el.value !== v) el.value = v;
 }
+function bpKey(e){
+  var ctrl = e.ctrlKey||e.metaKey;
+  if(ctrl) return;
+  var ok=['Backspace','Delete','Tab','Enter','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'];
+  if(ok.indexOf(e.key)>=0) return;
+  if(e.key>='0' && e.key<='9') return;
+  if(e.key==='/' && e.target.value.indexOf('/')<0) return;
+  e.preventDefault();
+}
+
+// compat shim ไว้รับ oninput เดิมที่ยังเรียกอยู่ (ไม่ทำอะไร — ปล่อยให้พิมพ์ไปก่อน)
+function validateNum(el,type){ /* no-op: validation ย้ายไป blur แล้ว */ }
 
 window.addEventListener('DOMContentLoaded',function(){
   g('fo_date').value=today();
   g('br_date').value=today();
-  countFilled('fo');countFilled('br');
+
+  // ── Auto-attach validation ──
+  // หา input ที่มี inputmode="numeric" หรือ "decimal" แล้ว attach keydown+blur
+  document.querySelectorAll('input[inputmode]').forEach(function(el){
+    var mode = el.getAttribute('inputmode');
+    var allowDot = (mode === 'decimal');
+
+    // CN field: inputmode=numeric แต่เป็น text field ปกติ → ใช้ numKey แต่ไม่ต้อง blur cleanup
+    if(el.id === 'fo_id' || el.id === 'br_id'){
+      el.addEventListener('keydown', function(e){ numKey(e, false); });
+      el.addEventListener('blur', function(){ numBlur(this, false); });
+      return;
+    }
+
+    el.addEventListener('keydown', function(e){ numKey(e, allowDot); });
+    el.addEventListener('blur', function(){ numBlur(this, allowDot); countFilled(at); });
+  });
+
+  // BP fields: type=text ไม่มี inputmode → attach bpKey
+  document.querySelectorAll('input[name*="_bp_"]').forEach(function(el){
+    el.addEventListener('keydown', bpKey);
+    el.addEventListener('blur', function(){ validateBP(this); countFilled(at); });
+  });
+
+  countFilled('fo'); countFilled('br');
 });
 
 function switchTab(t,btn){
