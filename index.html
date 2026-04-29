@@ -555,6 +555,15 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   </form>
 </div>
 
+<!-- MULTI-PATIENT PANE -->
+<div class="pane" id="p-mp">
+  <div style="font-size:11px;color:var(--tm);margin-bottom:10px;padding:2px 0;">
+    Grip Strength &amp; Body Composition · สูงสุด 5 คน · บันทึกเข้า Data2
+  </div>
+  <div id="mp-cards"></div>
+  <button class="btn-add-pt" id="btn-add-pt" onclick="mpAddCard()">+ เพิ่มคนไข้</button>
+</div>
+
 </div>
 
 <!-- SUBMIT BAR -->
@@ -597,117 +606,125 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 </div>
 
 <script>
+
 var at='fo';
+var editMode={fo:'new',br:'new'};
+var editRowIndex={fo:-1,br:-1};
+var mpCards=[];
+var mpMax=5;
+
 function g(id){return document.getElementById(id);}
 function today(){return new Date().toISOString().slice(0,10);}
 function getCfg(){try{return JSON.parse(localStorage.getItem('fo_cfg')||'{}');}catch(e){return {};}}
+function escH(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
-// ═══ VALIDATION ═══
-// หลักการ: ไม่แตะ .value ระหว่างพิมพ์ (oninput) เพราะทำให้ keyboard กระตุกบนมือถือ
-// ใช้ keydown block + blur cleanup แทน
-
-// block ตัวอักษรที่ไม่ต้องการตั้งแต่ keydown (ก่อน render)
-function numKey(e, allowDot){
-  // ปล่อย: Backspace, Delete, Tab, Enter, Arrow keys, Home, End
-  var ctrl = e.ctrlKey||e.metaKey;
-  if(ctrl) return; // ปล่อย copy/paste/select-all
-  var ok = [
-    'Backspace','Delete','Tab','Enter','Escape',
-    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
-    'Home','End'
-  ];
-  if(ok.indexOf(e.key)>=0) return;
-  // ตัวเลข 0-9
-  if(e.key>='0' && e.key<='9') return;
-  // จุดทศนิยม (ถ้าอนุญาต)
-  if(allowDot && e.key==='.' && e.target.value.indexOf('.')<0) return;
-  // ไม่ผ่าน → block
-  e.preventDefault();
-}
-
-// cleanup ตอน blur: ลบตัวอักษรแปลกที่ paste มา
-function numBlur(el, allowDot){
-  el.classList.remove('err');
-  var v = el.value.trim();
-  if(!v){el.value='';return;}
-  if(allowDot){
-    // เก็บตัวเลขและจุดแรก
-    v = v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-    // ลบ leading zeros ยกเว้น 0.xx
-    v = v.replace(/^0+(\d)/,'$1');
-  } else {
-    v = v.replace(/[^0-9]/g,'');
-  }
-  el.value = v;
-  // mark err ถ้าค่าเหลือ empty หลัง clean แต่เคยมีค่า
-}
-
-function validateBP(el){
-  // BP: อนุญาตเฉพาะ digit และ /
-  el.classList.remove('err');
-  var v = el.value.replace(/[^0-9/]/g,'').replace(/(\/.*)\//, '$1');
-  if(el.value !== v) el.value = v;
-}
-function bpKey(e){
-  var ctrl = e.ctrlKey||e.metaKey;
-  if(ctrl) return;
+// ── VALIDATION ──
+function numKey(e,allowDot){
+  var ctrl=e.ctrlKey||e.metaKey; if(ctrl) return;
   var ok=['Backspace','Delete','Tab','Enter','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'];
   if(ok.indexOf(e.key)>=0) return;
-  if(e.key>='0' && e.key<='9') return;
-  if(e.key==='/' && e.target.value.indexOf('/')<0) return;
+  if(e.key>='0'&&e.key<='9') return;
+  if(allowDot&&e.key==='.'&&e.target.value.indexOf('.')<0) return;
   e.preventDefault();
 }
+function numBlur(el,allowDot){
+  el.classList.remove('err');
+  var v=el.value.trim(); if(!v){el.value='';return;}
+  if(allowDot){v=v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^0+(\d)/,'$1');}
+  else{v=v.replace(/[^0-9]/g,'');}
+  el.value=v;
+}
+function validateBP(el){
+  el.classList.remove('err');
+  var v=el.value.replace(/[^0-9/]/g,'').replace(/(\/.*)\//, '$1');
+  if(el.value!==v) el.value=v;
+}
+function bpKey(e){
+  var ctrl=e.ctrlKey||e.metaKey; if(ctrl) return;
+  var ok=['Backspace','Delete','Tab','Enter','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'];
+  if(ok.indexOf(e.key)>=0) return;
+  if(e.key>='0'&&e.key<='9') return;
+  if(e.key==='/'&&e.target.value.indexOf('/')<0) return;
+  e.preventDefault();
+}
+function validateNum(){}
 
-// compat shim ไว้รับ oninput เดิมที่ยังเรียกอยู่ (ไม่ทำอะไร — ปล่อยให้พิมพ์ไปก่อน)
-function validateNum(el,type){ /* no-op: validation ย้ายไป blur แล้ว */ }
+function attachValidation(root){
+  (root||document).querySelectorAll('input[inputmode]').forEach(function(el){
+    if(el._valAttached) return;
+    el._valAttached=true;
+    var allowDot=el.getAttribute('inputmode')==='decimal';
+    // CN inputs — no cleanup on blur
+    if(el.id==='fo_id'||el.id==='br_id'||el.id.indexOf('mp-cn-')===0){
+      el.addEventListener('keydown',function(e){numKey(e,false);});
+      return;
+    }
+    el.addEventListener('keydown',function(e){numKey(e,allowDot);});
+    el.addEventListener('blur',function(){numBlur(this,allowDot);});
+  });
+  (root||document).querySelectorAll('input[name*="_bp_"]').forEach(function(el){
+    if(el._bpAttached) return;
+    el._bpAttached=true;
+    el.addEventListener('keydown',bpKey);
+    el.addEventListener('blur',function(){validateBP(this);});
+  });
+}
 
 window.addEventListener('DOMContentLoaded',function(){
   g('fo_date').value=today();
   g('br_date').value=today();
-
-  // ── Auto-attach validation ──
-  // หา input ที่มี inputmode="numeric" หรือ "decimal" แล้ว attach keydown+blur
-  document.querySelectorAll('input[inputmode]').forEach(function(el){
-    var mode = el.getAttribute('inputmode');
-    var allowDot = (mode === 'decimal');
-
-    // CN field: inputmode=numeric แต่เป็น text field ปกติ → ใช้ numKey แต่ไม่ต้อง blur cleanup
-    if(el.id === 'fo_id' || el.id === 'br_id'){
-      el.addEventListener('keydown', function(e){ numKey(e, false); });
-      el.addEventListener('blur', function(){ numBlur(this, false); });
-      return;
-    }
-
-    el.addEventListener('keydown', function(e){ numKey(e, allowDot); });
-    el.addEventListener('blur', function(){ numBlur(this, allowDot); countFilled(at); });
-  });
-
-  // BP fields: type=text ไม่มี inputmode → attach bpKey
-  document.querySelectorAll('input[name*="_bp_"]').forEach(function(el){
-    el.addEventListener('keydown', bpKey);
-    el.addEventListener('blur', function(){ validateBP(this); countFilled(at); });
-  });
-
+  attachValidation();
   countFilled('fo'); countFilled('br');
-  // Init one mp card
   mpAddCard();
+  g('mmodal').addEventListener('click',function(e){if(e.target===this)closeCfg();});
 });
 
+// ── TABS ──
 function switchTab(t,btn){
   at=t;
   document.querySelectorAll('.pane').forEach(function(el){el.classList.remove('active');});
-  var paneId = t==='fo'?'p-fo':(t==='br'?'p-br':'p-mp');
-  g(paneId).classList.add('active');
+  g(t==='fo'?'p-fo':(t==='br'?'p-br':'p-mp')).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('act-fo','act-br','act-mp');});
   btn.classList.add('act-'+t);
-  var labels={fo:'Data2 · FO',br:'Data · Brain',mp:'Data2 · Multi-Patient'};
-  g('sl').textContent=labels[t]||t;
+  g('sl').textContent=t==='fo'?'Data2 · FO':(t==='br'?'Data · Brain':'Data2 · Multi');
+  g('filled-info').textContent=t==='mp'?'':'กรอกแล้ว '+filledCounts[t]+' ช่อง';
 }
 
-// ═══ EDIT MODE ═══
-var editMode={fo:'new',br:'new'};
-var editRowIndex={fo:-1,br:-1};
+// ── ACCORDION ──
+function tog(head){head.parentElement.classList.toggle('open');}
 
+// ── FILLED COUNT ──
+var filledCounts={fo:0,br:0};
+function countFilled(t){
+  var frm=g('frm-'+(t==='fo'?'fo':'br'));
+  if(!frm) return;
+  var total=0;
+  frm.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
+    if(el.type==='hidden') return;
+    if(el.value&&el.value.trim()!=='') total++;
+  });
+  filledCounts[t]=total;
+  if(at===t) g('filled-info').textContent='กรอกแล้ว '+total+' ช่อง';
+  var secs=t==='fo'
+    ?[{id:'s-fo-cdo',cnt:'cnt-fo-cdo'},{id:'s-fo-str',cnt:'cnt-fo-str'},{id:'s-fo-flx',cnt:'cnt-fo-flx'},
+      {id:'s-fo-bal',cnt:'cnt-fo-bal'},{id:'s-fo-gat',cnt:'cnt-fo-gat'},{id:'s-fo-bdy',cnt:'cnt-fo-bdy'},
+      {id:'s-fo-vit',cnt:'cnt-fo-vit'},{id:'s-fo-nt',cnt:'cnt-fo-nt'}]
+    :[{id:'s-br-cq',cnt:'cnt-br-cq'},{id:'s-br-taq',cnt:'cnt-br-taq'},{id:'s-br-moca',cnt:'cnt-br-moca'},
+      {id:'s-br-fast',cnt:'cnt-br-fast'},{id:'s-br-sum',cnt:'cnt-br-sum'}];
+  secs.forEach(function(s){
+    var sec=g(s.id); if(!sec) return;
+    var tot=0,fil=0;
+    sec.querySelectorAll('input[name]:not([type=hidden]),select[name],textarea[name]').forEach(function(el){
+      tot++; if(el.value&&el.value.trim()!=='') fil++;
+    });
+    var c=g(s.cnt); if(c){
+      c.textContent=fil+'/'+tot;
+      c.style.color=fil===tot&&tot>0?'var(--gr)':(fil>0?'var(--am)':'');
+    }
+  });
+}
+
+// ── EDIT MODE ──
 function setMode(p,mode){
   editMode[p]=mode;
   g(p+'-mode-new').classList.toggle('active',mode==='new');
@@ -717,9 +734,9 @@ function setMode(p,mode){
     notice.classList.add('vis');
     g(p+'-edit-info').textContent='กรอก CN + วันที่ แล้วกด 🔍 เพื่อโหลดข้อมูลเดิม';
     editRowIndex[p]=-1;
-    // reset form fields but keep CN/date
     var frm=g('frm-'+(p==='fo'?'fo':'br'));
-    frm.querySelectorAll('input[name]:not([name$="_id"]):not([name$="_date"]):not([type=hidden]),select[name],textarea[name]').forEach(function(el){el.value='';});
+    frm.querySelectorAll('input[name]:not([name$="_id"]):not([name$="_date"]):not([type=hidden]),select[name],textarea[name]')
+      .forEach(function(el){el.value='';});
     hideCard(p);
     countFilled(p==='fo'?'fo':'br');
   } else {
@@ -728,94 +745,7 @@ function setMode(p,mode){
   }
 }
 
-// ═══ FETCH ROW for Edit mode ═══
-async function fetchRow(p){
-  var prefix=p==='fo'?'fo':'br';
-  var cn=g(prefix+'_id').value.trim();
-  var date=g(prefix+'_date').value;
-  if(!cn||!date){toast('กรอก CN และวันที่ก่อน','err');return;}
-  var cfg=getCfg();
-  var url=p==='fo'?cfg.fo:cfg.brain;
-  if(!url){toast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
-  var sheet=p==='fo'?'Data2':'Data';
-  var btn=g('lk-'+prefix);
-  btn.disabled=true;btn.classList.add('loading');
-  try{
-    var res=await fetch(url+'?action=fetchRow&cn='+encodeURIComponent(cn)+'&date='+encodeURIComponent(date)+'&sheet='+sheet);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    var d=await res.json();
-    if(d.status==='found'){
-      editRowIndex[p]=d.rowIndex;
-      // fill patient info
-      g(prefix+'_name').value=d.name||'';
-      g(prefix+'_age').value=d.age||'';
-      g(prefix+'_gender').value=d.gender||'';
-      g(prefix+'_visit').value=d.visit||'';
-      // fill all returned fields into form
-      var frm=g('frm-'+(p==='fo'?'fo':'br'));
-      frm.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
-        var k=el.name;
-        if(d.fields && d.fields[k]!==undefined && d.fields[k]!==''){
-          el.value=d.fields[k];
-        }
-      });
-      // show patient card
-      var pc=g(prefix+'-pc');
-      g(prefix+'-ico').textContent=d.gender==='หญิง'?'👩':(d.gender==='ชาย'?'👨':'👤');
-      g(prefix+'-pname').textContent=d.name||'(ไม่มีชื่อ)';
-      g(prefix+'-psub').textContent=(d.age?'อายุ '+d.age+' ปี · ':'')+( d.gender||'')+' · CN: '+cn;
-      g(prefix+'-pvnum').innerHTML=(d.visit||'?')+'<small>ครั้งที่</small>';
-      pc.classList.add('vis');
-      g(prefix+'-af').classList.add('vis');
-      g(prefix+'-nf').classList.remove('vis');
-      g(prefix+'-edit-info').textContent='📋 โหลดแล้ว — แถวที่ '+d.rowIndex+' · แก้ไขแล้วกด ส่งข้อมูล';
-      countFilled(p==='fo'?'fo':'br');
-      toast('โหลดข้อมูลเดิมสำเร็จ · แถว '+d.rowIndex,'ok');
-    } else {
-      g(prefix+'-edit-info').textContent='⚠ ไม่พบข้อมูล CN='+cn+' วันที่='+date;
-      toast('ไม่พบข้อมูลในชีท '+sheet,'err');
-    }
-  }catch(err){
-    toast('เชื่อมต่อไม่ได้: '+err.message,'err');
-  }finally{
-    btn.disabled=false;btn.classList.remove('loading');
-  }
-}
-
-function tog(head){head.parentElement.classList.toggle('open');}
-
-var filledCounts={fo:0,br:0};
-function countFilled(t){
-  var frm=g('frm-'+(t==='fo'?'fo':'br'));
-  var total=0;
-  frm.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
-    if(el.type==='hidden') return;
-    if(el.value && el.value.trim()!=='') total++;
-  });
-  filledCounts[t]=total;
-  if(at===t) g('filled-info').textContent='กรอกแล้ว '+total+' ช่อง';
-
-  var secs=t==='fo'
-    ?[{id:'s-fo-cdo',cnt:'cnt-fo-cdo'},{id:'s-fo-str',cnt:'cnt-fo-str'},{id:'s-fo-flx',cnt:'cnt-fo-flx'},
-      {id:'s-fo-bal',cnt:'cnt-fo-bal'},{id:'s-fo-gat',cnt:'cnt-fo-gat'},{id:'s-fo-bdy',cnt:'cnt-fo-bdy'},
-      {id:'s-fo-vit',cnt:'cnt-fo-vit'},{id:'s-fo-nt',cnt:'cnt-fo-nt'}]
-    :[{id:'s-br-cq',cnt:'cnt-br-cq'},{id:'s-br-taq',cnt:'cnt-br-taq'},{id:'s-br-moca',cnt:'cnt-br-moca'},
-      {id:'s-br-fast',cnt:'cnt-br-fast'},{id:'s-br-sum',cnt:'cnt-br-sum'}];
-
-  secs.forEach(function(s){
-    var sec=g(s.id); if(!sec) return;
-    var secTotal=0,secFilled=0;
-    sec.querySelectorAll('input[name]:not([type=hidden]),select[name],textarea[name]').forEach(function(el){
-      secTotal++;
-      if(el.value && el.value.trim()!=='') secFilled++;
-    });
-    var cEl=g(s.cnt); if(cEl){
-      cEl.textContent=secFilled+'/'+secTotal;
-      cEl.style.color=secFilled===secTotal && secTotal>0?'var(--gr)':(secFilled>0?'var(--am)':'');
-    }
-  });
-}
-
+// ── MANUAL OVERRIDE ──
 function toggleM(p){
   var el=g(p+'-mf'),btn=g(p+'-mtb');
   var open=el.style.display==='none'||el.style.display==='';
@@ -824,13 +754,13 @@ function toggleM(p){
   if(open){
     var nm=g(p+'_nm_m'); if(nm) nm.value=g(p+'_name').value;
     var ag=g(p+'_age_m'); if(ag) ag.value=g(p+'_age').value;
-    var vv=g(p+'_v_m'); if(vv) vv.value=g(p+'_visit').value;
+    var vv=g(p+'_v_m');  if(vv) vv.value=g(p+'_visit').value;
     var sx=g(p+'_sex_m'); if(sx) sx.value=g(p+'_gender').value;
   }
 }
 
+// ── PATIENT LOOKUP (new mode) ──
 async function lkp(p){
-  // branch: edit mode → fetchRow, new mode → lookup patient master
   if(editMode[p]==='edit'){await fetchRow(p);return;}
   var cnEl=g(p==='fo'?'fo_id':'br_id');
   var cn=cnEl.value.trim();
@@ -838,11 +768,9 @@ async function lkp(p){
   var cfg=getCfg();
   var url=p==='fo'?cfg.fo:cfg.brain;
   if(!url){toast('กรุณาตั้งค่า Script URL ก่อน','err');openCfg();return;}
-
   var btn=g('lk-'+p);
-  btn.disabled=true;btn.classList.add('loading');
+  btn.disabled=true; btn.classList.add('loading');
   hideCard(p);
-
   try{
     var res=await fetch(url+'?action=lookup&cn='+encodeURIComponent(cn));
     if(!res.ok) throw new Error('HTTP '+res.status);
@@ -857,13 +785,8 @@ async function lkp(p){
       toast('Error: '+(d.message||'unknown'),'err');
       if(g(p+'-mf').style.display!=='block') toggleM(p);
     }
-  } catch(err){
-    toast('เชื่อมต่อไม่ได้','err');
-    showNF(p);
-    if(g(p+'-mf').style.display!=='block') toggleM(p);
-  } finally{
-    btn.disabled=false;btn.classList.remove('loading');
-  }
+  }catch(err){toast('เชื่อมต่อไม่ได้','err');showNF(p);if(g(p+'-mf').style.display!=='block') toggleM(p);}
+  finally{btn.disabled=false;btn.classList.remove('loading');}
 }
 
 function fillPt(p,d){
@@ -873,13 +796,12 @@ function fillPt(p,d){
   g(p+'_age').value=d.age||'';
   g(p+'_gender').value=d.gender||'';
   g(p+'_visit').value=vn||1;
-  var pc=g(p+'-pc');
   g(p+'-ico').textContent=d.gender==='หญิง'?'👩':(d.gender==='ชาย'?'👨':'👤');
   g(p+'-pname').textContent=d.name||'(ไม่มีชื่อ)';
   g(p+'-psub').textContent=(d.age?'อายุ '+d.age+' ปี · ':'')+(d.gender||'')+' · CN: '+d.cn;
-  g(p+'-pvnum').innerHTML=vn+'<small>ครั้งที่'+(isNew?' 🟡':'')+'</small>';
-  pc.classList.add('vis');
-  pc.classList.toggle('new-v',isNew===true);
+  g(p+'-pvnum').innerHTML=(vn||'?')+'<small>ครั้งที่'+(isNew?' 🟡':'')+'</small>';
+  g(p+'-pc').classList.add('vis');
+  g(p+'-pc').classList.toggle('new-v',isNew===true);
   g(p+'-af').classList.add('vis');
   g(p+'-nf').classList.remove('vis');
   toast('พบ: '+(d.name||d.cn)+' · ครั้งที่ '+vn,'ok');
@@ -896,15 +818,56 @@ function showNF(p){
   g(p+'_visit').value=1;
 }
 
-// ═══ PREVIEW ═══
+// ── FETCH ROW (edit mode) ──
+async function fetchRow(p){
+  var prefix=p==='fo'?'fo':'br';
+  var cn=g(prefix+'_id').value.trim();
+  var date=g(prefix+'_date').value;
+  if(!cn||!date){toast('กรอก CN และวันที่ก่อน','err');return;}
+  var cfg=getCfg();
+  var url=p==='fo'?cfg.fo:cfg.brain;
+  if(!url){toast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
+  var sheet=p==='fo'?'Data2':'Data';
+  var btn=g('lk-'+prefix);
+  btn.disabled=true; btn.classList.add('loading');
+  try{
+    var res=await fetch(url+'?action=fetchRow&cn='+encodeURIComponent(cn)+'&date='+encodeURIComponent(date)+'&sheet='+sheet);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var d=await res.json();
+    if(d.status==='found'){
+      editRowIndex[p]=d.rowIndex;
+      g(prefix+'_name').value=d.name||'';
+      g(prefix+'_age').value=d.age||'';
+      g(prefix+'_gender').value=d.gender||'';
+      g(prefix+'_visit').value=d.visit||'';
+      var frm=g('frm-'+(p==='fo'?'fo':'br'));
+      frm.querySelectorAll('input[name],select[name],textarea[name]').forEach(function(el){
+        if(d.fields&&d.fields[el.name]!==undefined&&d.fields[el.name]!=='') el.value=d.fields[el.name];
+      });
+      g(prefix+'-ico').textContent=d.gender==='หญิง'?'👩':(d.gender==='ชาย'?'👨':'👤');
+      g(prefix+'-pname').textContent=d.name||'(ไม่มีชื่อ)';
+      g(prefix+'-psub').textContent=(d.age?'อายุ '+d.age+' ปี · ':'')+(d.gender||'')+' · CN: '+cn;
+      g(prefix+'-pvnum').innerHTML=(d.visit||'?')+'<small>ครั้งที่</small>';
+      g(prefix+'-pc').classList.add('vis');
+      g(prefix+'-af').classList.add('vis');
+      g(prefix+'-nf').classList.remove('vis');
+      g(prefix+'-edit-info').textContent='📋 โหลดแล้ว — แถวที่ '+d.rowIndex+' · แก้ไขแล้วกด ส่งข้อมูล';
+      countFilled(p==='fo'?'fo':'br');
+      toast('โหลดข้อมูลเดิมสำเร็จ · แถว '+d.rowIndex,'ok');
+    } else {
+      g(prefix+'-edit-info').textContent='⚠ ไม่พบข้อมูล CN='+cn+' วันที่='+date;
+      toast('ไม่พบข้อมูล','err');
+    }
+  }catch(err){toast('เชื่อมต่อไม่ได้: '+err.message,'err');}
+  finally{btn.disabled=false;btn.classList.remove('loading');}
+}
+
+// ── PREVIEW ──
 function triggerNext(){
   if(at==='mp'){triggerNextMp();return;}
   var fid=at==='fo'?'frm-fo':'frm-br';
   var frm=g(fid);
-  if(!frm.checkValidity()){
-    frm.reportValidity();
-    return;
-  }
+  if(!frm.checkValidity()){frm.reportValidity();return;}
   showPreview();
 }
 
@@ -913,74 +876,40 @@ function showPreview(){
   var frm=g('frm-'+(t==='fo'?'fo':'br'));
   var data={};
   new FormData(frm).forEach(function(v,k){data[k]=v;});
-
-  // build preview
-  var html='';
   var p=t==='fo'?'fo':'br';
-
-  // Patient info
-  html+='<div class="prv-sec">';
-  html+='<div class="prv-sec-title"><div class="ic ic-bs">👤</div>ข้อมูลผู้รับบริการ</div>';
-  html+='<div class="prv-row">';
+  var html='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-bs">👤</div>ข้อมูลผู้รับบริการ</div><div class="prv-row">';
   html+='<div class="prv-item"><div class="prv-lbl">CN</div><div class="prv-val">'+escH(data[p+'_id']||'')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">วันที่ตรวจ</div><div class="prv-val">'+escH(data[p+'_date']||'')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">ชื่อ-สกุล</div><div class="prv-val">'+escH(data[p+'_name']||'(ไม่ระบุ)')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">อายุ</div><div class="prv-val">'+escH(data[p+'_age']||'—')+'</div></div>';
-  html+='<div class="prv-item"><div class="prv-lbl">เพศ</div><div class="prv-val">'+escH(data[p+'_gender']||'—')+'</div></div>';
+  html+='<div class="prv-item"><div class="prv-lbl">วันที่</div><div class="prv-val">'+escH(data[p+'_date']||'')+'</div></div>';
+  html+='<div class="prv-item"><div class="prv-lbl">ชื่อ</div><div class="prv-val">'+escH(data[p+'_name']||'—')+'</div></div>';
   html+='<div class="prv-item"><div class="prv-lbl">ครั้งที่</div><div class="prv-val">'+escH(data[p+'_visit']||'—')+'</div></div>';
   html+='</div></div>';
-
-  if(t==='fo'){
-    // FO sections
-    var foSecs=[
-      {title:'Cardio',ic:'❤️',fields:['fo_2mwt','fo_6mwt','fo_3step']},
-      {title:'Strength',ic:'💪',fields:['fo_grip_l','fo_grip_r','fo_pinch','fo_pushup','fo_biceps','fo_plank','fo_5sts','fo_30sts','fo_squat','fo_calf','fo_deadhang','fo_wallplank']},
-      {title:'Flexibility',ic:'🤸',fields:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-      {title:'Balance',ic:'⚖️',fields:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r','fo_sls_open','fo_sls_close','fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
-      {title:'Gait & Agility',ic:'🏃',fields:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
-      {title:'Body Composition',ic:'📏',fields:['fo_waist','fo_hip']},
-      {title:'Vital Signs',ic:'🩺',fields:['fo_bp_pre','fo_hr_pre','fo_spo2_pre','fo_bp_post','fo_hr_post','fo_spo2_post','fo_bp_post3','fo_hr_post3','fo_spo2_post3']},
-      {title:'Note / Suggestion',ic:'📝',fields:['fo_suggestion','fo_note']},
-    ];
-    foSecs.forEach(function(sec){
-      var secHtml='';
-      sec.fields.forEach(function(fname){
-        var v=data[fname];
-        if(v && v.trim()!=='') secHtml+='<div class="prv-item"><div class="prv-lbl">'+fieldLabel(fname)+'</div><div class="prv-val">'+escH(v)+'</div></div>';
-      });
-      if(secHtml){
-        html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-fo">'+sec.ic+'</div>'+sec.title+'</div><div class="prv-row">'+secHtml+'</div></div>';
-      }
-    });
-  } else {
-    // Brain sections
-    var brSecs=[
-      {title:'CQ Score',ic:'🧠',fields:['br_cq_exf','br_cq_mem','br_cq_ps','br_cq_overall']},
-      {title:'TAQ Score',ic:'⚡',fields:['br_taq']},
-      {title:'MoCA Score',ic:'📋',fields:['br_moca_vis','br_moca_nam','br_moca_att','br_moca_lang','br_moca_abs','br_moca_del','br_moca_ori']},
-      {title:'FAST Stage',ic:'📊',fields:['br_fast']},
-      {title:'Summary / Suggestion',ic:'📝',fields:['br_summary','br_suggestion']},
-    ];
-    brSecs.forEach(function(sec){
-      var secHtml='';
-      sec.fields.forEach(function(fname){
-        var v=data[fname];
-        if(v && v.trim()!=='') secHtml+='<div class="prv-item"><div class="prv-lbl">'+fieldLabel(fname)+'</div><div class="prv-val">'+escH(v)+'</div></div>';
-      });
-      if(secHtml){
-        html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-br">'+sec.ic+'</div>'+sec.title+'</div><div class="prv-row">'+secHtml+'</div></div>';
-      }
-    });
-  }
-
+  var secs=t==='fo'?[
+    {title:'Cardio',ic:'❤️',cls:'ic-fo',fields:['fo_2mwt','fo_6mwt','fo_3step']},
+    {title:'Strength',ic:'💪',cls:'ic-fo',fields:['fo_grip_l','fo_grip_r','fo_pinch','fo_pushup','fo_biceps','fo_plank','fo_5sts','fo_30sts','fo_squat','fo_calf','fo_deadhang','fo_wallplank']},
+    {title:'Flexibility',ic:'🤸',cls:'ic-fo',fields:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
+    {title:'Balance',ic:'⚖️',cls:'ic-fo',fields:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r','fo_sls_open','fo_sls_close','fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
+    {title:'Gait & Agility',ic:'🏃',cls:'ic-fo',fields:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
+    {title:'Body Composition',ic:'📏',cls:'ic-fo',fields:['fo_waist','fo_hip']},
+    {title:'Vital Signs',ic:'🩺',cls:'ic-fo',fields:['fo_bp_pre','fo_hr_pre','fo_spo2_pre','fo_bp_post','fo_hr_post','fo_spo2_post','fo_bp_post3','fo_hr_post3','fo_spo2_post3']},
+    {title:'Note',ic:'📝',cls:'ic-bs',fields:['fo_suggestion','fo_note']},
+  ]:[
+    {title:'CQ Score',ic:'🧠',cls:'ic-br',fields:['br_cq_exf','br_cq_mem','br_cq_ps','br_cq_overall']},
+    {title:'TAQ',ic:'⚡',cls:'ic-br',fields:['br_taq']},
+    {title:'MoCA',ic:'📋',cls:'ic-br',fields:['br_moca_vis','br_moca_nam','br_moca_att','br_moca_lang','br_moca_abs','br_moca_del','br_moca_ori']},
+    {title:'FAST',ic:'📊',cls:'ic-br',fields:['br_fast']},
+    {title:'Summary',ic:'📝',cls:'ic-bs',fields:['br_summary','br_suggestion']},
+  ];
+  secs.forEach(function(sec){
+    var sh='';
+    sec.fields.forEach(function(f){var v=data[f];if(v&&v.trim())sh+='<div class="prv-item"><div class="prv-lbl">'+fieldLabel(f)+'</div><div class="prv-val">'+escH(v)+'</div></div>';});
+    if(sh) html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic '+sec.cls+'">'+sec.ic+'</div>'+sec.title+'</div><div class="prv-row">'+sh+'</div></div>';
+  });
   g('prv-content').innerHTML=html;
-  g('prv-title').textContent=t==='fo'?'Preview — FO Report':'Preview — Brain Report';
+  g('prv-title').textContent=(t==='fo'?'Preview — FO':'Preview — Brain')+(editMode[t]==='edit'?' (แก้ไข)':'');
   g('preview').classList.add('show');
 }
 
-function closePreview(){
-  g('preview').classList.remove('show');
-}
+function closePreview(){g('preview').classList.remove('show');}
 
 async function confirmSubmit(){
   if(at==='mp'){await mpConfirmSubmit();return;}
@@ -988,311 +917,63 @@ async function confirmSubmit(){
   var cfg=getCfg();
   var url=t==='fo'?cfg.fo:cfg.brain;
   if(!url){toast('กรุณาตั้งค่า Script URL','err');closePreview();openCfg();return;}
-
   var p=t==='fo'?'fo':'br';
-  if(!g(p==='fo'?'fo_id':'br_id').value.trim()){toast('กรุณากรอก CN','err');closePreview();return;}
-
+  if(!g(p+'_id').value.trim()){toast('กรุณากรอก CN','err');closePreview();return;}
   var frm=g('frm-'+(t==='fo'?'fo':'br')), data={};
   new FormData(frm).forEach(function(v,k){data[k]=v;});
   var dateKey=t==='fo'?'fo_date':'br_date';
   data.timestamp=(data[dateKey]||today())+'T00:00:00.000Z';
   data.sheet=t==='fo'?'Data2':'Data';
-  var p2=t==='fo'?'fo':'br';
-  if(editMode[p2]==='edit' && editRowIndex[p2]>0){
-    data.action='update';
-    data.rowIndex=editRowIndex[p2];
-  } else {
-    data.action='submit';
-  }
-
+  if(editMode[p]==='edit'&&editRowIndex[p]>0){data.action='update';data.rowIndex=editRowIndex[p];}
+  else{data.action='submit';}
   var btn=g('bsub');
   btn.disabled=true;btn.textContent='⏳ กำลังส่ง…';
   closePreview();
-
   try{
     await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-    toast('ส่งสำเร็จ ✓ บันทึกเข้า '+data.sheet+' แล้ว','ok');
+    var msg=editMode[p]==='edit'?'อัปเดตสำเร็จ ✓ แถว '+editRowIndex[p]:'ส่งสำเร็จ ✓ บันทึกเข้า '+data.sheet;
+    toast(msg,'ok');
     frm.reset();
     g(t==='fo'?'fo_date':'br_date').value=today();
-    hideCard(p);
-    g(p+'-mf').style.display='none';
-    g(p+'-mtb').textContent='✏ แก้ไขข้อมูลเอง';
-    // reset edit mode
-    setMode(p,'new');
-    countFilled(t);
-  } catch(err){
-    toast('ส่งไม่สำเร็จ: '+err.message,'err');
-  } finally{
-    btn.disabled=false;btn.textContent='ถัดไป ▶';
-  }
+    hideCard(p); g(p+'-mf').style.display='none'; g(p+'-mtb').textContent='✏ แก้ไขข้อมูลเอง';
+    setMode(p,'new'); countFilled(t);
+  }catch(err){toast('ส่งไม่สำเร็จ: '+err.message,'err');}
+  finally{btn.disabled=false;btn.textContent='ถัดไป ▶';}
 }
 
-function fieldLabel(fname){
-  var labels={
+function fieldLabel(f){
+  var L={
     fo_2mwt:'2MWT',fo_6mwt:'6MWT',fo_3step:'3min Step',
-    fo_grip_l:'Grip L',fo_grip_r:'Grip R',fo_pinch:'Pinch',fo_pushup:'Push Up',fo_biceps:'Biceps Curl',
-    fo_plank:'Plank',fo_5sts:'5× STS',fo_30sts:'30s STS',fo_squat:'Squat',fo_calf:'Calf Raise',fo_deadhang:'Dead Hang',fo_wallplank:'Wall Plank',
+    fo_grip_l:'Grip ซ้าย',fo_grip_r:'Grip ขวา',fo_pinch:'Pinch',
+    fo_pushup:'Push Up',fo_biceps:'Biceps Curl',fo_plank:'Plank',
+    fo_5sts:'5× STS',fo_30sts:'30s STS',fo_squat:'Squat',fo_calf:'Calf Raise',
+    fo_deadhang:'Dead Hang',fo_wallplank:'Wall Plank',
     fo_chair_r:'Chair R',fo_chair_l:'Chair L',fo_vsit:'V-Sit',fo_chest:'Chest Exp',
-    fo_bal_feet:'Feet Together',fo_bal_sl:'Semi L',fo_bal_sr:'Semi R',fo_bal_tl:'Tandem L',fo_bal_tr:'Tandem R',
-    fo_sls_l:'SLS L',fo_sls_r:'SLS R',fo_sls_open:'SLS Open',fo_sls_close:'SLS Close',fo_bess:'BESS',fo_ytest:'Y-Test',fo_romberg:'Romberg',fo_riskfall:'Risk to Fall',
-    fo_10m:'10m Walk',fo_10step:'10 Step',fo_tug:'TUG',fo_qft:'Quick Feet',fo_ttest:'T-Test',fo_tandemwalk:'Tandem Walk',fo_pendulum:'Pendulum',
+    fo_bal_feet:'Feet Together',fo_bal_sl:'Semi L',fo_bal_sr:'Semi R',
+    fo_bal_tl:'Tandem L',fo_bal_tr:'Tandem R',
+    fo_sls_l:'SLS L',fo_sls_r:'SLS R',fo_sls_open:'SLS Open',fo_sls_close:'SLS Close',
+    fo_bess:'BESS',fo_ytest:'Y-Test',fo_romberg:'Romberg',fo_riskfall:'Risk to Fall',
+    fo_10m:'10m Walk',fo_10step:'10 Step',fo_tug:'TUG',fo_qft:'Quick Feet',
+    fo_ttest:'T-Test',fo_tandemwalk:'Tandem Walk',fo_pendulum:'Pendulum',
     fo_waist:'Waist',fo_hip:'Hip',
     fo_bp_pre:'BP ก่อน',fo_hr_pre:'HR ก่อน',fo_spo2_pre:'SpO2 ก่อน',
     fo_bp_post:'BP หลัง',fo_hr_post:'HR หลัง',fo_spo2_post:'SpO2 หลัง',
     fo_bp_post3:'BP +3',fo_hr_post3:'HR +3',fo_spo2_post3:'SpO2 +3',
     fo_suggestion:'Suggestion',fo_note:'Note',
     br_cq_exf:'Exec Func',br_cq_mem:'Memory',br_cq_ps:'Proc Speed',br_cq_overall:'CQ Overall',
-    br_taq:'TAQ',
-    br_moca_vis:'Visuospatial',br_moca_nam:'Naming',br_moca_att:'Attention',br_moca_lang:'Language',br_moca_abs:'Abstraction',br_moca_del:'Delayed',br_moca_ori:'Orientation',
-    br_fast:'FAST Stage',
-    br_summary:'Summary',br_suggestion:'Suggestion',
+    br_taq:'TAQ',br_moca_vis:'Visuospatial',br_moca_nam:'Naming',br_moca_att:'Attention',
+    br_moca_lang:'Language',br_moca_abs:'Abstraction',br_moca_del:'Delayed',br_moca_ori:'Orientation',
+    br_fast:'FAST Stage',br_summary:'Summary',br_suggestion:'Suggestion',
   };
-  return labels[fname]||fname;
+  return L[f]||f;
 }
 
-
-// ═══════════════════════════════════════════════
-//  MULTI-PATIENT
-// ═══════════════════════════════════════════════
-var mpCards=[];
-var mpMax=5;
-
-function mpAddCard(){
-  if(mpCards.length>=mpMax){toast('กรอกได้สูงสุด '+mpMax+' คน','err');return;}
-  var idx=mpCards.length;
-  mpCards.push({cn:'',name:'',age:'',gender:'',visit:1,rowIndex:-1,found:false});
-  mpRenderCards();
-  // auto-set today's date
-  setTimeout(function(){
-    var d=g('mp-date-'+idx);
-    if(d && !d.value) d.value=today();
-    // attach validation
-    var card=g('mp-card-'+idx);
-    if(card) card.querySelectorAll('input[inputmode]').forEach(function(el){
-      var allowDot=el.getAttribute('inputmode')==='decimal';
-      el.addEventListener('keydown',function(e){numKey(e,allowDot);});
-      el.addEventListener('blur',function(){numBlur(this,allowDot);});
-    });
-  },50);
-}
-
-function mpRemoveCard(idx){
-  mpCards.splice(idx,1);
-  mpRenderCards();
-}
-
-function mpRenderCards(){
-  var container=g('mp-cards');
-  var html='';
-  mpCards.forEach(function(c,i){
-    html+='<div class="mp-card" id="mp-card-'+i+'">';
-    html+='<div class="mp-card-head">';
-    html+='<span class="mp-card-num">#'+(i+1)+'</span>';
-    html+='<span class="mp-card-name'+(c.found?' found':'')+'">'+escH(c.found?c.name:'คนไข้ที่ '+(i+1))+'</span>';
-    if(mpCards.length>1) html+='<button class="btn-rm" onclick="mpRemoveCard('+i+')" title="ลบ">×</button>';
-    html+='</div>';
-    html+='<div class="mp-card-body">';
-    // CN + Date row
-    html+='<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end">';
-    html+='<div class="field"><label>CN<span class="req">*</span></label>';
-    html+='<div class="cn-wrap"><input class="fi" type="text" id="mp-cn-'+i+'" value="'+escH(c.cn)+'" inputmode="numeric" placeholder="กรอก CN…" onkeydown="if(event.key==='Enter'){event.preventDefault();mpLookup('+i+');}">';
-    html+='<button type="button" class="btn-lk" id="mp-lk-'+i+'" onclick="mpLookup('+i+')" style="flex-shrink:0"><span class="li">🔍</span><span class="spin">↻</span></button></div></div>';
-    html+='<div class="field"><label>วันที่</label><input class="fi" type="date" id="mp-date-'+i+'" value="'+(c.date||today())+'"></div>';
-    html+='</div>';
-    // patient mini card
-    if(c.found){
-      html+='<div class="mp-pc vis'+(c.isNew?' new-v':'')+'">';
-      html+='<span>'+(c.gender==='หญิง'?'👩':(c.gender==='ชาย'?'👨':'👤'))+'</span>';
-      html+='<span class="mp-pc-name">'+escH(c.name)+'</span>';
-      html+='<span style="font-size:11px;color:var(--tm)">'+(c.age?'อายุ '+c.age+' ปี':'')+'</span>';
-      html+='<span class="mp-pc-badge">'+c.visit+'</span>';
-      html+='</div>';
-    }
-    // Grip Strength
-    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td);margin:10px 0 4px;">💪 Grip Strength &amp; Pinch</div>';
-    html+='<div class="mp-grip-row">';
-    html+='<div class="field"><label>ซ้าย <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-grip-l-'+i+'" value="'+(c.grip_l||'')+'" placeholder="—"></div>';
-    html+='<div class="field"><label>ขวา <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-grip-r-'+i+'" value="'+(c.grip_r||'')+'" placeholder="—"></div>';
-    html+='<div class="field"><label>Pinch <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-pinch-'+i+'" value="'+(c.pinch||'')+'" placeholder="—"></div>';
-    html+='</div>';
-    // Body Composition
-    html+='<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td);margin:10px 0 4px;">📏 Body Composition</div>';
-    html+='<div class="mp-grid">';
-    html+='<div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-waist-'+i+'" value="'+(c.waist||'')+'" placeholder="—"></div>';
-    html+='<div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-hip-'+i+'" value="'+(c.hip||'')+'" placeholder="—"></div>';
-    html+='</div>';
-    html+='</div></div>';
-  });
-  container.innerHTML=html;
-  // re-attach validation for all new inputs
-  container.querySelectorAll('input[inputmode]').forEach(function(el){
-    var allowDot=el.getAttribute('inputmode')==='decimal';
-    el.addEventListener('keydown',function(e){numKey(e,allowDot);});
-    el.addEventListener('blur',function(){numBlur(this,allowDot);});
-  });
-  var addBtn=g('btn-add-pt');
-  if(addBtn) addBtn.style.display=mpCards.length>=mpMax?'none':'flex';
-}
-
-async function mpLookup(idx){
-  var cn=(g('mp-cn-'+idx)||{}).value;
-  if(!cn || !cn.trim()){toast('กรุณากรอก CN','err');return;}
-  cn=cn.trim();
-  var cfg=getCfg();
-  var url=cfg.fo||cfg.mp;
-  if(!url){toast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
-  var btn=g('mp-lk-'+idx);
-  if(btn){btn.disabled=true;btn.classList.add('loading');}
-  try{
-    var res=await fetch(url+'?action=lookup&cn='+encodeURIComponent(cn));
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    var d=await res.json();
-    var date=(g('mp-date-'+idx)||{}).value||today();
-    if(d.status==='found'){
-      var vn=d.fo?d.fo.nextVisit:d.nextVisit;
-      var isNew=d.fo?d.fo.isNewDate:d.isNewDate;
-      // save values back
-      mpCards[idx].cn=cn;
-      mpCards[idx].name=d.name||'';
-      mpCards[idx].age=d.age||'';
-      mpCards[idx].gender=d.gender||'';
-      mpCards[idx].visit=vn||1;
-      mpCards[idx].isNew=isNew;
-      mpCards[idx].found=true;
-      mpCards[idx].date=date;
-      // preserve measurement values before re-render
-      mpSaveFieldValues(idx);
-      mpRenderCards();
-      toast('พบ: '+(d.name||cn)+' · ครั้งที่ '+vn,'ok');
-    } else {
-      mpCards[idx].cn=cn;
-      mpCards[idx].found=false;
-      mpCards[idx].name='';
-      mpRenderCards();
-      toast('ไม่พบ CN นี้ใน PatientMaster','err');
-    }
-  }catch(err){
-    toast('เชื่อมต่อไม่ได้','err');
-  }finally{
-    var b=g('mp-lk-'+idx);
-    if(b){b.disabled=false;b.classList.remove('loading');}
-  }
-}
-
-function mpSaveFieldValues(idx){
-  var fields=['grip_l','grip_r','pinch','waist','hip'];
-  fields.forEach(function(f){
-    var el=g('mp-'+f.replace('_','-')+'-'+idx);
-    if(el) mpCards[idx][f]=el.value;
-  });
-}
-
-function mpCollectAll(){
-  var rows=[];
-  var ok=true;
-  mpCards.forEach(function(c,i){
-    // save current field values
-    mpSaveFieldValues(i);
-    var cn=(g('mp-cn-'+i)||{}).value||c.cn||'';
-    var date=(g('mp-date-'+i)||{}).value||today();
-    if(!cn.trim()){toast('คนไข้ #'+(i+1)+': กรุณากรอก CN','err');ok=false;return;}
-    rows.push({
-      cn: cn.trim(),
-      name: c.name||'',
-      age: c.age||'',
-      gender: c.gender||'',
-      visit: c.visit||1,
-      date: date,
-      grip_l: mpCards[i].grip_l||'',
-      grip_r: mpCards[i].grip_r||'',
-      pinch:  mpCards[i].pinch||'',
-      waist:  mpCards[i].waist||'',
-      hip:    mpCards[i].hip||'',
-    });
-  });
-  return ok?rows:null;
-}
-
-function triggerNextMp(){
-  if(mpCards.length===0){toast('กรุณาเพิ่มคนไข้อย่างน้อย 1 คน','err');return;}
-  var rows=mpCollectAll();
-  if(!rows) return;
-  showMpPreview(rows);
-}
-
-function showMpPreview(rows){
-  var html='';
-  rows.forEach(function(r,i){
-    html+='<div class="prv-sec">';
-    html+='<div class="prv-sec-title"><div class="ic ic-bs">👤</div>คนไข้ #'+(i+1)+(r.name?' — '+escH(r.name):'')+'</div>';
-    html+='<div class="prv-row">';
-    html+='<div class="prv-item"><div class="prv-lbl">CN</div><div class="prv-val">'+escH(r.cn)+'</div></div>';
-    html+='<div class="prv-item"><div class="prv-lbl">วันที่</div><div class="prv-val">'+escH(r.date)+'</div></div>';
-    html+='<div class="prv-item"><div class="prv-lbl">อายุ / เพศ</div><div class="prv-val">'+escH(r.age||'—')+' / '+escH(r.gender||'—')+'</div></div>';
-    html+='<div class="prv-item"><div class="prv-lbl">ครั้งที่</div><div class="prv-val">'+escH(String(r.visit))+'</div></div>';
-    if(r.grip_l||r.grip_r||r.pinch) html+='<div class="prv-item"><div class="prv-lbl">Grip L/R</div><div class="prv-val">'+(r.grip_l||'—')+' / '+(r.grip_r||'—')+'</div></div>';
-    if(r.pinch) html+='<div class="prv-item"><div class="prv-lbl">Pinch</div><div class="prv-val">'+escH(r.pinch)+'</div></div>';
-    if(r.waist||r.hip) html+='<div class="prv-item"><div class="prv-lbl">Waist / Hip</div><div class="prv-val">'+(r.waist||'—')+' / '+(r.hip||'—')+'</div></div>';
-    html+='</div></div>';
-  });
-  g('prv-content').innerHTML=html;
-  g('prv-title').textContent='Preview — Multi-Patient ('+rows.length+' คน)';
-  g('preview').classList.add('show');
-  // store rows for confirmSubmit
-  window._mpPendingRows=rows;
-}
-
-// override confirmSubmit to handle mp tab
-var _origConfirm=null;
-
-async function mpConfirmSubmit(){
-  var rows=window._mpPendingRows;
-  if(!rows||rows.length===0){closePreview();return;}
-  var cfg=getCfg();
-  var url=cfg.fo||cfg.mp;
-  if(!url){toast('กรุณาตั้งค่า Script URL','err');closePreview();openCfg();return;}
-
-  var btn=g('bsub');
-  btn.disabled=true;btn.textContent='⏳ กำลังส่ง…';
-  closePreview();
-
-  var success=0,fail=0;
-  for(var i=0;i<rows.length;i++){
-    var r=rows[i];
-    var payload={
-      action:'submit', sheet:'Data2',
-      timestamp: r.date+'T00:00:00.000Z',
-      fo_id: r.cn, fo_name: r.name, fo_age: r.age, fo_gender: r.gender,
-      fo_visit: r.visit, fo_date: r.date,
-      fo_grip_l: r.grip_l, fo_grip_r: r.grip_r, fo_pinch: r.pinch,
-      fo_waist: r.waist, fo_hip: r.hip,
-    };
-    try{
-      await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      success++;
-    }catch(e){fail++;}
-  }
-
-  if(fail===0){
-    toast('ส่งสำเร็จ ✓ '+success+' คน บันทึกเข้า Data2 แล้ว','ok');
-    mpCards=[];
-    mpRenderCards();
-  } else {
-    toast('ส่งสำเร็จ '+success+' คน, ล้มเหลว '+fail+' คน','err');
-  }
-  btn.disabled=false;btn.textContent='ถัดไป ▶';
-}
-
-function escH(s){
-  var div=document.createElement('div');
-  div.textContent=s;
-  return div.innerHTML;
-}
-
+// ── CONFIG ──
 function openCfg(){
   var c=getCfg();
-  g('u-fo').value=c.fo||'';g('u-br').value=c.brain||'';
-  var url=at==='fo'?c.fo:c.brain;
+  g('u-fo').value=c.fo||''; g('u-br').value=c.brain||'';
+  var mp=g('u-mp'); if(mp) mp.value=c.mp||'';
+  var url=at==='fo'?c.fo:(at==='br'?c.brain:c.mp||c.fo);
   var pr=g('u-prev');
   if(url){pr.textContent=url;pr.classList.remove('empty');}
   else{pr.textContent='— ยังไม่ได้ตั้งค่า —';pr.classList.add('empty');}
@@ -1300,12 +981,13 @@ function openCfg(){
 }
 function closeCfg(){g('mmodal').classList.remove('open');}
 function saveCfg(){
-  var fo=g('u-fo').value.trim(),brain=g('u-br').value.trim(),mp=(g('u-mp')||{}).value||'';
-  localStorage.setItem('fo_cfg',JSON.stringify({fo:fo,brain:brain,mp:mp.trim()||fo}));
-  closeCfg();toast('บันทึก URL แล้ว','ok');
+  var fo=g('u-fo').value.trim(), brain=g('u-br').value.trim();
+  var mp=(g('u-mp')||{}).value||''; mp=mp.trim()||fo;
+  localStorage.setItem('fo_cfg',JSON.stringify({fo:fo,brain:brain,mp:mp}));
+  closeCfg(); toast('บันทึก URL แล้ว','ok');
 }
-g('mmodal').addEventListener('click',function(e){if(e.target===this)closeCfg();});
 
+// ── TOAST ──
 function toast(msg,type){
   type=type||'ok';
   var t=g('toast');
@@ -1315,6 +997,178 @@ function toast(msg,type){
   clearTimeout(t._t);
   t._t=setTimeout(function(){t.classList.remove('show');},4000);
 }
+
+// ══════════════════════════════════════════
+//  MULTI-PATIENT
+// ══════════════════════════════════════════
+function mpAddCard(){
+  if(mpCards.length>=mpMax){toast('กรอกได้สูงสุด '+mpMax+' คน','err');return;}
+  mpCards.push({cn:'',name:'',age:'',gender:'',visit:1,found:false,date:today(),grip_l:'',grip_r:'',pinch:'',waist:'',hip:''});
+  mpRenderCards();
+}
+
+function mpRemoveCard(idx){
+  mpSaveAllFields();
+  mpCards.splice(idx,1);
+  mpRenderCards();
+}
+
+function mpSaveAllFields(){
+  mpCards.forEach(function(c,i){
+    var cn=g('mp-cn-'+i); if(cn) c.cn=cn.value;
+    var dt=g('mp-date-'+i); if(dt) c.date=dt.value;
+    var gl=g('mp-grip-l-'+i); if(gl) c.grip_l=gl.value;
+    var gr=g('mp-grip-r-'+i); if(gr) c.grip_r=gr.value;
+    var pi=g('mp-pinch-'+i);  if(pi) c.pinch=pi.value;
+    var wa=g('mp-waist-'+i);  if(wa) c.waist=wa.value;
+    var hi=g('mp-hip-'+i);    if(hi) c.hip=hi.value;
+  });
+}
+
+function mpRenderCards(){
+  var container=g('mp-cards');
+  if(!container) return;
+  var rows='';
+  mpCards.forEach(function(c,i){
+    var cn=escH(c.cn||'');
+    rows+='<div class="mp-card" id="mp-card-'+i+'">';
+    rows+='<div class="mp-card-head">';
+    rows+='<span class="mp-card-num">#'+(i+1)+'</span>';
+    rows+='<span class="mp-card-name'+(c.found?' found':'')+'">'+escH(c.found?c.name:'คนไข้ที่ '+(i+1))+'</span>';
+    if(mpCards.length>1) rows+='<button class="btn-rm" onclick="mpRemoveCard('+i+')" title="ลบ">\xd7</button>';
+    rows+='</div>';
+    rows+='<div class="mp-card-body">';
+    rows+='<div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;">';
+    rows+='<div class="field"><label>CN<span class="req">*</span></label>';
+    rows+='<div class="cn-wrap">';
+    rows+='<input class="fi" type="text" inputmode="numeric" id="mp-cn-'+i+'" value="'+cn+'" placeholder="กรอก CN…">';
+    rows+='<button type="button" class="btn-lk" id="mp-lk-'+i+'" onclick="mpLookup('+i+')" style="flex-shrink:0"><span class="li">\uD83D\uDD0D</span><span class="spin">\u21BB</span></button>';
+    rows+='</div></div>';
+    rows+='<div class="field"><label>วันที่</label><input class="fi" type="date" id="mp-date-'+i+'" value="'+escH(c.date||today())+'"></div>';
+    rows+='</div>';
+    if(c.found){
+      rows+='<div class="mp-pc vis'+(c.isNew?' new-v':'')+'">';
+      rows+='<span>'+(c.gender==='หญิง'?'\uD83D\uDC69':(c.gender==='\u0E0A\u0E32\u0E22'?'\uD83D\uDC68':'\uD83D\uDC64'))+'</span>';
+      rows+='<span class="mp-pc-name">'+escH(c.name)+'</span>';
+      rows+='<span style="font-size:11px;color:var(--tm)">'+(c.age?'\u0E2D\u0E32\u0E22\u0E38 '+c.age+' \u0E1B\u0E35':'')+'</span>';
+      rows+='<span class="mp-pc-badge">'+c.visit+'</span>';
+      rows+='</div>';
+    }
+    rows+='<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td);margin:10px 0 4px;">\uD83D\uDCAA Grip Strength &amp; Pinch</div>';
+    rows+='<div class="mp-grip-row">';
+    rows+='<div class="field"><label>\u0E0B\u0E49\u0E32\u0E22 <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-grip-l-'+i+'" value="'+escH(c.grip_l||'')+'" placeholder="\u2014"></div>';
+    rows+='<div class="field"><label>\u0E02\u0E27\u0E32 <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-grip-r-'+i+'" value="'+escH(c.grip_r||'')+'" placeholder="\u2014"></div>';
+    rows+='<div class="field"><label>Pinch <span class="unit">kg.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-pinch-'+i+'" value="'+escH(c.pinch||'')+'" placeholder="\u2014"></div>';
+    rows+='</div>';
+    rows+='<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td);margin:10px 0 4px;">\uD83D\uDCCF Body Composition</div>';
+    rows+='<div class="mp-grid">';
+    rows+='<div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-waist-'+i+'" value="'+escH(c.waist||'')+'" placeholder="\u2014"></div>';
+    rows+='<div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" id="mp-hip-'+i+'" value="'+escH(c.hip||'')+'" placeholder="\u2014"></div>';
+    rows+='</div>';
+    rows+='</div></div>';
+  });
+  container.innerHTML=rows;
+  // attach keydown Enter for CN inputs
+  mpCards.forEach(function(c,i){
+    var cn=g('mp-cn-'+i);
+    if(cn) cn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();mpLookup(i);}});
+  });
+  attachValidation(container);
+  var addBtn=g('btn-add-pt');
+  if(addBtn) addBtn.style.display=mpCards.length>=mpMax?'none':'flex';
+}
+
+async function mpLookup(idx){
+  mpSaveAllFields();
+  var cn=(g('mp-cn-'+idx)||{}).value||'';
+  cn=cn.trim();
+  if(!cn){toast('กรุณากรอก CN','err');return;}
+  var cfg=getCfg(); var url=cfg.fo||cfg.mp;
+  if(!url){toast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
+  var btn=g('mp-lk-'+idx);
+  if(btn){btn.disabled=true;btn.classList.add('loading');}
+  try{
+    var res=await fetch(url+'?action=lookup&cn='+encodeURIComponent(cn));
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var d=await res.json();
+    mpSaveAllFields();
+    var date=(g('mp-date-'+idx)||{}).value||today();
+    if(d.status==='found'){
+      var vn=d.fo?d.fo.nextVisit:d.nextVisit;
+      mpCards[idx].cn=cn; mpCards[idx].name=d.name||''; mpCards[idx].age=d.age||'';
+      mpCards[idx].gender=d.gender||''; mpCards[idx].visit=vn||1;
+      mpCards[idx].isNew=d.fo?d.fo.isNewDate:d.isNewDate;
+      mpCards[idx].found=true; mpCards[idx].date=date;
+      mpRenderCards();
+      toast('พบ: '+(d.name||cn)+' · ครั้งที่ '+vn,'ok');
+    } else {
+      mpCards[idx].cn=cn; mpCards[idx].found=false; mpCards[idx].name='';
+      mpRenderCards();
+      toast('ไม่พบ CN นี้ใน PatientMaster','err');
+    }
+  }catch(err){toast('เชื่อมต่อไม่ได้','err');}
+  finally{var b=g('mp-lk-'+idx);if(b){b.disabled=false;b.classList.remove('loading');}}
+}
+
+function triggerNextMp(){
+  if(mpCards.length===0){toast('กรุณาเพิ่มคนไข้อย่างน้อย 1 คน','err');return;}
+  mpSaveAllFields();
+  var rows=[]; var ok=true;
+  mpCards.forEach(function(c,i){
+    var cn=(g('mp-cn-'+i)||{}).value||c.cn||'';
+    if(!cn.trim()){toast('คนไข้ #'+(i+1)+': กรุณากรอก CN','err');ok=false;return;}
+    rows.push({cn:cn.trim(),name:c.name||'',age:c.age||'',gender:c.gender||'',visit:c.visit||1,
+               date:(g('mp-date-'+i)||{}).value||c.date||today(),
+               grip_l:c.grip_l||'',grip_r:c.grip_r||'',pinch:c.pinch||'',waist:c.waist||'',hip:c.hip||''});
+  });
+  if(!ok) return;
+  showMpPreview(rows);
+}
+
+function showMpPreview(rows){
+  var html='';
+  rows.forEach(function(r,i){
+    html+='<div class="prv-sec"><div class="prv-sec-title"><div class="ic ic-bs">👤</div>คนไข้ #'+(i+1)+(r.name?' — '+escH(r.name):'')+'</div><div class="prv-row">';
+    html+='<div class="prv-item"><div class="prv-lbl">CN</div><div class="prv-val">'+escH(r.cn)+'</div></div>';
+    html+='<div class="prv-item"><div class="prv-lbl">วันที่</div><div class="prv-val">'+escH(r.date)+'</div></div>';
+    html+='<div class="prv-item"><div class="prv-lbl">ครั้งที่</div><div class="prv-val">'+r.visit+'</div></div>';
+    if(r.grip_l||r.grip_r) html+='<div class="prv-item"><div class="prv-lbl">Grip L/R</div><div class="prv-val">'+(r.grip_l||'—')+' / '+(r.grip_r||'—')+' kg.</div></div>';
+    if(r.pinch) html+='<div class="prv-item"><div class="prv-lbl">Pinch</div><div class="prv-val">'+escH(r.pinch)+' kg.</div></div>';
+    if(r.waist||r.hip) html+='<div class="prv-item"><div class="prv-lbl">Waist/Hip</div><div class="prv-val">'+(r.waist||'—')+' / '+(r.hip||'—')+' cm.</div></div>';
+    html+='</div></div>';
+  });
+  g('prv-content').innerHTML=html;
+  g('prv-title').textContent='Preview — Multi ('+rows.length+' คน)';
+  g('preview').classList.add('show');
+  window._mpPendingRows=rows;
+}
+
+async function mpConfirmSubmit(){
+  var rows=window._mpPendingRows;
+  if(!rows||!rows.length){closePreview();return;}
+  var cfg=getCfg(); var url=cfg.fo||cfg.mp;
+  if(!url){toast('กรุณาตั้งค่า Script URL','err');closePreview();openCfg();return;}
+  var btn=g('bsub');
+  btn.disabled=true; btn.textContent='⏳ กำลังส่ง…';
+  closePreview();
+  var success=0,fail=0;
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i];
+    var payload={action:'submit',sheet:'Data2',timestamp:r.date+'T00:00:00.000Z',
+      fo_id:r.cn,fo_name:r.name,fo_age:r.age,fo_gender:r.gender,fo_visit:r.visit,fo_date:r.date,
+      fo_grip_l:r.grip_l,fo_grip_r:r.grip_r,fo_pinch:r.pinch,fo_waist:r.waist,fo_hip:r.hip};
+    try{await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});success++;}
+    catch(e){fail++;}
+  }
+  if(fail===0){
+    toast('ส่งสำเร็จ ✓ '+success+' คน บันทึกเข้า Data2','ok');
+    mpCards=[]; mpRenderCards();
+  } else {
+    toast('สำเร็จ '+success+' คน, ล้มเหลว '+fail+' คน','err');
+  }
+  btn.disabled=false; btn.textContent='ถัดไป ▶';
+}
+
 </script>
 </body>
 </html>
