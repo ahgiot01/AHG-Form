@@ -62,8 +62,8 @@ html{font-size:15px;} body{font-family:var(--fn);background:var(--bg);color:var(
 .ph-row3{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;}
 .cn-wrap{display:flex;gap:6px;align-items:center;}
 .cn-wrap input{flex:1;}
-.btn-lk{height:36px;min-width:36px;background:var(--tx);border:none;border-radius:var(--r2);color:var(--bg);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
-.btn-lk:active{transform:scale(.93);} .btn-lk.loading{background:var(--s3);color:var(--tm);}
+.btn-lk{height:36px;min-width:36px;background:#fff;border:1px solid var(--bd);border-radius:var(--r2);color:var(--tm);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.btn-lk:active{transform:scale(.93);opacity:.75;} .btn-lk.loading{background:var(--s2);color:var(--tm);border-color:var(--bd);}
 .spin{display:none;animation:sp .6s linear infinite;} @keyframes sp{to{transform:rotate(360deg)}}
 .btn-lk.loading .li{display:none;} .btn-lk.loading .spin{display:inline;}
 
