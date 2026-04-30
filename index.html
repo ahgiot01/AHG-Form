@@ -486,10 +486,10 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc open" id="s-br-cq">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">🧠</div><div class="acc-label">CQ Score</div><div class="acc-count" id="cnt-br-cq">0/4</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_exf" placeholder="—" oninput=\"countFilled('br')\"></div>
-        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_mem" placeholder="—" oninput=\"countFilled('br')\"></div>
-        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_ps" placeholder="—" oninput=\"countFilled('br')\"></div>
-        <div class="field"><label>CQ Overall <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_overall" placeholder="—" oninput=\"countFilled('br')\"></div>
+        <div class="field"><label>Executive Function <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_exf" id="br_cq_exf" placeholder="—" oninput="calcCqOverall();countFilled('br')"></div>
+        <div class="field"><label>Memory <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_mem" id="br_cq_mem" placeholder="—" oninput="calcCqOverall();countFilled('br')"></div>
+        <div class="field"><label>Processing Speed <span class="unit">%</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="br_cq_ps" id="br_cq_ps" placeholder="—" oninput="calcCqOverall();countFilled('br')"></div>
+        <div class="field"><label>CQ Overall <span class="unit">% · อัตโนมัติ</span></label><input class="fi" type="text" name="br_cq_overall" id="br_cq_overall" placeholder="—" readonly style="color:var(--ac);font-weight:600;background:var(--s2);cursor:default;"></div>
     </div></div>
   </div>
 
@@ -503,15 +503,16 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 
   <!-- MoCA -->
   <div class="acc" id="s-br-moca">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">📋</div><div class="acc-label">MoCA Score</div><div class="acc-count" id="cnt-br-moca">0/7</div><div class="acc-arr">▼</div></div>
+    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-br">📋</div><div class="acc-label">MoCA Score</div><div class="acc-count" id="cnt-br-moca">0/8</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>Visuospatial / Exec <span class="unit">/5</span></label><select class="fi" name="br_moca_vis" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div class="field"><label>Naming <span class="unit">/3</span></label><select class="fi" name="br_moca_nam" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
-        <div class="field"><label>Attention <span class="unit">/6</span></label><select class="fi" name="br_moca_att" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-        <div class="field"><label>Language <span class="unit">/3</span></label><select class="fi" name="br_moca_lang" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
-        <div class="field"><label>Abstraction <span class="unit">/2</span></label><select class="fi" name="br_moca_abs" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option></select></div>
-        <div class="field"><label>Delayed Recall <span class="unit">/5</span></label><select class="fi" name="br_moca_del" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
-        <div class="field"><label>Orientation <span class="unit">/6</span></label><select class="fi" name="br_moca_ori" onchange="countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="field"><label>Visuospatial / Exec <span class="unit">/5</span></label><select class="fi" name="br_moca_vis" id="br_moca_vis" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="field"><label>Naming <span class="unit">/3</span></label><select class="fi" name="br_moca_nam" id="br_moca_nam" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
+        <div class="field"><label>Attention <span class="unit">/6</span></label><select class="fi" name="br_moca_att" id="br_moca_att" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="field"><label>Language <span class="unit">/3</span></label><select class="fi" name="br_moca_lang" id="br_moca_lang" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option></select></div>
+        <div class="field"><label>Abstraction <span class="unit">/2</span></label><select class="fi" name="br_moca_abs" id="br_moca_abs" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option></select></div>
+        <div class="field"><label>Delayed Recall <span class="unit">/5</span></label><select class="fi" name="br_moca_del" id="br_moca_del" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="field"><label>Orientation <span class="unit">/6</span></label><select class="fi" name="br_moca_ori" id="br_moca_ori" onchange="calcMocaOverall();countFilled('br')"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="field"><label>MoCA Total <span class="unit">/30 · อัตโนมัติ</span></label><input class="fi" type="text" name="br_moca_overall" id="br_moca_overall" placeholder="—" readonly style="color:var(--ac);font-weight:600;background:var(--s2);cursor:default;"></div>
     </div></div>
   </div>
 
@@ -648,6 +649,46 @@ function bpKey(e){
   e.preventDefault();
 }
 function validateNum(){}
+
+function calcCqOverall(){
+  var vals = ['br_cq_exf','br_cq_mem','br_cq_ps'].map(function(id){
+    return parseFloat((g(id)||{}).value||'');
+  }).filter(function(v){return !isNaN(v);});
+  var el = g('br_cq_overall');
+  if(!el) return;
+  if(vals.length === 0){ el.value = ''; return; }
+  var avg = vals.reduce(function(a,b){return a+b;},0) / vals.length;
+  el.value = Number.isInteger(avg) ? avg.toString() : avg.toFixed(2);
+}
+
+function calcMocaOverall(){
+  var ids = ['br_moca_vis','br_moca_nam','br_moca_att','br_moca_lang','br_moca_abs','br_moca_del','br_moca_ori'];
+  var total = 0;
+  ids.forEach(function(id){
+    var v = parseInt((g(id)||{}).value||'');
+    if(!isNaN(v)) total += v;
+  });
+  var el = g('br_moca_overall');
+  if(!el) return;
+  // show total only if at least one field is filled
+  var anyFilled = ids.some(function(id){ return (g(id)||{}).value !== '' && (g(id)||{}).value !== undefined; });
+  el.value = anyFilled ? total.toString() : '';
+}
+
+function calcCqOverall(){
+  var exf = parseFloat(g('br_cq_exf').value);
+  var mem = parseFloat(g('br_cq_mem').value);
+  var ps  = parseFloat(g('br_cq_ps').value);
+  var overall = g('br_cq_overall');
+  var filled = [exf, mem, ps].filter(function(v){ return !isNaN(v); });
+  if(filled.length === 0){
+    overall.value = '';
+  } else {
+    var sum = filled.reduce(function(a,b){return a+b;}, 0);
+    var avg = sum / filled.length;
+    overall.value = avg % 1 === 0 ? avg.toString() : avg.toFixed(2);
+  }
+}
 
 function attachValidation(root){
   (root||document).querySelectorAll('input[inputmode]').forEach(function(el){
