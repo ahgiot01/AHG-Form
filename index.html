@@ -722,6 +722,20 @@ window.addEventListener('DOMContentLoaded',function(){
 
 // ── TABS ──
 function switchTab(t,btn){
+  if(t === at) return; // same tab, do nothing
+
+  // ── CROSS-TAB GUARD ──
+  // ตรวจว่ามีการกรอกค้างอยู่ในแท็บที่กำลังจะออก และแท็บปลายทางมี field ซ้ำกันไหม
+  var conflict = checkTabConflict(at, t);
+  if(conflict){
+    showTabWarning(conflict, at, t, btn);
+    return;
+  }
+
+  doSwitchTab(t, btn);
+}
+
+function doSwitchTab(t, btn){
   at=t;
   document.querySelectorAll('.pane').forEach(function(el){el.classList.remove('active');});
   g(t==='fo'?'p-fo':(t==='br'?'p-br':'p-mp')).classList.add('active');
@@ -729,6 +743,93 @@ function switchTab(t,btn){
   btn.classList.add('act-'+t);
   g('sl').textContent=t==='fo'?'Data2 · FO':(t==='br'?'Data · Brain':'Data2 · Multi');
   g('filled-info').textContent=t==='mp'?'':'กรอกแล้ว '+filledCounts[t]+' ช่อง';
+}
+
+// ── ตรวจ conflict ระหว่าง tab ──
+// FO ↔ Multi conflict: ทั้งคู่กรอก Grip/Body ลง Data2 เหมือนกัน
+// Brain ↔ FO/Multi: ไม่ conflict (คนละ sheet)
+function checkTabConflict(fromTab, toTab){
+  // FO ↔ Multi เท่านั้นที่ conflict กัน
+  var foMultiPair = (fromTab==='fo' && toTab==='mp') || (fromTab==='mp' && toTab==='fo');
+  if(!foMultiPair) return null;
+
+  // เช็คว่ามีการกรอกใน fromTab ไหม
+  if(fromTab==='fo'){
+    var hasFOData = foHasGripOrBody();
+    if(!hasFOData) return null;
+    return {
+      from: 'FO (Functional Outcome)',
+      to: 'Multi-Patient',
+      reason: 'หน้า FO มีข้อมูล Grip Strength / Body Composition ที่กรอกอยู่\nถ้าไปกรอกใน Multi อาจบันทึกซ้ำซ้อนลง Data2'
+    };
+  }
+  if(fromTab==='mp'){
+    var hasMPData = mpHasAnyData();
+    if(!hasMPData) return null;
+    return {
+      from: 'Multi-Patient',
+      to: 'FO (Functional Outcome)',
+      reason: 'หน้า Multi มีข้อมูลที่กรอกอยู่\nถ้าไปกรอกใน FO อาจบันทึกซ้ำซ้อนลง Data2'
+    };
+  }
+  return null;
+}
+
+function foHasGripOrBody(){
+  var fields = ['fo_grip_l','fo_grip_r','fo_pinch','fo_waist','fo_hip'];
+  return fields.some(function(name){
+    var el = document.querySelector('[name="'+name+'"]');
+    return el && el.value && el.value.trim() !== '';
+  });
+}
+
+function mpHasAnyData(){
+  mpSaveAllFields();
+  return mpCards.some(function(c){
+    return (c.cn||'').trim() || (c.grip_l||'') || (c.grip_r||'') ||
+           (c.pinch||'') || (c.waist||'') || (c.hip||'');
+  });
+}
+
+// ── Warning modal ──
+function showTabWarning(conflict, fromTab, toTab, btn){
+  var ov = g('tab-warn-ov');
+  if(!ov){
+    // สร้าง modal ถ้ายังไม่มี
+    ov = document.createElement('div');
+    ov.id = 'tab-warn-ov';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);';
+    ov.innerHTML =
+      '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:22px 20px;max-width:360px;width:100%;">' +
+        '<div style="font-size:22px;margin-bottom:8px;">⚠️</div>' +
+        '<div id="tab-warn-title" style="font-size:15px;font-weight:700;margin-bottom:8px;"></div>' +
+        '<div id="tab-warn-msg" style="font-size:13px;color:var(--tm);line-height:1.6;margin-bottom:18px;white-space:pre-line;"></div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button id="tab-warn-cancel" style="flex:1;padding:11px;background:var(--s2);border:1.5px solid var(--bd);color:var(--tx);border-radius:var(--r2);font:600 13px var(--fn);cursor:pointer;">← อยู่หน้าเดิม</button>' +
+          '<button id="tab-warn-go" style="flex:1;padding:11px;background:var(--re);border:none;color:#fff;border-radius:var(--r2);font:700 13px var(--fn);cursor:pointer;">ไปต่อ (ไม่แนะนำ)</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+  }
+
+  g('tab-warn-title').textContent = 'อาจเกิดการบันทึกซ้ำซ้อน';
+  g('tab-warn-msg').textContent = conflict.reason;
+
+  // ตั้ง event listeners
+  var cancelBtn = g('tab-warn-cancel');
+  var goBtn = g('tab-warn-go');
+  var newCancel = cancelBtn.cloneNode(true);
+  var newGo = goBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+  goBtn.parentNode.replaceChild(newGo, goBtn);
+
+  g('tab-warn-cancel').onclick = function(){ ov.style.display='none'; };
+  g('tab-warn-go').onclick = function(){
+    ov.style.display='none';
+    doSwitchTab(toTab, btn);
+  };
+
+  ov.style.display='flex';
 }
 
 // ── ACCORDION ──
@@ -1044,6 +1145,7 @@ function toast(msg,type){
 // ══════════════════════════════════════════
 function mpAddCard(){
   if(mpCards.length>=mpMax){toast('กรอกได้สูงสุด '+mpMax+' คน','err');return;}
+  mpSaveAllFields(); // ← save ค่าที่กรอกอยู่ก่อนเพิ่ม card ใหม่
   mpCards.push({cn:'',name:'',age:'',gender:'',visit:1,found:false,date:today(),grip_l:'',grip_r:'',pinch:'',waist:'',hip:''});
   mpRenderCards();
 }
