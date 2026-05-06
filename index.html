@@ -626,14 +626,21 @@ function numKey(e,allowDot){
   if(ok.indexOf(e.key)>=0) return;
   if(e.key>='0'&&e.key<='9') return;
   if(allowDot&&e.key==='.'&&e.target.value.indexOf('.')<0) return;
+  // อนุญาต - ได้เฉพาะตำแหน่งแรก และยังไม่มี -
+  if(e.key==='-'&&e.target.selectionStart===0&&e.target.value.indexOf('-')<0) return;
   e.preventDefault();
 }
 function numBlur(el,allowDot){
   el.classList.remove('err');
-  var v=el.value.trim(); if(!v){el.value='';return;}
-  if(allowDot){v=v.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^0+(\d)/,'$1');}
-  else{v=v.replace(/[^0-9]/g,'');}
-  el.value=v;
+  var v=el.value.trim(); if(!v||v==='-'){el.value=v==='-'?'':v;return;}
+  var neg = v.charAt(0)==='-';
+  var abs = neg ? v.substring(1) : v;
+  if(allowDot){
+    abs=abs.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').replace(/^0+(\d)/,'$1');
+  } else {
+    abs=abs.replace(/[^0-9]/g,'');
+  }
+  el.value = abs ? (neg?'-':'')+abs : '';
 }
 function validateBP(el){
   el.classList.remove('err');
