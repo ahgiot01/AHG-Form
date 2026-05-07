@@ -353,7 +353,7 @@ input[readonly].fi{color:var(--tm);cursor:default;}
 
   <!-- BALANCE -->
   <div class="acc" id="s-fo-bal">
-    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">⚖️</div><div class="acc-label">Balance</div><div class="acc-count" id="cnt-fo-bal">0/13</div><div class="acc-arr">▼</div></div>
+    <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">⚖️</div><div class="acc-label">Balance</div><div class="acc-count" id="cnt-fo-bal">0/15</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
         <div class="sub-lbl gf">4 Stages Balance Test <span style="font-size:10px;opacity:.6">(วิ, max 10)</span></div>
         <div class="field"><label>Feet Together</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bal_feet" placeholder="—" oninput=\"countFilled('fo')\"></div>
@@ -365,8 +365,10 @@ input[readonly].fi{color:var(--tm);cursor:default;}
         <div class="field"><label>SLS ซ้าย</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="field"><label>SLS ขวา</label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Single Leg Stand</div>
-        <div class="field"><label>Open Eyes <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_open" placeholder="—" oninput=\"countFilled('fo')\"></div>
-        <div class="field"><label>Close Eyes <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_close" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Open Eyes ซ้าย <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_open_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Open Eyes ขวา <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_open_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Close Eyes ซ้าย <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_close_l" placeholder="—" oninput=\"countFilled('fo')\"></div>
+        <div class="field"><label>Close Eyes ขวา <span class="unit">วิ</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_sls_close_r" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="sub-lbl gf">Other</div>
         <div class="field"><label>BESS Score <span class="unit">คะแนน</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_bess" placeholder="—" oninput=\"countFilled('fo')\"></div>
         <div class="field"><label>Y-Test <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_ytest" placeholder="—" oninput=\"countFilled('fo')\"></div>
@@ -1014,9 +1016,30 @@ async function fetchRow(p){
 // ── PREVIEW ──
 function triggerNext(){
   if(at==='mp'){triggerNextMp();return;}
-  var fid=at==='fo'?'frm-fo':'frm-br';
-  var frm=g(fid);
-  if(!frm.checkValidity()){frm.reportValidity();return;}
+  var p=at==='fo'?'fo':'br';
+
+  // ตรวจ CN ก่อนเสมอ
+  var cnEl=g(p+'_id');
+  if(!cnEl||!cnEl.value.trim()){
+    toast('กรุณากรอก CN ก่อน','err');
+    cnEl&&cnEl.focus();
+    return;
+  }
+
+  // ตรวจวันที่
+  var dateEl=g(p+'_date');
+  if(!dateEl||!dateEl.value){
+    toast('กรุณาเลือกวันที่ก่อน','err');
+    dateEl&&dateEl.focus();
+    return;
+  }
+
+  // edit mode: ต้องโหลดข้อมูลก่อน (rowIndex > 0)
+  if(editMode[p]==='edit' && editRowIndex[p]<=0){
+    toast('กรุณากด 🔍 เพื่อโหลดข้อมูลเดิมก่อน','err');
+    return;
+  }
+
   showPreview();
 }
 
@@ -1036,7 +1059,7 @@ function showPreview(){
     {title:'Cardio',ic:'❤️',cls:'ic-fo',fields:['fo_2mwt','fo_6mwt','fo_3step']},
     {title:'Strength',ic:'💪',cls:'ic-fo',fields:['fo_grip_l','fo_grip_r','fo_pinch','fo_pushup','fo_biceps','fo_plank','fo_5sts','fo_30sts','fo_squat','fo_calf','fo_deadhang','fo_wallplank']},
     {title:'Flexibility',ic:'🤸',cls:'ic-fo',fields:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-    {title:'Balance',ic:'⚖️',cls:'ic-fo',fields:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r','fo_sls_open','fo_sls_close','fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
+    {title:'Balance',ic:'⚖️',cls:'ic-fo',fields:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r','fo_sls_open_l','fo_sls_open_r','fo_sls_close_l','fo_sls_close_r','fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
     {title:'Gait & Agility',ic:'🏃',cls:'ic-fo',fields:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
     {title:'Body Composition',ic:'📏',cls:'ic-fo',fields:['fo_waist','fo_hip']},
     {title:'Vital Signs',ic:'🩺',cls:'ic-fo',fields:['fo_bp_pre','fo_hr_pre','fo_spo2_pre','fo_bp_post','fo_hr_post','fo_spo2_post','fo_bp_post3','fo_hr_post3','fo_spo2_post3']},
@@ -1100,7 +1123,7 @@ function fieldLabel(f){
     fo_chair_r:'Chair R',fo_chair_l:'Chair L',fo_vsit:'V-Sit',fo_chest:'Chest Exp',
     fo_bal_feet:'Feet Together',fo_bal_sl:'Semi L',fo_bal_sr:'Semi R',
     fo_bal_tl:'Tandem L',fo_bal_tr:'Tandem R',
-    fo_sls_l:'SLS L',fo_sls_r:'SLS R',fo_sls_open:'SLS Open',fo_sls_close:'SLS Close',
+    fo_sls_l:'SLS L',fo_sls_r:'SLS R',fo_sls_open_l:'SLS Open ซ้าย',fo_sls_open_r:'SLS Open ขวา',fo_sls_close_l:'SLS Close ซ้าย',fo_sls_close_r:'SLS Close ขวา',
     fo_bess:'BESS',fo_ytest:'Y-Test',fo_romberg:'Romberg',fo_riskfall:'Risk to Fall',
     fo_10m:'10m Walk',fo_10step:'10 Step',fo_tug:'TUG',fo_qft:'Quick Feet',
     fo_ttest:'T-Test',fo_tandemwalk:'Tandem Walk',fo_pendulum:'Pendulum',
