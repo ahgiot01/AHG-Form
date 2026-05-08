@@ -362,8 +362,8 @@ async function searchPatient(){
     state.foIdx = state.foVisits.length - 1; // show latest
     state.brIdx = state.brVisits.length - 1;
 
-    setState('result');
-    renderAll();
+    renderAll();  // render first (both tabs must be visible)
+    setState('result');  // then setState (shows tabs, switchReport called inside renderAll)
   } catch(err){
     toast('เชื่อมต่อไม่ได้: ' + err.message, 'err');
     setState('empty');
@@ -373,16 +373,13 @@ async function searchPatient(){
 }
 
 function setState(s){
-  g('state-empty').style.display     = s==='empty'    ? '' : 'none';
-  g('state-loading').style.display   = s==='loading'  ? '' : 'none';
-  g('state-notfound').style.display  = s==='notfound' ? '' : 'none';
-  g('tab-fo').style.display          = s==='result'   ? '' : 'none';
-  g('tab-br').style.display          = s==='result'   ? '' : 'none';
-  g('report-tabs').style.display     = s==='result'   ? 'flex' : 'none';
-  if(s === 'result'){
-    // ensure right tab visible
-    switchReport(state.activeTab, g('rt-'+ state.activeTab));
-  }
+  g('state-empty').style.display    = s==='empty'   ? '' : 'none';
+  g('state-loading').style.display  = s==='loading' ? '' : 'none';
+  g('state-notfound').style.display = s==='notfound'? '' : 'none';
+  g('report-tabs').style.display    = s==='result'  ? 'flex' : 'none';
+  // show both tabs so renderAll can write into them
+  g('tab-fo').style.display = s==='result' ? '' : 'none';
+  g('tab-br').style.display = s==='result' ? '' : 'none';
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -395,6 +392,8 @@ function renderAll(){
   renderVisitButtons('br');
   renderFOBody();
   renderBrBody();
+  // switch AFTER render so tab content is in DOM
+  switchReport(state.activeTab, g('rt-'+state.activeTab));
 }
 
 function renderPatientCard(tab){
@@ -690,9 +689,13 @@ function renderBrCompare(visits){
 function switchReport(t, btn){
   state.activeTab = t;
   document.querySelectorAll('.rtab').forEach(function(b){ b.classList.remove('active-fo','active-br'); });
-  btn.classList.add('active-'+t);
+  if(btn) btn.classList.add('active-'+t);
+  // use visibility:hidden so the hidden tab stays in DOM (content already rendered)
   g('tab-fo').style.display = t==='fo' ? '' : 'none';
   g('tab-br').style.display = t==='br' ? '' : 'none';
+  // re-render active tab to be safe
+  if(t==='fo') renderFOBody();
+  else renderBrBody();
 }
 
 // ════════════════════════════════════════════════════════════════
