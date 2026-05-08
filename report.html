@@ -391,7 +391,7 @@ function setState(s){
 //  RENDER
 // ════════════════════════════════════════════════════════════════
 function renderAll(){
-  // make sure both tab divs are visible before rendering into them
+  // show both tabs so we can render into them
   g('tab-fo').style.display = '';
   g('tab-br').style.display = '';
   renderPatientCard('fo');
@@ -400,8 +400,14 @@ function renderAll(){
   renderVisitButtons('br');
   renderFOBody();
   renderBrBody();
-  // now switch to active tab (hides the other one)
-  switchReport(state.activeTab, g('rt-'+state.activeTab));
+  // after rendering, hide the inactive tab
+  // default active = fo
+  g('tab-fo').style.display = state.activeTab === 'fo' ? '' : 'none';
+  g('tab-br').style.display = state.activeTab === 'br' ? '' : 'none';
+  // highlight correct tab button
+  document.querySelectorAll('.rtab').forEach(function(b){ b.classList.remove('active-fo','active-br'); });
+  var activeBtn = g('rt-' + state.activeTab);
+  if(activeBtn) activeBtn.classList.add('active-' + state.activeTab);
 }
 
 function renderPatientCard(tab){
@@ -698,12 +704,15 @@ function switchReport(t, btn){
   state.activeTab = t;
   document.querySelectorAll('.rtab').forEach(function(b){ b.classList.remove('active-fo','active-br'); });
   if(btn) btn.classList.add('active-'+t);
-  // use visibility:hidden so the hidden tab stays in DOM (content already rendered)
+  // show both first so render can write to DOM
+  g('tab-fo').style.display = '';
+  g('tab-br').style.display = '';
+  // render the newly activated tab
+  if(t === 'fo') renderFOBody();
+  else renderBrBody();
+  // now hide the inactive one
   g('tab-fo').style.display = t==='fo' ? '' : 'none';
   g('tab-br').style.display = t==='br' ? '' : 'none';
-  // re-render active tab to be safe
-  if(t==='fo') renderFOBody();
-  else renderBrBody();
 }
 
 // ════════════════════════════════════════════════════════════════
