@@ -359,11 +359,14 @@ async function searchPatient(){
     state.patient = info;
     state.foVisits = (foData.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
     state.brVisits = (brData.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
-    state.foIdx = state.foVisits.length - 1; // show latest
-    state.brIdx = state.brVisits.length - 1;
+    state.foIdx = Math.max(0, state.foVisits.length - 1);
+    state.brIdx = Math.max(0, state.brVisits.length - 1);
 
-    renderAll();  // render first (both tabs must be visible)
-    setState('result');  // then setState (shows tabs, switchReport called inside renderAll)
+    console.log('FO rows:', state.foVisits.length, 'BR rows:', state.brVisits.length);
+    if(state.brVisits.length > 0) console.log('BR sample:', JSON.stringify(state.brVisits[0]).substring(0,200));
+
+    setState('result');
+    renderAll();
   } catch(err){
     toast('เชื่อมต่อไม่ได้: ' + err.message, 'err');
     setState('empty');
@@ -377,22 +380,27 @@ function setState(s){
   g('state-loading').style.display  = s==='loading' ? '' : 'none';
   g('state-notfound').style.display = s==='notfound'? '' : 'none';
   g('report-tabs').style.display    = s==='result'  ? 'flex' : 'none';
-  // show both tabs so renderAll can write into them
-  g('tab-fo').style.display = s==='result' ? '' : 'none';
-  g('tab-br').style.display = s==='result' ? '' : 'none';
+  if(s !== 'result'){
+    g('tab-fo').style.display = 'none';
+    g('tab-br').style.display = 'none';
+  }
+  // if result: renderAll() handles show/hide of tabs
 }
 
 // ════════════════════════════════════════════════════════════════
 //  RENDER
 // ════════════════════════════════════════════════════════════════
 function renderAll(){
+  // make sure both tab divs are visible before rendering into them
+  g('tab-fo').style.display = '';
+  g('tab-br').style.display = '';
   renderPatientCard('fo');
   renderPatientCard('br');
   renderVisitButtons('fo');
   renderVisitButtons('br');
   renderFOBody();
   renderBrBody();
-  // switch AFTER render so tab content is in DOM
+  // now switch to active tab (hides the other one)
   switchReport(state.activeTab, g('rt-'+state.activeTab));
 }
 
