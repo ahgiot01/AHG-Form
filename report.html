@@ -119,8 +119,8 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 
 <div class="sb">
   <input type="text" id="s-cn" placeholder="กรอก CN เพื่อดูรายงาน..." inputmode="numeric"
-         onkeydown="if(event.key==='Enter')search()">
-  <button id="s-btn" onclick="search()">ค้นหา</button>
+         onkeydown="if(event.key==='Enter')searchPt()">
+  <button id="s-btn" onclick="searchPt()">ค้นหา</button>
 </div>
 
 <div class="wrap">
@@ -244,7 +244,7 @@ var FO_SECS = [
 ];
 
 // ─── SEARCH ───
-async function search(){
+async function searchPt(){
   var cn = g('s-cn').value.trim();
   if(!cn){ toast('กรุณากรอก CN','err'); return; }
   var cfg = getCfg();
