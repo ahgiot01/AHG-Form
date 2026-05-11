@@ -182,7 +182,7 @@ var S = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, tab:'fo' };
 function g(id){ return document.getElementById(id); }
 function getCfg(){ try{ return JSON.parse(localStorage.getItem('ahg_cfg')||'{}'); }catch(e){ return {}; } }
 function esc(s){ if(!s) return ''; var d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
-function fn(v){ if(v===''||v===null||v===undefined) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+function numVal(v){ if(v===''||v===null||v===undefined) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
 
 // ─── NORMAL RANGES ───
 var NR = {
@@ -249,11 +249,11 @@ async function searchPt(){
   if(!cn){ toast('กรุณากรอก CN','err'); return; }
   var cfg = getCfg();
   if(!cfg.url){ toast('กรุณาตั้งค่า Script URL','err'); openCfg(); return; }
-  show('loading'); g('s-btn').disabled=true;
+  showState('loading'); g('s-btn').disabled=true;
   try{
     var r1 = await fetch(cfg.url+'?action=lookup&cn='+encodeURIComponent(cn));
     var d1 = await r1.json();
-    if(d1.status !== 'found'){ show('nf'); g('st-nf-msg').textContent='ไม่พบ CN: '+cn; return; }
+    if(d1.status !== 'found'){ showState('nf'); g('st-nf-msg').textContent='ไม่พบ CN: '+cn; return; }
 
     var r2 = await fetch(cfg.url+'?action=getAllRows&cn='+encodeURIComponent(cn)+'&sheet=Data2');
     var d2 = await r2.json();
@@ -268,7 +268,7 @@ async function searchPt(){
     S.brIdx = Math.max(0, S.br.length-1);
     S.tab = 'fo';
 
-    show('result');
+    showState('result');
     renderPtCard('fo'); renderPtCard('br');
     renderVBar('fo');   renderVBar('br');
     renderFO();
@@ -280,13 +280,13 @@ async function searchPt(){
     g('tb-br').className='';
   }catch(err){
     toast('เชื่อมต่อไม่ได้: '+err.message,'err');
-    show('empty');
+    showState('empty');
   }finally{
     g('s-btn').disabled=false;
   }
 }
 
-function show(s){
+function showState(s){
   g('st-empty').style.display   = s==='empty'  ?'':'none';
   g('st-loading').style.display = s==='loading'?'':'none';
   g('st-nf').style.display      = s==='nf'     ?'':'none';
@@ -392,7 +392,7 @@ function renderFOCmp(){
   keys.forEach(function(k){
     var def=NR[k]; if(!def) return;
     h+='<tr><td class="nc">'+def.l+'</td>';
-    var vals=S.fo.map(function(v){return fn(v[k]);});
+    var vals=S.fo.map(function(v){return numVal(v[k]);});
     vals.forEach(function(val,i){
       var dlt='';
       if(i>0&&val!==null&&vals[i-1]!==null){var d=val-vals[i-1];dlt=d>0?'<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>':d<0?'<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>':'<span class="de"> =</span>';}
@@ -413,13 +413,13 @@ function renderBR(){
      'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
 
   // CQ Score
-  var cqo=fn(row.br_cq_overall);
+  var cqo=numVal(row.br_cq_overall);
   var cqInterp=cqo===null?'':cqo<25?'Low':cqo<75?'Average':'Above Average';
   var cqColor=cqo===null?'var(--td)':cqo<25?'var(--hi)':cqo<75?'#8a7a00':'var(--ok)';
   h+='<div class="sec"><div class="sec-h"><div class="sec-ic">🧠</div><div class="sec-t">CQ Score</div></div><div class="sec-b">'+
      '<div class="cq-g">';
   [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(p){
-    var v=fn(row[p[1]]);
+    var v=numVal(row[p[1]]);
     h+='<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'—')+'<span class="u">%</span></div></div>';
   });
   h+='<div class="cq-c" style="background:rgba(92,122,92,.08)"><div class="cq-l">CQ Overall</div>'+
@@ -428,7 +428,7 @@ function renderBR(){
      '</div></div></div>';
 
   // TAQ
-  var taq=fn(row.br_taq);
+  var taq=numVal(row.br_taq);
   var taqT=taq===null?'':taq<=3?'Normal':taq<=12?'MCI':'Dementia';
   var taqC=taq===null?'var(--td)':taq<=3?'var(--ok)':taq<=12?'#8a7a00':'var(--hi)';
   h+='<div class="sec"><div class="sec-h"><div class="sec-ic">⚡</div><div class="sec-t">TAQ Score</div></div><div class="sec-b">'+
@@ -439,7 +439,7 @@ function renderBR(){
      '</div></div>';
 
   // MoCA
-  var mo=fn(row.br_moca_overall);
+  var mo=numVal(row.br_moca_overall);
   var moT=mo===null?'':mo>=26?'Normal':mo>=19?'MCI':'Dementia';
   var moC=mo===null?'var(--td)':mo>=26?'var(--ok)':mo>=19?'#8a7a00':'var(--hi)';
   h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📋</div><div class="sec-t">MoCA Score</div></div><div class="sec-b">';
@@ -450,7 +450,7 @@ function renderBR(){
    ['Abstraction','br_moca_abs','2'],
    ['Delayed Recall','br_moca_del','5'],
    ['Orientation','br_moca_ori','6']].forEach(function(m){
-    var v=fn(row[m[1]]);
+    var v=numVal(row[m[1]]);
     h+='<div class="mr"><div>'+m[0]+'</div><div class="mr-m">/'+m[2]+'</div><div class="mr-s">'+(v!==null?v:'—')+'</div></div>';
   });
   h+='<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
@@ -485,7 +485,7 @@ function renderBRCmp(){
   [['CQ Executive','br_cq_exf'],['CQ Memory','br_cq_mem'],['CQ Processing','br_cq_ps'],
    ['CQ Overall','br_cq_overall'],['TAQ','br_taq'],['MoCA Total','br_moca_overall']].forEach(function(p){
     h+='<tr><td class="nc">'+p[0]+'</td>';
-    var vals=S.br.map(function(v){return fn(v[p[1]]);});
+    var vals=S.br.map(function(v){return numVal(v[p[1]]);});
     vals.forEach(function(val,i){
       var dlt='';
       if(i>0&&val!==null&&vals[i-1]!==null){var d=val-vals[i-1];dlt=d>0?'<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>':d<0?'<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>':'<span class="de"> =</span>';}
