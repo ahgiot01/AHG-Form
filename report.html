@@ -17,7 +17,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;}
-.tb{background:var(--s1);border-bottom:1px solid var(--bd);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 1px 5px rgba(0,0,0,.06);}
+.tb{background:var(--s1);border-bottom:1px solid var(--bd);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:100;}
 .tb img{height:32px;width:auto;}
 .tb-t{font-size:13px;font-weight:600;color:var(--tm);flex:1;}
 .tb-cfg{background:none;border:none;color:var(--td);font:12px var(--fn);cursor:pointer;text-decoration:underline;}
@@ -27,76 +27,61 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 .sb input::placeholder{color:var(--td);}
 .sb button{padding:9px 18px;background:var(--tx);color:var(--bg);border:none;border-radius:var(--r2);font:600 13px var(--fn);cursor:pointer;}
 .sb button:disabled{opacity:.5;}
-.tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);}
-.tabs button{flex:1;padding:10px 0;border:none;background:transparent;font:600 13px var(--fn);color:var(--tm);cursor:pointer;border-bottom:2px solid transparent;}
-.tabs button.afo{color:var(--ac);border-color:var(--ac);}
-.tabs button.abr{color:#8b6f4e;border-color:#8b6f4e;}
+.rp-tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);}
+.rp-tabs button{flex:1;padding:10px 0;border:none;background:transparent;font:600 13px var(--fn);color:var(--tm);cursor:pointer;border-bottom:2px solid transparent;}
+.rp-tabs button.afo{color:var(--ac);border-color:var(--ac);}
+.rp-tabs button.abr{color:#8b6f4e;border-color:#8b6f4e;}
 .wrap{max-width:780px;margin:0 auto;padding:14px 12px 60px;}
-/* states */
-.st-empty,.st-loading,.st-nf{text-align:center;padding:48px 16px;color:var(--td);}
-.st-empty .ic,.st-loading .ic,.st-nf .ic{font-size:40px;margin-bottom:10px;}
-.st-empty h2,.st-nf h2{font-size:15px;font-weight:600;color:var(--tm);margin-bottom:6px;}
-.st-loading{color:var(--tm);}
+.msg{text-align:center;padding:48px 16px;color:var(--td);}
+.msg .ic{font-size:40px;margin-bottom:10px;}
+.msg h2{font-size:15px;font-weight:600;color:var(--tm);margin-bottom:6px;}
 .spin{display:inline-block;animation:sp .7s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg)}}
-/* pane */
 .pane{display:none;}
-.pane.show{display:block;}
-/* patient card */
+.pane.on{display:block;}
 .ptc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
 .ptc-ico{font-size:30px;}
-.ptc-info{flex:1;}
 .ptc-name{font-size:16px;font-weight:700;}
 .ptc-meta{font-size:11px;color:var(--tm);margin-top:2px;}
 .ptc-cn{font-family:var(--mo);font-size:10px;color:var(--td);background:var(--s2);padding:2px 6px;border-radius:4px;}
-/* visit bar */
 .vbar{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
 .vbtn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--bd);background:var(--s1);font:600 11px var(--mo);color:var(--tm);cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .vbtn.on{background:var(--tx);border-color:var(--tx);color:var(--bg);}
-/* section */
 .sec{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
 .sec-h{padding:10px 13px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;}
 .sec-ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--ac2);color:var(--ac);}
 .sec-t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tm);}
 .sec-b{padding:10px 13px;}
-/* test row */
 .tr{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:13px;}
 .tr:last-child{border-bottom:none;}
-.tr-n .sub{font-size:10px;color:var(--td);}
+.sub{font-size:10px;color:var(--td);}
 .tr-norm{font-size:10px;color:var(--td);text-align:right;}
 .tr-v{font-family:var(--mo);font-weight:600;text-align:right;min-width:55px;}
 .tr-v.nil{color:var(--td);font-weight:400;}
-/* CQ cards */
 .cq-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .cq-c{background:var(--s2);border-radius:var(--r2);padding:10px 12px;}
 .cq-l{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--td);margin-bottom:4px;}
 .cq-v{font:700 22px var(--mo);}
 .cq-v .u{font-size:11px;font-weight:400;color:var(--tm);}
-/* moca */
 .mr{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;}
 .mr:last-child{border-bottom:none;}
 .mr-s{font-family:var(--mo);font-weight:600;text-align:right;}
 .mr-m{font-size:10px;color:var(--td);}
-/* vital */
 .vt{width:100%;border-collapse:collapse;font-size:12px;}
 .vt th{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--td);text-align:center;padding:4px 6px;background:var(--s2);}
 .vt td{padding:6px 8px;text-align:center;font-family:var(--mo);border-top:1px solid var(--bd);}
-.vt .vl{text-align:left;font-family:var(--fn);color:var(--tm);font-size:11px;font-weight:600;}
-/* compare table */
+.vl{text-align:left !important;font-family:var(--fn) !important;color:var(--tm);font-size:11px;font-weight:600;}
 .ct{width:100%;border-collapse:collapse;font-size:12px;}
 .ct th{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--td);text-align:center;padding:5px 6px;background:var(--s2);border:1px solid var(--bd);}
 .ct td{padding:5px 7px;border:1px solid var(--bd);text-align:center;font-family:var(--mo);}
-.ct .nc{text-align:left;font-family:var(--fn);color:var(--tm);font-size:11px;}
+.nc{text-align:left !important;font-family:var(--fn) !important;color:var(--tm);font-size:11px;}
 .du{color:var(--hi);font-size:10px;}
 .dd{color:var(--lo);font-size:10px;}
 .de{color:var(--td);font-size:10px;}
-/* fast */
-.fast{display:inline-flex;align-items:center;gap:8px;background:rgba(175,159,140,.12);border:1px solid rgba(175,159,140,.3);border-radius:var(--r2);padding:10px 14px;font-size:13px;font-weight:600;}
-/* toast */
+.fast-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(175,159,140,.12);border:1px solid rgba(175,159,140,.3);border-radius:var(--r2);padding:10px 14px;font-size:13px;font-weight:600;}
 .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--tx);color:var(--bg);border-radius:var(--r);padding:9px 16px;font-size:13px;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;max-width:92vw;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.err{background:#c0392b;}
-/* modal */
 .mov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
 .mov.open{opacity:1;pointer-events:all;}
 .mbox{background:var(--s1);border-radius:var(--r) var(--r) 0 0;padding:20px 16px 28px;width:100%;}
@@ -112,47 +97,40 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 <body>
 
 <div class="tb">
-  <img src="data:image/png;base64,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" alt="AHG" style="height:32px" onerror="this.style.display='none'">
+  <img src="data:image/png;base64,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" alt="AHG" onerror="this.style.display='none'">
   <span class="tb-t">Patient Report</span>
-  <button class="tb-cfg" onclick="openCfg()">⚙ Script URL</button>
+  <button class="tb-cfg" id="btn-cfg">&#9881; Script URL</button>
 </div>
 
 <div class="sb">
-  <input type="text" id="s-cn" placeholder="กรอก CN เพื่อดูรายงาน..." inputmode="numeric"
-         onkeydown="if(event.key==='Enter')searchPt()">
-  <button id="s-btn" onclick="searchPt()">ค้นหา</button>
+  <input type="text" id="inp-cn" placeholder="กรอก CN..." inputmode="numeric">
+  <button id="btn-srch">ค้นหา</button>
 </div>
 
 <div class="wrap">
-  <div id="st-empty" class="st-empty">
-    <div class="ic">🔍</div>
+  <div id="area-empty" class="msg">
+    <div class="ic">&#128269;</div>
     <h2>ค้นหาคนไข้</h2>
     <p>กรอก CN ด้านบนเพื่อดูรายงาน</p>
   </div>
-  <div id="st-loading" class="st-loading" style="display:none">
-    <div class="ic spin">⟳</div><br>กำลังโหลด...
+  <div id="area-loading" class="msg" style="display:none">
+    <div class="ic spin">&#8987;</div><br>กำลังโหลด...
   </div>
-  <div id="st-nf" class="st-nf" style="display:none">
-    <div class="ic">😕</div>
+  <div id="area-nf" class="msg" style="display:none">
+    <div class="ic">&#128533;</div>
     <h2>ไม่พบข้อมูล</h2>
-    <p id="st-nf-msg"></p>
+    <p id="nf-msg"></p>
   </div>
-
-  <div id="result" style="display:none">
-    <!-- TABS inside result so they render correctly -->
-    <div class="tabs" style="margin:0 -12px 12px;padding:0 0;">
-      <button id="tb-fo" class="afo" onclick="switchTab('fo')">🏃 Functional Outcome</button>
-      <button id="tb-br" onclick="switchTab('br')">🧠 Brain Test</button>
+  <div id="area-result" style="display:none">
+    <div class="rp-tabs">
+      <button id="tb-fo">&#127939; Functional Outcome</button>
+      <button id="tb-br">&#129504; Brain Test</button>
     </div>
-
-    <!-- FO PANE -->
-    <div id="pane-fo" class="pane show">
+    <div id="pane-fo" class="pane on">
       <div id="fo-ptc"></div>
       <div class="vbar" id="fo-vbar"></div>
       <div id="fo-body"></div>
     </div>
-
-    <!-- BR PANE -->
     <div id="pane-br" class="pane">
       <div id="br-ptc"></div>
       <div class="vbar" id="br-vbar"></div>
@@ -161,55 +139,60 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="rpt-toast"></div>
 
-<div class="mov" id="modal">
+<div class="mov" id="rpt-modal">
   <div class="mbox">
-    <h3>⚙ Script URL</h3>
+    <h3>&#9881; Script URL</h3>
     <p>ใช้ URL เดียวกับหน้ากรอกข้อมูล</p>
     <label style="font-size:11px;font-weight:600;color:var(--tm)">Apps Script URL</label>
     <input class="mfi" type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec">
     <div class="ma">
-      <button class="bms" onclick="closeCfg()">ยกเลิก</button>
-      <button class="bmp" onclick="saveCfg()">บันทึก</button>
+      <button class="bms" id="btn-cfg-cancel">ยกเลิก</button>
+      <button class="bmp" id="btn-cfg-save">บันทึก</button>
     </div>
   </div>
 </div>
 
 <script>
-var S = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, tab:'fo' };
+(function() {
+'use strict';
 
-function g(id){ return document.getElementById(id); }
-function getCfg(){ try{ return JSON.parse(localStorage.getItem('ahg_cfg')||'{}'); }catch(e){ return {}; } }
-function esc(s){ if(!s) return ''; var d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
-function numVal(v){ if(v===''||v===null||v===undefined) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+// ── helpers ──
+function byId(id) { return document.getElementById(id); }
+function getCfg() { try { return JSON.parse(localStorage.getItem('ahg_rpt')||'{}'); } catch(e) { return {}; } }
+function htmlEsc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+function toNum(v) { if (v===''||v===null||v===undefined) return null; var n = parseFloat(v); return isNaN(n) ? null : n; }
 
-// ─── NORMAL RANGES ───
+// ── state ──
+var ST = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, activeTab:'fo' };
+
+// ── normal ranges ──
 var NR = {
-  fo_2mwt:{l:'2 Min Walk Test',u:'m.',n:'≥163 m.'},
-  fo_6mwt:{l:'6 Min Walk Test',u:'m.',n:'≥406 m.'},
+  fo_2mwt:{l:'2 Min Walk Test',u:'m.',n:'>=163'},
+  fo_6mwt:{l:'6 Min Walk Test',u:'m.',n:'>=406'},
   fo_3step:{l:'3 Min Step Test',u:'bpm',n:'103-109'},
-  fo_grip_r:{l:'Grip ขวา',u:'kg.',n:'>17 kg.'},
-  fo_grip_l:{l:'Grip ซ้าย',u:'kg.',n:'>17 kg.'},
-  fo_pinch:{l:'Pinch Strength',u:'kg.',n:'≥7 kg.'},
+  fo_grip_r:{l:'Grip ขวา',u:'kg.',n:'>17'},
+  fo_grip_l:{l:'Grip ซ้าย',u:'kg.',n:'>17'},
+  fo_pinch:{l:'Pinch Strength',u:'kg.',n:'>=7'},
   fo_pushup:{l:'Push Up',u:'ครั้ง',n:'5-12'},
   fo_biceps:{l:'Biceps Curl',u:'ครั้ง',n:'12-18'},
   fo_deadhang:{l:'Dead Hang',u:'วิ',n:''},
-  fo_plank:{l:'Plank',u:'นาที',n:'1-2 นาที'},
+  fo_plank:{l:'Plank',u:'นาที',n:'1-2'},
   fo_wallplank:{l:'Wall Plank',u:'วิ',n:''},
-  fo_5sts:{l:'5x Sit to Stand',u:'วิ',n:'<12 วิ'},
-  fo_30sts:{l:'30s Sit to Stand',u:'ครั้ง',n:'≥11'},
+  fo_5sts:{l:'5x Sit to Stand',u:'วิ',n:'<12'},
+  fo_30sts:{l:'30s Sit to Stand',u:'ครั้ง',n:'>=11'},
   fo_squat:{l:'Squat',u:'ครั้ง',n:'9-11'},
   fo_calf:{l:'Calf Raise',u:'ครั้ง',n:''},
-  fo_chair_r:{l:'Chair S&R ขวา',u:'inch',n:'-0.5 to 4.5'},
-  fo_chair_l:{l:'Chair S&R ซ้าย',u:'inch',n:'-0.5 to 4.5'},
+  fo_chair_r:{l:'Chair S&R ขวา',u:'inch',n:'-0.5 - 4.5'},
+  fo_chair_l:{l:'Chair S&R ซ้าย',u:'inch',n:'-0.5 - 4.5'},
   fo_vsit:{l:'V-Sit & Reach',u:'inch',n:'14-18'},
-  fo_chest:{l:'Chest Expansion',u:'cm.',n:'3-4 cm.'},
-  fo_bal_feet:{l:'Balance: Feet Together',u:'วิ',n:'10 วิ'},
-  fo_bal_sr:{l:'Balance: Semi-tandem ขวา',u:'วิ',n:'10 วิ'},
-  fo_bal_sl:{l:'Balance: Semi-tandem ซ้าย',u:'วิ',n:'10 วิ'},
-  fo_bal_tr:{l:'Balance: Tandem ขวา',u:'วิ',n:'10 วิ'},
-  fo_bal_tl:{l:'Balance: Tandem ซ้าย',u:'วิ',n:'10 วิ'},
+  fo_chest:{l:'Chest Expansion',u:'cm.',n:'3-4'},
+  fo_bal_feet:{l:'Balance: Feet Together',u:'วิ',n:'10'},
+  fo_bal_sr:{l:'Balance: Semi-tandem ขวา',u:'วิ',n:'10'},
+  fo_bal_sl:{l:'Balance: Semi-tandem ซ้าย',u:'วิ',n:'10'},
+  fo_bal_tr:{l:'Balance: Tandem ขวา',u:'วิ',n:'10'},
+  fo_bal_tl:{l:'Balance: Tandem ซ้าย',u:'วิ',n:'10'},
   fo_sls_r:{l:'SLS ขวา',u:'วิ',n:''},
   fo_sls_l:{l:'SLS ซ้าย',u:'วิ',n:''},
   fo_sls_close_l:{l:'Close Eyes ซ้าย',u:'วิ',n:''},
@@ -217,304 +200,351 @@ var NR = {
   fo_sls_open_l:{l:'Open Eyes ซ้าย',u:'วิ',n:''},
   fo_sls_open_r:{l:'Open Eyes ขวา',u:'วิ',n:''},
   fo_bess:{l:'BESS Score',u:'คะแนน',n:'12-23'},
-  fo_ytest:{l:'Y-Test',u:'cm.',n:'Pre-Post'},
+  fo_ytest:{l:'Y-Test',u:'cm.',n:''},
   fo_romberg:{l:'Sharpened Romberg',u:'วิ',n:''},
   fo_riskfall:{l:'Risk to Fall',u:'',n:''},
   fo_10m:{l:'10m Walk Test',u:'m/s',n:'0.8-1.2'},
-  fo_10step:{l:'10 Step Test',u:'วิ',n:'5.58-7.78'},
-  fo_tug:{l:'Timed Up & Go',u:'วิ',n:'≤12 วิ'},
+  fo_10step:{l:'10 Step Test',u:'วิ',n:'5.6-7.8'},
+  fo_tug:{l:'Timed Up & Go',u:'วิ',n:'<=12'},
   fo_qft:{l:'Quick Feet',u:'วิ',n:'4.3-5.0'},
-  fo_ttest:{l:'T-Test',u:'วิ',n:'11.51-12.50'},
+  fo_ttest:{l:'T-Test',u:'วิ',n:'11.5-12.5'},
   fo_tandemwalk:{l:'Tandem Walk',u:'วิ',n:''},
   fo_pendulum:{l:'Pendulum Jump',u:'cm.',n:''},
-  fo_waist:{l:'Waist',u:'cm.',n:'≤80 cm.'},
-  fo_hip:{l:'Hip',u:'cm.',n:''},
+  fo_waist:{l:'Waist',u:'cm.',n:'<=80'},
+  fo_hip:{l:'Hip',u:'cm.',n:''}
 };
 
 var FO_SECS = [
-  {t:'Cardio',k:['fo_2mwt','fo_6mwt','fo_3step']},
-  {t:'Strength - Upper',k:['fo_grip_r','fo_grip_l','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
-  {t:'Strength - Core & Lower',k:['fo_plank','fo_wallplank','fo_5sts','fo_30sts','fo_squat','fo_calf']},
-  {t:'Flexibility',k:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-  {t:'Balance - 4 Stage',k:['fo_bal_feet','fo_bal_sr','fo_bal_sl','fo_bal_tr','fo_bal_tl']},
-  {t:'Balance - SLS',k:['fo_sls_r','fo_sls_l','fo_sls_close_l','fo_sls_close_r','fo_sls_open_l','fo_sls_open_r']},
-  {t:'Balance - Other',k:['fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
-  {t:'Gait & Agility',k:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
-  {t:'Body Composition',k:['fo_waist','fo_hip']},
+  {t:'Cardio',             k:['fo_2mwt','fo_6mwt','fo_3step']},
+  {t:'Strength - Upper',   k:['fo_grip_r','fo_grip_l','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
+  {t:'Strength - Core/Lower', k:['fo_plank','fo_wallplank','fo_5sts','fo_30sts','fo_squat','fo_calf']},
+  {t:'Flexibility',        k:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
+  {t:'Balance - 4 Stage',  k:['fo_bal_feet','fo_bal_sr','fo_bal_sl','fo_bal_tr','fo_bal_tl']},
+  {t:'Balance - SLS',      k:['fo_sls_r','fo_sls_l','fo_sls_close_l','fo_sls_close_r','fo_sls_open_l','fo_sls_open_r']},
+  {t:'Balance - Other',    k:['fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
+  {t:'Gait & Agility',     k:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
+  {t:'Body Composition',   k:['fo_waist','fo_hip']}
 ];
 
-// ─── SEARCH ───
-async function searchPt(){
-  var cn = g('s-cn').value.trim();
-  if(!cn){ toast('กรุณากรอก CN','err'); return; }
+// ── show/hide areas ──
+function showArea(name) {
+  var areas = ['empty','loading','nf','result'];
+  areas.forEach(function(a) {
+    byId('area-'+a).style.display = (a === name) ? '' : 'none';
+  });
+}
+
+// ── search ──
+function doSearch() {
+  var cn = byId('inp-cn').value.trim();
+  if (!cn) { showToast('กรุณากรอก CN','err'); return; }
   var cfg = getCfg();
-  if(!cfg.url){ toast('กรุณาตั้งค่า Script URL','err'); openCfg(); return; }
-  showState('loading'); g('s-btn').disabled=true;
-  try{
-    var r1 = await fetch(cfg.url+'?action=lookup&cn='+encodeURIComponent(cn));
-    var d1 = await r1.json();
-    if(d1.status !== 'found'){ showState('nf'); g('st-nf-msg').textContent='ไม่พบ CN: '+cn; return; }
+  if (!cfg.url) { showToast('กรุณาตั้งค่า Script URL','err'); openCfg(); return; }
 
-    var r2 = await fetch(cfg.url+'?action=getAllRows&cn='+encodeURIComponent(cn)+'&sheet=Data2');
-    var d2 = await r2.json();
+  showArea('loading');
+  byId('btn-srch').disabled = true;
 
-    var r3 = await fetch(cfg.url+'?action=getAllRows&cn='+encodeURIComponent(cn)+'&sheet=Data');
-    var d3 = await r3.json();
+  var url = cfg.url;
+  // Use XMLHttpRequest to avoid any async/await issues
+  var xhr1 = new XMLHttpRequest();
+  xhr1.open('GET', url + '?action=lookup&cn=' + encodeURIComponent(cn));
+  xhr1.onload = function() {
+    var d1;
+    try { d1 = JSON.parse(xhr1.responseText); } catch(e) { showToast('ข้อมูลผิดพลาด','err'); showArea('empty'); byId('btn-srch').disabled=false; return; }
+    if (d1.status !== 'found') {
+      showArea('nf');
+      byId('nf-msg').textContent = 'ไม่พบ CN: ' + cn + ' ใน PatientMaster';
+      byId('btn-srch').disabled = false;
+      return;
+    }
+    ST.patient = d1;
 
-    S.patient = d1;
-    S.fo = (d2.rows||[]).sort(function(a,b){return a.date>b.date?1:-1;});
-    S.br = (d3.rows||[]).sort(function(a,b){return a.date>b.date?1:-1;});
-    S.foIdx = Math.max(0, S.fo.length-1);
-    S.brIdx = Math.max(0, S.br.length-1);
-    S.tab = 'fo';
+    // Fetch FO rows
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('GET', url + '?action=getAllRows&cn=' + encodeURIComponent(cn) + '&sheet=Data2');
+    xhr2.onload = function() {
+      var d2; try { d2 = JSON.parse(xhr2.responseText); } catch(e) { d2 = {rows:[]}; }
+      ST.fo = (d2.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
+      ST.foIdx = Math.max(0, ST.fo.length - 1);
 
-    showState('result');
-    renderPtCard('fo'); renderPtCard('br');
-    renderVBar('fo');   renderVBar('br');
-    renderFO();
-    renderBR();
-    // activate FO tab by default
-    g('pane-fo').className='pane show';
-    g('pane-br').className='pane';
-    g('tb-fo').className='afo';
-    g('tb-br').className='';
-  }catch(err){
-    toast('เชื่อมต่อไม่ได้: '+err.message,'err');
-    showState('empty');
-  }finally{
-    g('s-btn').disabled=false;
-  }
+      // Fetch Brain rows
+      var xhr3 = new XMLHttpRequest();
+      xhr3.open('GET', url + '?action=getAllRows&cn=' + encodeURIComponent(cn) + '&sheet=Data');
+      xhr3.onload = function() {
+        var d3; try { d3 = JSON.parse(xhr3.responseText); } catch(e) { d3 = {rows:[]}; }
+        ST.br = (d3.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
+        ST.brIdx = Math.max(0, ST.br.length - 1);
+
+        byId('btn-srch').disabled = false;
+        renderAll();
+        showArea('result');
+        activateTab('fo');
+      };
+      xhr3.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
+      xhr3.send();
+    };
+    xhr2.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
+    xhr2.send();
+  };
+  xhr1.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
+  xhr1.send();
 }
 
-function showState(s){
-  g('st-empty').style.display   = s==='empty'  ?'':'none';
-  g('st-loading').style.display = s==='loading'?'':'none';
-  g('st-nf').style.display      = s==='nf'     ?'':'none';
-  g('result').style.display     = s==='result' ?'':'none';
+// ── tabs ──
+function activateTab(t) {
+  ST.activeTab = t;
+  byId('pane-fo').className = (t==='fo') ? 'pane on' : 'pane';
+  byId('pane-br').className = (t==='br') ? 'pane on' : 'pane';
+  byId('tb-fo').className   = (t==='fo') ? 'afo' : '';
+  byId('tb-br').className   = (t==='br') ? 'abr' : '';
+  if (t==='fo') renderFO(); else renderBR();
 }
 
-// ─── TAB SWITCH ───
-function switchTab(t){
-  S.tab=t;
-  g('pane-fo').className = t==='fo'?'pane show':'pane';
-  g('pane-br').className = t==='br'?'pane show':'pane';
-  g('tb-fo').className   = t==='fo'?'afo':'';
-  g('tb-br').className   = t==='br'?'abr':'';
-  if(t==='fo') renderFO(); else renderBR();
+// ── render all ──
+function renderAll() {
+  renderPtCard('fo'); renderPtCard('br');
+  renderVBar('fo');   renderVBar('br');
+  renderFO();         renderBR();
 }
 
-// ─── PATIENT CARD ───
-function renderPtCard(t){
-  var p=S.patient, visits=t==='fo'?S.fo:S.br;
-  var ico=p.gender==='หญิง'?'👩':p.gender==='ชาย'?'👨':'👤';
-  g(t+'-ptc').innerHTML=
+// ── patient card ──
+function renderPtCard(t) {
+  var p = ST.patient;
+  if (!p) return;
+  var visits = (t==='fo') ? ST.fo : ST.br;
+  var ico = p.gender==='หญิง' ? '&#128105;' : (p.gender==='ชาย' ? '&#128104;' : '&#128100;');
+  byId(t+'-ptc').innerHTML =
     '<div class="ptc"><div class="ptc-ico">'+ico+'</div>'+
-    '<div class="ptc-info"><div class="ptc-name">'+esc(p.name||'—')+'</div>'+
-    '<div class="ptc-meta">'+(p.age?'อายุ '+p.age+' ปี &nbsp;':'')+esc(p.gender||'')+
-    ' &nbsp;<span class="ptc-cn">CN: '+esc(p.cn)+'</span></div></div>'+
+    '<div style="flex:1"><div class="ptc-name">'+htmlEsc(p.name||'—')+'</div>'+
+    '<div class="ptc-meta">'+(p.age ? 'อายุ '+p.age+' ปี &nbsp; ' : '')+htmlEsc(p.gender||'')+
+    ' &nbsp;<span class="ptc-cn">CN: '+htmlEsc(p.cn)+'</span></div></div>'+
     '<div style="font-family:var(--mo);font-size:11px;color:var(--td)">'+visits.length+' ครั้ง</div></div>';
 }
 
-// ─── VISIT BUTTONS ───
-function renderVBar(t){
-  var visits=t==='fo'?S.fo:S.br, idx=t==='fo'?S.foIdx:S.brIdx;
-  var h='';
-  visits.forEach(function(v,i){
-    var d=(v.date||'').substring(0,10);
-    h+='<button class="vbtn'+(i===idx?' on':'')+(idx===-1&&i===visits.length?' on':'')+
-       '" onclick="selVisit(''+t+'','+i+')">ครั้ง '+(v.visit||i+1)+
-       '<br><span style="font-size:9px;font-weight:400">'+d+'</span></button>';
+// ── visit buttons ──
+function renderVBar(t) {
+  var visits = (t==='fo') ? ST.fo : ST.br;
+  var idx    = (t==='fo') ? ST.foIdx : ST.brIdx;
+  var h = '';
+  visits.forEach(function(v, i) {
+    var d = (v.date||'').substring(0,10);
+    h += '<button class="vbtn'+(i===idx?' on':'')
+      +'" data-tab="'+t+'" data-idx="'+i+'">ครั้ง '+(v.visit||i+1)
+      +'<br><span style="font-size:9px;font-weight:400">'+d+'</span></button>';
   });
-  if(visits.length>1){
-    h+='<button class="vbtn'+(idx===-1?' on':'')+'" onclick="selVisit(''+t+'',-1)">📊 เปรียบเทียบ</button>';
+  if (visits.length > 1) {
+    h += '<button class="vbtn'+(idx===-1?' on':'')+'" data-tab="'+t+'" data-idx="-1">&#128202; เปรียบเทียบ</button>';
   }
-  g(t+'-vbar').innerHTML=h;
+  byId(t+'-vbar').innerHTML = h;
 }
 
-function selVisit(t,i){
-  if(t==='fo'){S.foIdx=i;renderFO();}else{S.brIdx=i;renderBR();}
-  renderVBar(t);
-}
-
-// ─── FO RENDER ───
-function renderFO(){
-  if(S.fo.length===0){g('fo-body').innerHTML='<div class="st-empty"><div class="ic">📋</div><h2>ไม่มีข้อมูล FO</h2></div>';return;}
-  if(S.foIdx===-1){g('fo-body').innerHTML=renderFOCmp();return;}
-  var row=S.fo[S.foIdx], h='';
-  h+='<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'+
-     'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
-  // Vital
-  if(row.fo_bp_pre||row.fo_hr_pre||row.fo_spo2_pre) h+=renderVital(row);
-  // Risk + Suggestion
-  var tags='';
-  if(row.fo_riskfall) tags+='<span style="background:rgba(0,0,0,.05);border-radius:var(--r2);padding:5px 10px;font-size:12px">Fall Risk: <b style="color:'+(row.fo_riskfall==='High'?'var(--hi)':'var(--lo)')+'">'+esc(row.fo_riskfall)+'</b></span>';
-  if(row.fo_suggestion) tags+='<span style="background:var(--ac2);border-radius:var(--r2);padding:5px 10px;font-size:12px;flex:1">'+esc(row.fo_suggestion)+'</span>';
-  if(tags) h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+tags+'</div>';
-  // Sections
-  FO_SECS.forEach(function(sec){
-    var rows='';
-    sec.k.forEach(function(k){
-      var def=NR[k]; if(!def) return;
-      var v=row[k], hasVal=(v!==''&&v!==null&&v!==undefined&&v!=='');
-      rows+='<div class="tr"><div class="tr-n">'+def.l+(def.u?'<div class="sub">'+def.u+'</div>':'')+'</div>'+
-            '<div class="tr-norm">'+esc(def.n)+'</div>'+
-            '<div class="tr-v'+(hasVal?'':' nil')+'">'+(hasVal?esc(v):'—')+'</div></div>';
+// ── FO render ──
+function renderFO() {
+  var el = byId('fo-body');
+  if (!el) return;
+  if (ST.fo.length === 0) { el.innerHTML = '<div class="msg"><div class="ic">&#128203;</div><h2>ไม่มีข้อมูล FO</h2></div>'; return; }
+  if (ST.foIdx === -1) { el.innerHTML = renderFOCmp(); return; }
+  var row = ST.fo[ST.foIdx];
+  if (!row) { el.innerHTML = ''; return; }
+  var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
+        + 'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
+  if (row.fo_bp_pre || row.fo_hr_pre) h += renderVital(row);
+  var tags = '';
+  if (row.fo_riskfall) tags += '<span style="background:rgba(0,0,0,.05);border-radius:var(--r2);padding:5px 10px;font-size:12px">Fall Risk: <b style="color:'+(row.fo_riskfall==='High'?'var(--hi)':'var(--lo)')+'">'+htmlEsc(row.fo_riskfall)+'</b></span>';
+  if (row.fo_suggestion) tags += '<span style="background:var(--ac2);border-radius:var(--r2);padding:5px 10px;font-size:12px;flex:1">'+htmlEsc(row.fo_suggestion)+'</span>';
+  if (tags) h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+tags+'</div>';
+  FO_SECS.forEach(function(sec) {
+    var rows = '';
+    sec.k.forEach(function(k) {
+      var def = NR[k]; if (!def) return;
+      var v = row[k]; var has = (v!==''&&v!==null&&v!==undefined);
+      rows += '<div class="tr"><div><div>'+htmlEsc(def.l)+'</div>'+(def.u?'<div class="sub">'+htmlEsc(def.u)+'</div>':'')+'</div>'
+            + '<div class="tr-norm">'+htmlEsc(def.n)+'</div>'
+            + '<div class="tr-v'+(has?'':' nil')+'">'+(has?htmlEsc(v):'—')+'</div></div>';
     });
-    if(!rows) return;
-    h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📊</div><div class="sec-t">'+esc(sec.t)+'</div></div><div class="sec-b">'+rows+'</div></div>';
+    if (!rows) return;
+    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">'+htmlEsc(sec.t)+'</div></div><div class="sec-b">'+rows+'</div></div>';
   });
-  if(row.fo_note&&row.fo_note.trim()){
-    h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📝</div><div class="sec-t">Note</div></div>'+
-       '<div class="sec-b" style="font-size:13px;line-height:1.7;color:var(--tm)">'+esc(row.fo_note)+'</div></div>';
+  if (row.fo_note && row.fo_note.trim()) {
+    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128221;</div><div class="sec-t">Note</div></div>'
+       + '<div class="sec-b" style="font-size:13px;line-height:1.7;color:var(--tm)">'+htmlEsc(row.fo_note)+'</div></div>';
   }
-  g('fo-body').innerHTML=h;
+  el.innerHTML = h;
 }
 
-function renderVital(row){
-  var h='<div class="sec" style="margin-bottom:10px"><div class="sec-h"><div class="sec-ic">🩺</div><div class="sec-t">Vital Signs</div></div><div class="sec-b">'+
-        '<table class="vt"><thead><tr><th></th><th>BP</th><th>HR</th><th>SpO2</th></tr></thead><tbody>';
+function renderVital(row) {
+  var h = '<div class="sec" style="margin-bottom:10px"><div class="sec-h"><div class="sec-ic">&#129658;</div><div class="sec-t">Vital Signs</div></div>'
+        + '<div class="sec-b"><table class="vt"><thead><tr><th></th><th>BP</th><th>HR</th><th>SpO2</th></tr></thead><tbody>';
   [['ก่อน','fo_bp_pre','fo_hr_pre','fo_spo2_pre'],
    ['หลัง','fo_bp_post','fo_hr_post','fo_spo2_post'],
-   ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3']].forEach(function(r){
-    var bp=row[r[1]],hr=row[r[2]],sp=row[r[3]];
-    if(!bp&&!hr&&!sp) return;
-    h+='<tr><td class="vl">'+r[0]+'</td><td>'+(bp||'—')+'</td><td>'+(hr||'—')+'</td><td>'+(sp||'—')+'</td></tr>';
+   ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3']].forEach(function(r) {
+    var bp=row[r[1]], hr=row[r[2]], sp=row[r[3]];
+    if (!bp && !hr && !sp) return;
+    h += '<tr><td class="vl">'+r[0]+'</td><td>'+(bp||'—')+'</td><td>'+(hr||'—')+'</td><td>'+(sp||'—')+'</td></tr>';
   });
-  return h+'</tbody></table></div></div>';
+  return h + '</tbody></table></div></div>';
 }
 
-function renderFOCmp(){
-  var keys=['fo_2mwt','fo_grip_r','fo_grip_l','fo_tug','fo_10m','fo_bal_feet','fo_30sts','fo_waist','fo_hip'];
-  var h='<div class="sec"><div class="sec-h"><div class="sec-ic">📊</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div><div class="sec-b" style="overflow-x:auto">'+
-        '<table class="ct"><thead><tr><th class="nc">Test</th>';
-  S.fo.forEach(function(v,i){h+='<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>';});
-  h+='</tr></thead><tbody>';
-  keys.forEach(function(k){
-    var def=NR[k]; if(!def) return;
-    h+='<tr><td class="nc">'+def.l+'</td>';
-    var vals=S.fo.map(function(v){return numVal(v[k]);});
-    vals.forEach(function(val,i){
-      var dlt='';
-      if(i>0&&val!==null&&vals[i-1]!==null){var d=val-vals[i-1];dlt=d>0?'<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>':d<0?'<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>':'<span class="de"> =</span>';}
-      h+='<td>'+(val!==null?val:'—')+dlt+'</td>';
+function renderFOCmp() {
+  var keys = ['fo_2mwt','fo_grip_r','fo_grip_l','fo_tug','fo_10m','fo_bal_feet','fo_30sts','fo_waist','fo_hip'];
+  var h = '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div>'
+        + '<div class="sec-b" style="overflow-x:auto"><table class="ct"><thead><tr><th class="nc">Test</th>';
+  ST.fo.forEach(function(v,i) { h += '<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>'; });
+  h += '</tr></thead><tbody>';
+  keys.forEach(function(k) {
+    var def = NR[k]; if (!def) return;
+    var vals = ST.fo.map(function(v) { return toNum(v[k]); });
+    h += '<tr><td class="nc">'+htmlEsc(def.l)+'</td>';
+    vals.forEach(function(val, i) {
+      var dlt = '';
+      if (i > 0 && val !== null && vals[i-1] !== null) {
+        var d = val - vals[i-1];
+        dlt = d > 0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d < 0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
+      }
+      h += '<td>'+(val!==null?val:'—')+dlt+'</td>';
     });
-    h+='</tr>';
+    h += '</tr>';
   });
-  return h+'</tbody></table></div></div>';
+  return h + '</tbody></table></div></div>';
 }
 
-// ─── BRAIN RENDER ───
-function renderBR(){
-  if(S.br.length===0){g('br-body').innerHTML='<div class="st-empty"><div class="ic">🧠</div><h2>ไม่มีข้อมูล Brain Test</h2></div>';return;}
-  if(S.brIdx===-1){g('br-body').innerHTML=renderBRCmp();return;}
-  var row=S.br[S.brIdx], h='';
+// ── Brain render ──
+function renderBR() {
+  var el = byId('br-body');
+  if (!el) return;
+  if (ST.br.length === 0) { el.innerHTML = '<div class="msg"><div class="ic">&#129504;</div><h2>ไม่มีข้อมูล Brain Test</h2></div>'; return; }
+  if (ST.brIdx === -1) { el.innerHTML = renderBRCmp(); return; }
+  var row = ST.br[ST.brIdx];
+  if (!row) { el.innerHTML = ''; return; }
+  var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
+        + 'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
 
-  h+='<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'+
-     'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
-
-  // CQ Score
-  var cqo=numVal(row.br_cq_overall);
-  var cqInterp=cqo===null?'':cqo<25?'Low':cqo<75?'Average':'Above Average';
-  var cqColor=cqo===null?'var(--td)':cqo<25?'var(--hi)':cqo<75?'#8a7a00':'var(--ok)';
-  h+='<div class="sec"><div class="sec-h"><div class="sec-ic">🧠</div><div class="sec-t">CQ Score</div></div><div class="sec-b">'+
-     '<div class="cq-g">';
-  [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(p){
-    var v=numVal(row[p[1]]);
-    h+='<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'—')+'<span class="u">%</span></div></div>';
+  // CQ
+  var cqo = toNum(row.br_cq_overall);
+  var cqTxt = cqo===null?'':cqo<25?'Low':cqo<75?'Average':'Above Average';
+  var cqClr = cqo===null?'var(--td)':cqo<25?'var(--hi)':cqo<75?'#8a7a00':'var(--ok)';
+  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#129504;</div><div class="sec-t">CQ Score</div></div><div class="sec-b">'
+     + '<div class="cq-g">';
+  [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(p) {
+    var v = toNum(row[p[1]]);
+    h += '<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'—')+'<span class="u">%</span></div></div>';
   });
-  h+='<div class="cq-c" style="background:rgba(92,122,92,.08)"><div class="cq-l">CQ Overall</div>'+
-     '<div class="cq-v" style="color:'+cqColor+'">'+(cqo!==null?cqo:'—')+'<span class="u">%</span></div>'+
-     '<div style="font-size:11px;color:'+cqColor+'">'+cqInterp+'</div></div>'+
-     '</div></div></div>';
+  h += '<div class="cq-c" style="background:rgba(92,122,92,.08)"><div class="cq-l">CQ Overall</div>'
+     + '<div class="cq-v" style="color:'+cqClr+'">'+(cqo!==null?cqo:'—')+'<span class="u">%</span></div>'
+     + '<div style="font-size:11px;color:'+cqClr+'">'+cqTxt+'</div></div>'
+     + '</div></div></div>';
 
   // TAQ
-  var taq=numVal(row.br_taq);
-  var taqT=taq===null?'':taq<=3?'Normal':taq<=12?'MCI':'Dementia';
-  var taqC=taq===null?'var(--td)':taq<=3?'var(--ok)':taq<=12?'#8a7a00':'var(--hi)';
-  h+='<div class="sec"><div class="sec-h"><div class="sec-ic">⚡</div><div class="sec-t">TAQ Score</div></div><div class="sec-b">'+
-     '<div style="display:flex;align-items:center;gap:14px">'+
-     '<div style="font:700 34px var(--mo);color:'+taqC+'">'+(taq!==null?taq:'—')+'</div>'+
-     '<div><div style="font-size:14px;font-weight:700;color:'+taqC+'">'+taqT+'</div>'+
-     '<div style="font-size:11px;color:var(--td);margin-top:2px">Normal ≤3 · MCI 4-12 · Dementia >12</div></div></div>'+
-     '</div></div>';
+  var taq = toNum(row.br_taq);
+  var taqTxt = taq===null?'':taq<=3?'Normal':taq<=12?'MCI':'Dementia';
+  var taqClr = taq===null?'var(--td)':taq<=3?'var(--ok)':taq<=12?'#8a7a00':'var(--hi)';
+  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#9889;</div><div class="sec-t">TAQ Score</div></div><div class="sec-b">'
+     + '<div style="display:flex;align-items:center;gap:14px">'
+     + '<div style="font:700 34px var(--mo);color:'+taqClr+'">'+(taq!==null?taq:'—')+'</div>'
+     + '<div><div style="font-size:14px;font-weight:700;color:'+taqClr+'">'+taqTxt+'</div>'
+     + '<div style="font-size:11px;color:var(--td);margin-top:2px">Normal &lt;=3 · MCI 4-12 · Dementia &gt;12</div></div></div>'
+     + '</div></div>';
 
   // MoCA
-  var mo=numVal(row.br_moca_overall);
-  var moT=mo===null?'':mo>=26?'Normal':mo>=19?'MCI':'Dementia';
-  var moC=mo===null?'var(--td)':mo>=26?'var(--ok)':mo>=19?'#8a7a00':'var(--hi)';
-  h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📋</div><div class="sec-t">MoCA Score</div></div><div class="sec-b">';
-  [['Visuospatial / Executive','br_moca_vis','5'],
-   ['Naming','br_moca_nam','3'],
-   ['Attention','br_moca_att','6'],
-   ['Language','br_moca_lang','3'],
-   ['Abstraction','br_moca_abs','2'],
-   ['Delayed Recall','br_moca_del','5'],
-   ['Orientation','br_moca_ori','6']].forEach(function(m){
-    var v=numVal(row[m[1]]);
-    h+='<div class="mr"><div>'+m[0]+'</div><div class="mr-m">/'+m[2]+'</div><div class="mr-s">'+(v!==null?v:'—')+'</div></div>';
+  var mo = toNum(row.br_moca_overall);
+  var moTxt = mo===null?'':mo>=26?'Normal':mo>=19?'MCI':'Dementia';
+  var moClr = mo===null?'var(--td)':mo>=26?'var(--ok)':mo>=19?'#8a7a00':'var(--hi)';
+  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128203;</div><div class="sec-t">MoCA Score</div></div><div class="sec-b">';
+  [['Visuospatial/Executive','br_moca_vis','5'],['Naming','br_moca_nam','3'],
+   ['Attention','br_moca_att','6'],['Language','br_moca_lang','3'],
+   ['Abstraction','br_moca_abs','2'],['Delayed Recall','br_moca_del','5'],
+   ['Orientation','br_moca_ori','6']].forEach(function(m) {
+    var v = toNum(row[m[1]]);
+    h += '<div class="mr"><div>'+m[0]+'</div><div class="mr-m">/'+m[2]+'</div><div class="mr-s">'+(v!==null?v:'—')+'</div></div>';
   });
-  h+='<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'+
-     '<span style="font-size:11px;color:var(--td)">Total</span>'+
-     '<span style="font:700 26px var(--mo);color:'+moC+'">'+(mo!==null?mo:'—')+'</span>'+
-     '<span style="font-size:12px;color:var(--td)">/30</span>'+
-     '<span style="font-size:13px;font-weight:700;color:'+moC+'">'+moT+'</span></div>';
-  h+='</div></div>';
+  h += '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
+     + '<span style="font-size:11px;color:var(--td)">Total</span>'
+     + '<span style="font:700 26px var(--mo);color:'+moClr+'">'+(mo!==null?mo:'—')+'</span>'
+     + '<span style="font-size:12px;color:var(--td)">/30</span>'
+     + '<span style="font-size:13px;font-weight:700;color:'+moClr+'">'+moTxt+'</span></div>'
+     + '</div></div>';
 
   // FAST
-  if(row.br_fast&&row.br_fast.trim()){
-    h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📊</div><div class="sec-t">FAST Stage</div></div>'+
-       '<div class="sec-b"><div class="fast">'+esc(row.br_fast)+'</div></div></div>';
+  if (row.br_fast && row.br_fast.trim()) {
+    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">FAST Stage</div></div>'
+       + '<div class="sec-b"><div class="fast-chip">'+htmlEsc(row.br_fast)+'</div></div></div>';
   }
 
   // Summary
-  if(row.br_summary||row.br_suggestion){
-    h+='<div class="sec"><div class="sec-h"><div class="sec-ic">📝</div><div class="sec-t">Summary / Suggestion</div></div><div class="sec-b">';
-    if(row.br_summary) h+='<div style="font-size:13px;font-weight:600;margin-bottom:6px">'+esc(row.br_summary)+'</div>';
-    if(row.br_suggestion) h+='<div style="font-size:12px;color:var(--tm);line-height:1.7">'+esc(row.br_suggestion)+'</div>';
-    h+='</div></div>';
+  if (row.br_summary || row.br_suggestion) {
+    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128221;</div><div class="sec-t">Summary / Suggestion</div></div><div class="sec-b">';
+    if (row.br_summary) h += '<div style="font-size:13px;font-weight:600;margin-bottom:6px">'+htmlEsc(row.br_summary)+'</div>';
+    if (row.br_suggestion) h += '<div style="font-size:12px;color:var(--tm);line-height:1.7">'+htmlEsc(row.br_suggestion)+'</div>';
+    h += '</div></div>';
   }
-
-  g('br-body').innerHTML=h;
+  el.innerHTML = h;
 }
 
-function renderBRCmp(){
-  var h='<div class="sec"><div class="sec-h"><div class="sec-ic">📊</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div><div class="sec-b" style="overflow-x:auto">'+
-        '<table class="ct"><thead><tr><th class="nc">Test</th>';
-  S.br.forEach(function(v,i){h+='<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>';});
-  h+='</tr></thead><tbody>';
+function renderBRCmp() {
+  var h = '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div>'
+        + '<div class="sec-b" style="overflow-x:auto"><table class="ct"><thead><tr><th class="nc">Test</th>';
+  ST.br.forEach(function(v,i) { h += '<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>'; });
+  h += '</tr></thead><tbody>';
   [['CQ Executive','br_cq_exf'],['CQ Memory','br_cq_mem'],['CQ Processing','br_cq_ps'],
-   ['CQ Overall','br_cq_overall'],['TAQ','br_taq'],['MoCA Total','br_moca_overall']].forEach(function(p){
-    h+='<tr><td class="nc">'+p[0]+'</td>';
-    var vals=S.br.map(function(v){return numVal(v[p[1]]);});
-    vals.forEach(function(val,i){
-      var dlt='';
-      if(i>0&&val!==null&&vals[i-1]!==null){var d=val-vals[i-1];dlt=d>0?'<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>':d<0?'<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>':'<span class="de"> =</span>';}
-      h+='<td>'+(val!==null?val:'—')+dlt+'</td>';
+   ['CQ Overall','br_cq_overall'],['TAQ','br_taq'],['MoCA Total','br_moca_overall']].forEach(function(p) {
+    var vals = ST.br.map(function(v) { return toNum(v[p[1]]); });
+    h += '<tr><td class="nc">'+p[0]+'</td>';
+    vals.forEach(function(val, i) {
+      var dlt = '';
+      if (i > 0 && val !== null && vals[i-1] !== null) {
+        var d = val - vals[i-1];
+        dlt = d>0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d<0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
+      }
+      h += '<td>'+(val!==null?val:'—')+dlt+'</td>';
     });
-    h+='</tr>';
+    h += '</tr>';
   });
-  return h+'</tbody></table></div></div>';
+  return h + '</tbody></table></div></div>';
 }
 
-// ─── CONFIG ───
-function openCfg(){ g('cfg-url').value=getCfg().url||''; g('modal').classList.add('open'); }
-function closeCfg(){ g('modal').classList.remove('open'); }
-function saveCfg(){
-  localStorage.setItem('ahg_cfg',JSON.stringify({url:g('cfg-url').value.trim()}));
-  closeCfg(); toast('บันทึกแล้ว');
-}
-g('modal').addEventListener('click',function(e){if(e.target===this)closeCfg();});
+// ── config ──
+function openCfg() { byId('cfg-url').value = getCfg().url||''; byId('rpt-modal').classList.add('open'); }
+function closeCfg() { byId('rpt-modal').classList.remove('open'); }
 
-// ─── TOAST ───
-function toast(msg,type){
-  var t=g('toast'); t.textContent=msg; t.className='toast '+(type||'')+' show';
-  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('show');},3500);
+// ── toast ──
+function showToast(msg, type) {
+  var t = byId('rpt-toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type==='err'?'err':'') + ' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(function() { t.classList.remove('show'); }, 3500);
 }
 
-// ─── AUTO OPEN CONFIG ───
-window.addEventListener('DOMContentLoaded',function(){
-  if(!getCfg().url) setTimeout(openCfg,600);
+// ── event listeners (no inline onclick) ──
+document.addEventListener('DOMContentLoaded', function() {
+  // search
+  byId('btn-srch').addEventListener('click', doSearch);
+  byId('inp-cn').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
+  // tabs
+  byId('tb-fo').addEventListener('click', function() { activateTab('fo'); });
+  byId('tb-br').addEventListener('click', function() { activateTab('br'); });
+  // visit buttons (delegated)
+  byId('fo-vbar').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-idx]'); if (!btn) return;
+    ST.foIdx = parseInt(btn.dataset.idx); renderVBar('fo'); renderFO();
+  });
+  byId('br-vbar').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-idx]'); if (!btn) return;
+    ST.brIdx = parseInt(btn.dataset.idx); renderVBar('br'); renderBR();
+  });
+  // config
+  byId('btn-cfg').addEventListener('click', openCfg);
+  byId('btn-cfg-cancel').addEventListener('click', closeCfg);
+  byId('btn-cfg-save').addEventListener('click', function() {
+    localStorage.setItem('ahg_rpt', JSON.stringify({url: byId('cfg-url').value.trim()}));
+    closeCfg(); showToast('บันทึกแล้ว');
+  });
+  byId('rpt-modal').addEventListener('click', function(e) { if (e.target===this) closeCfg(); });
+  // auto open config
+  if (!getCfg().url) setTimeout(openCfg, 600);
 });
+
+})(); // end IIFE
 </script>
 </body>
 </html>
