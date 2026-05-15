@@ -167,54 +167,316 @@ function toNum(v) { if (v===''||v===null||v===undefined) return null; var n = pa
 // ── state ──
 var ST = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, activeTab:'fo' };
 
-// ── normal ranges ──
-var NR = {
-  fo_2mwt:{l:'2 Min Walk Test',u:'m.',n:'>=163'},
-  fo_6mwt:{l:'6 Min Walk Test',u:'m.',n:'>=406'},
-  fo_3step:{l:'3 Min Step Test',u:'bpm',n:'103-109'},
-  fo_grip_r:{l:'Grip ขวา',u:'kg.',n:'>17'},
-  fo_grip_l:{l:'Grip ซ้าย',u:'kg.',n:'>17'},
-  fo_pinch:{l:'Pinch Strength',u:'kg.',n:'>=7'},
-  fo_pushup:{l:'Push Up',u:'ครั้ง',n:'5-12'},
-  fo_biceps:{l:'Biceps Curl',u:'ครั้ง',n:'12-18'},
-  fo_deadhang:{l:'Dead Hang',u:'วิ',n:''},
-  fo_plank:{l:'Plank',u:'นาที',n:'1-2'},
-  fo_wallplank:{l:'Wall Plank',u:'วิ',n:''},
-  fo_5sts:{l:'5x Sit to Stand',u:'วิ',n:'<12'},
-  fo_30sts:{l:'30s Sit to Stand',u:'ครั้ง',n:'>=11'},
-  fo_squat:{l:'Squat',u:'ครั้ง',n:'9-11'},
-  fo_calf:{l:'Calf Raise',u:'ครั้ง',n:''},
-  fo_chair_r:{l:'Chair S&R ขวา',u:'inch',n:'-0.5 - 4.5'},
-  fo_chair_l:{l:'Chair S&R ซ้าย',u:'inch',n:'-0.5 - 4.5'},
-  fo_vsit:{l:'V-Sit & Reach',u:'inch',n:'14-18'},
-  fo_chest:{l:'Chest Expansion',u:'cm.',n:'3-4'},
-  fo_bal_feet:{l:'Balance: Feet Together',u:'วิ',n:'10'},
-  fo_bal_sr:{l:'Balance: Semi-tandem ขวา',u:'วิ',n:'10'},
-  fo_bal_sl:{l:'Balance: Semi-tandem ซ้าย',u:'วิ',n:'10'},
-  fo_bal_tr:{l:'Balance: Tandem ขวา',u:'วิ',n:'10'},
-  fo_bal_tl:{l:'Balance: Tandem ซ้าย',u:'วิ',n:'10'},
-  fo_sls_r:{l:'SLS ขวา',u:'วิ',n:''},
-  fo_sls_l:{l:'SLS ซ้าย',u:'วิ',n:''},
-  fo_sls_close_l:{l:'Close Eyes ซ้าย',u:'วิ',n:''},
-  fo_sls_close_r:{l:'Close Eyes ขวา',u:'วิ',n:''},
-  fo_sls_open_l:{l:'Open Eyes ซ้าย',u:'วิ',n:''},
-  fo_sls_open_r:{l:'Open Eyes ขวา',u:'วิ',n:''},
-  fo_bess:{l:'BESS Score',u:'คะแนน',n:'12-23'},
-  fo_ytest:{l:'Y-Test',u:'cm.',n:''},
-  fo_romberg:{l:'Sharpened Romberg',u:'วิ',n:''},
-  fo_riskfall:{l:'Risk to Fall',u:'',n:''},
-  fo_10m:{l:'10m Walk Test',u:'m/s',n:'0.8-1.2'},
-  fo_10step:{l:'10 Step Test',u:'วิ',n:'5.6-7.8'},
-  fo_tug:{l:'Timed Up & Go',u:'วิ',n:'<=12'},
-  fo_qft:{l:'Quick Feet',u:'วิ',n:'4.3-5.0'},
-  fo_ttest:{l:'T-Test',u:'วิ',n:'11.5-12.5'},
-  fo_tandemwalk:{l:'Tandem Walk',u:'วิ',n:''},
-  fo_pendulum:{l:'Pendulum Jump',u:'cm.',n:''},
-  fo_waist:{l:'Waist',u:'cm.',n:'<=80'},
-  fo_hip:{l:'Hip',u:'cm.',n:''}
+
+// ════════════════════════════════════════════════════════════════
+//  NORMAL RANGES — age & gender specific (from Latest2 sheet)
+//  getNorm(key, age, gender) → string
+// ════════════════════════════════════════════════════════════════
+
+var NR_STATIC = {
+  fo_3step:      {l:'3 Min Step Test',    u:'bpm',   def:'104-110'},
+  fo_deadhang:   {l:'Dead Hang',          u:'วิ',    def:'—'},
+  fo_wallplank:  {l:'Wall Plank',         u:'วิ',    def:'—'},
+  fo_sls_r:      {l:'SLS ขวา',            u:'วิ',    def:'—'},
+  fo_sls_l:      {l:'SLS ซ้าย',           u:'วิ',    def:'—'},
+  fo_sls_close_l:{l:'Close Eyes ซ้าย',   u:'วิ',    def:'—'},
+  fo_sls_close_r:{l:'Close Eyes ขวา',    u:'วิ',    def:'—'},
+  fo_sls_open_l: {l:'Open Eyes ซ้าย',    u:'วิ',    def:'—'},
+  fo_sls_open_r: {l:'Open Eyes ขวา',     u:'วิ',    def:'—'},
+  fo_bess:       {l:'BESS Score',         u:'คะแนน', def:'12-23'},
+  fo_ytest:      {l:'Y-Test',             u:'cm.',   def:'—'},
+  fo_romberg:    {l:'Sharpened Romberg',  u:'วิ',    def:'—'},
+  fo_riskfall:   {l:'Risk to Fall',       u:'',      def:''},
+  fo_bal_feet:   {l:'Balance: Feet Together',u:'วิ', def:'10'},
+  fo_bal_sr:     {l:'Balance: Semi-tandem ขวา',u:'วิ',def:'10'},
+  fo_bal_sl:     {l:'Balance: Semi-tandem ซ้าย',u:'วิ',def:'10'},
+  fo_bal_tr:     {l:'Balance: Tandem ขวา',u:'วิ',   def:'10'},
+  fo_bal_tl:     {l:'Balance: Tandem ซ้าย',u:'วิ',  def:'10'},
+  fo_tandemwalk: {l:'Tandem Walk',        u:'วิ',    def:'—'},
+  fo_pendulum:   {l:'Pendulum Jump',      u:'cm.',   def:'—'},
+  fo_waist:      {l:'Waist',             u:'cm.',   def:'—'},
+  fo_hip:        {l:'Hip',               u:'cm.',   def:'—'},
+  fo_plank:      {l:'Plank',             u:'นาที',  def:'1-2'},
+  fo_calf:       {l:'Calf Raise',        u:'ครั้ง', def:'—'},
+  fo_pinch:      {l:'Pinch Strength',    u:'kg.',   def:'—'},
+  fo_5sts:       {l:'5x Sit to Stand',   u:'วิ',    def:'<12'},
+  fo_10step:     {l:'10 Step Test',      u:'วิ',    def:'5.58-7.78'},
 };
 
+// Age/gender specific ranges
+// Each entry: [ageMin, ageMax, maleNorm, femaleNorm]
+// age -1 = any
+
+var NR_AGE = {
+
+  fo_2mwt: {
+    l:'2 Min Walk Test', u:'m.',
+    ranges: [
+      [20,29, '217.9 m.', '194.1 m.'],
+      [30,39, '202.1 m.', '181.4 m.'],
+      [40,49, '192.1 m.', '180.7 m.'],
+      [50,59, '189.8 m.', '169.1 m.'],
+      [60,69, '183 m.',   '163.7 m.'],
+      [70,99, '163.1 m.', '150.3 m.'],
+    ],
+    def: '163.7 m.'
+  },
+
+  fo_6mwt: {
+    l:'6 Min Walk Test', u:'m.',
+    ranges: [
+      [-1,99, '>=479 m.', '>=406 m.'],
+    ],
+    def: '>=406 m.'
+  },
+
+  fo_grip_r: {
+    l:'Grip Strength ขวา', u:'kg.',
+    ranges: [
+      [65,99, '>27 kg.', '>17 kg.'],
+      [0,64,  '>33 kg.', '>19 kg.'],
+    ],
+    def: '>17 kg.'
+  },
+  fo_grip_l: {
+    l:'Grip Strength ซ้าย', u:'kg.',
+    ranges: [
+      [65,99, '>27 kg.', '>17 kg.'],
+      [0,64,  '>33 kg.', '>19 kg.'],
+    ],
+    def: '>17 kg.'
+  },
+
+  fo_pushup: {
+    l:'Push Up', u:'ครั้ง',
+    ranges: [
+      [17,19, '19-34', '11-20'],
+      [20,29, '17-29', '12-22'],
+      [30,39, '13-24', '10-21'],
+      [40,49, '11-20', '8-17'],
+      [50,59, '9-17',  '7-14'],
+      [60,65, '6-16',  '5-12'],
+    ],
+    def: '5-12'
+  },
+
+  fo_biceps: {
+    l:'Biceps Curl', u:'ครั้ง',
+    ranges: [
+      [60,64, '16-22', '13-19'],
+      [65,69, '15-21', '12-18'],
+      [70,74, '14-21', '12-17'],
+      [75,79, '13-19', '11-17'],
+      [80,84, '13-19', '10-16'],
+      [85,89, '11-17', '10-15'],
+      [90,94, '10-14', '8-13'],
+    ],
+    def: '12-18'
+  },
+
+  fo_30sts: {
+    l:'30s Sit to Stand', u:'ครั้ง',
+    ranges: [
+      [60,64, '>=14', '>=12'],
+      [65,69, '>=12', '>=11'],
+      [70,74, '>=12', '>=10'],
+      [75,79, '>=11', '>=10'],
+      [80,84, '>=10', '>=9'],
+      [85,89, '>=8',  '>=8'],
+      [90,94, '>=7',  '>=4'],
+    ],
+    def: '>=11'
+  },
+
+  fo_squat: {
+    l:'Squat', u:'ครั้ง',
+    ranges: [
+      [20,29, '27-29', '21-23'],
+      [30,39, '24-26', '18-20'],
+      [40,49, '21-23', '15-17'],
+      [50,59, '18-20', '12-14'],
+      [60,99, '15-17', '9-11'],
+    ],
+    def: '9-11'
+  },
+
+  fo_chair_r: {
+    l:'Chair S&R ขวา', u:'inch',
+    ranges: [
+      [60,64, '-2.5 - 4.0 inch', '-0.5 - 5.0 inch'],
+      [65,69, '-3.0 - 3.0 inch', '-0.5 - 4.5 inch'],
+      [70,74, '-3.5 - 2.5 inch', '-1.0 - 4.0 inch'],
+      [75,79, '-4.0 - 2.0 inch', '-1.5 - 3.5 inch'],
+      [80,84, '-5.5 - 1.5 inch', '-2.0 - 3.0 inch'],
+      [85,89, '-5.5 - 0.5 inch', '-2.5 - 2.5 inch'],
+      [90,94, '-6.5 - 0.5 inch', '-4.5 - 1.0 inch'],
+    ],
+    def: '-0.5 - 4.5 inch'
+  },
+  fo_chair_l: {
+    l:'Chair S&R ซ้าย', u:'inch',
+    ranges: [
+      [60,64, '-2.5 - 4.0 inch', '-0.5 - 5.0 inch'],
+      [65,69, '-3.0 - 3.0 inch', '-0.5 - 4.5 inch'],
+      [70,74, '-3.5 - 2.5 inch', '-1.0 - 4.0 inch'],
+      [75,79, '-4.0 - 2.0 inch', '-1.5 - 3.5 inch'],
+      [80,84, '-5.5 - 1.5 inch', '-2.0 - 3.0 inch'],
+      [85,89, '-5.5 - 0.5 inch', '-2.5 - 2.5 inch'],
+      [90,94, '-6.5 - 0.5 inch', '-4.5 - 1.0 inch'],
+    ],
+    def: '-0.5 - 4.5 inch'
+  },
+
+  fo_vsit: {
+    l:'V-Sit & Reach', u:'inch',
+    ranges: [
+      [20,29, '15-19 inch', '14-18 inch'],
+      [30,39, '13-17 inch', '14-20 inch'],
+      [40,49, '11-17 inch', '13-19 inch'],
+      [50,59, '11-15 inch', '14-18 inch'],
+      [60,69, '9-15 inch',  '14-18 inch'],
+    ],
+    def: '14-18 inch'
+  },
+
+  fo_chest: {
+    l:'Chest Expansion', u:'cm.',
+    ranges: [
+      [-1,99, '>=3 cm.', '>=3 cm.'],
+    ],
+    def: '>=3 cm.'
+  },
+
+  fo_3step: {
+    l:'3 Min Step Test', u:'bpm',
+    ranges: [
+      [18,25, '104-110', '95-100'],
+      [26,35, '104-110', '96-102'],
+      [36,45, '107-112', '100-105'],
+      [46,55, '113-118', '103-111'],
+      [56,65, '113-118', '103-109'],
+      [66,99, '116-121', '104-110'],
+    ],
+    def: '103-109'
+  },
+
+  fo_10m: {
+    l:'10m Walk Test', u:'m/s',
+    ranges: [[-1,99, '0.8-1.2 m/s', '0.8-1.2 m/s']],
+    def: '0.8-1.2'
+  },
+
+  fo_tug: {
+    l:'Timed Up & Go', u:'วิ',
+    ranges: [[-1,99, '<=12 วิ', '<=12 วิ']],
+    def: '<=12 วิ'
+  },
+
+  fo_qft: {
+    l:'Quick Feet', u:'วิ',
+    ranges: [
+      [20,29, '3.7-4.4', '4.3-5.0'],
+      [30,39, '—', '—'],
+      [40,49, '—', '—'],
+      [50,59, '—', '—'],
+      [60,69, '—', '—'],
+      [70,79, '—', '—'],
+      [80,89, '—', '—'],
+      [90,99, '—', '—'],
+    ],
+    def: '4.3-5.0'
+  },
+
+  fo_ttest: {
+    l:'T-Test', u:'วิ',
+    ranges: [
+      [20,29, '10.51-11.50', '11.51-12.50'],
+      [30,39, '—', '—'],
+      [40,49, '—', '—'],
+      [50,59, '—', '—'],
+      [60,69, '10.51-11.50', '11.51-12.50'],
+      [70,79, '—', '—'],
+      [80,89, '—', '—'],
+      [90,99, '—', '—'],
+    ],
+    def: '11.51-12.50'
+  },
+
+  fo_10step: {
+    l:'10 Step Test', u:'วิ',
+    ranges: [
+      [20,29, '4.95-6.29', '5.32-6.32'],
+      [30,39, '4.88-6.36', '5.14-6.48'],
+      [40,49, '5.02-6.34', '5.20-6.80'],
+      [50,59, '5.07-6.61', '5.20-7.04'],
+      [60,69, '5.75-7.65', '5.58-7.78'],
+      [70,79, '6.69-10.73','7.06-11.34'],
+      [80,89, '7.33-12.43','7.56-13.38'],
+      [90,99, '7.43-13.05','8.37-15.53'],
+    ],
+    def: '5.58-7.78'
+  },
+
+  fo_waist: {
+    l:'Waist', u:'cm.',
+    ranges: [
+      [-1,99, '<=90 cm.', '<=80 cm.'],
+    ],
+    def: '<=80 cm.'
+  },
+
+  fo_hip: {
+    l:'Hip', u:'cm.',
+    ranges: [[-1,99, '—', '—']],
+    def: '—'
+  },
+};
+
+// Lookup function
+function getNorm(key, age, gender) {
+  var a = parseFloat(age) || 0;
+  var isMale = (gender === 'ชาย');
+
+  // Try age-specific table first
+  var entry = NR_AGE[key];
+  if (entry) {
+    for (var i = 0; i < entry.ranges.length; i++) {
+      var r = entry.ranges[i];
+      var minA = r[0], maxA = r[1];
+      if (minA === -1 || (a >= minA && a <= maxA)) {
+        return isMale ? r[2] : r[3];
+      }
+    }
+    return entry.def;
+  }
+
+  // Static table fallback
+  var s = NR_STATIC[key];
+  return s ? s.def : '—';
+}
+
+// Combined label lookup
+function getLabel(key) {
+  var e = NR_AGE[key] || NR_STATIC[key];
+  return e ? e.l : key;
+}
+function getUnit(key) {
+  var e = NR_AGE[key] || NR_STATIC[key];
+  return e ? e.u : '';
+}
+
 var FO_SECS = [
+  {t:'Cardio',               k:['fo_2mwt','fo_6mwt','fo_3step']},
+  {t:'Strength - Upper',     k:['fo_grip_r','fo_grip_l','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
+  {t:'Strength - Core/Lower',k:['fo_plank','fo_wallplank','fo_5sts','fo_30sts','fo_squat','fo_calf']},
+  {t:'Flexibility',          k:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
+  {t:'Balance - 4 Stage',    k:['fo_bal_feet','fo_bal_sr','fo_bal_sl','fo_bal_tr','fo_bal_tl']},
+  {t:'Balance - SLS',        k:['fo_sls_r','fo_sls_l','fo_sls_close_l','fo_sls_close_r','fo_sls_open_l','fo_sls_open_r']},
+  {t:'Balance - Other',      k:['fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
+  {t:'Gait & Agility',       k:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
+  {t:'Body Composition',     k:['fo_waist','fo_hip']}
+];
+ = [
   {t:'Cardio',             k:['fo_2mwt','fo_6mwt','fo_3step']},
   {t:'Strength - Upper',   k:['fo_grip_r','fo_grip_l','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
   {t:'Strength - Core/Lower', k:['fo_plank','fo_wallplank','fo_5sts','fo_30sts','fo_squat','fo_calf']},
@@ -353,14 +615,18 @@ function renderFO() {
   if (row.fo_riskfall) tags += '<span style="background:rgba(0,0,0,.05);border-radius:var(--r2);padding:5px 10px;font-size:12px">Fall Risk: <b style="color:'+(row.fo_riskfall==='High'?'var(--hi)':'var(--lo)')+'">'+htmlEsc(row.fo_riskfall)+'</b></span>';
   if (row.fo_suggestion) tags += '<span style="background:var(--ac2);border-radius:var(--r2);padding:5px 10px;font-size:12px;flex:1">'+htmlEsc(row.fo_suggestion)+'</span>';
   if (tags) h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+tags+'</div>';
+    var ptAge    = ST.patient ? ST.patient.age    : 0;
+  var ptGender = ST.patient ? ST.patient.gender : '';
   FO_SECS.forEach(function(sec) {
     var rows = '';
     sec.k.forEach(function(k) {
-      var def = NR[k]; if (!def) return;
+      var lbl  = getLabel(k); if (!lbl) return;
+      var unit = getUnit(k);
+      var norm = getNorm(k, ptAge, ptGender);
       var v = row[k]; var has = (v!==''&&v!==null&&v!==undefined);
-      rows += '<div class="tr"><div><div>'+htmlEsc(def.l)+'</div>'+(def.u?'<div class="sub">'+htmlEsc(def.u)+'</div>':'')+'</div>'
-            + '<div class="tr-norm">'+htmlEsc(def.n)+'</div>'
-            + '<div class="tr-v'+(has?'':' nil')+'">'+(has?htmlEsc(v):'—')+'</div></div>';
+      rows += '<div class="tr"><div><div>'+htmlEsc(lbl)+'</div>'+(unit?'<div class="sub">'+htmlEsc(unit)+'</div>':'')+'</div>'
+            + '<div class="tr-norm">'+htmlEsc(norm)+'</div>'
+            + '<div class="tr-v'+(has?'':' nil')+'">"+(has?htmlEsc(v):'&#8212;')+'</div></div>';
     });
     if (!rows) return;
     h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">'+htmlEsc(sec.t)+'</div></div><div class="sec-b">'+rows+'</div></div>';
@@ -392,9 +658,9 @@ function renderFOCmp() {
   ST.fo.forEach(function(v,i) { h += '<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>'; });
   h += '</tr></thead><tbody>';
   keys.forEach(function(k) {
-    var def = NR[k]; if (!def) return;
+    var lbl = getLabel(k); if (!lbl) return;
     var vals = ST.fo.map(function(v) { return toNum(v[k]); });
-    h += '<tr><td class="nc">'+htmlEsc(def.l)+'</td>';
+    h += '<tr><td class="nc">'+htmlEsc(lbl)+'</td>';
     vals.forEach(function(val, i) {
       var dlt = '';
       if (i > 0 && val !== null && vals[i-1] !== null) {
