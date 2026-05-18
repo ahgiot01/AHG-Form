@@ -626,7 +626,7 @@ function renderFO() {
       var v = row[k]; var has = (v!==''&&v!==null&&v!==undefined);
       rows += '<div class="tr"><div><div>'+htmlEsc(lbl)+'</div>'+(unit?'<div class="sub">'+htmlEsc(unit)+'</div>':'')+'</div>'
             + '<div class="tr-norm">'+htmlEsc(norm)+'</div>'
-            + '<div class="tr-v'+(has?'':' nil')+'">"+(has?htmlEsc(v):'&#8212;')+'</div></div>';
+            + '<div class="tr-v'+(has?'':' nil')+'">'+(has?htmlEsc(v):'&#8212;')+'</div></div>';
     });
     if (!rows) return;
     h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">'+htmlEsc(sec.t)+'</div></div><div class="sec-b">'+rows+'</div></div>';
