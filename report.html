@@ -169,36 +169,36 @@ var ST = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, activeTab:'fo' };
 
 
 // ════════════════════════════════════════════════════════════════
-//  NORMAL RANGES — age & gender specific (from Latest2 sheet)
+//  NORMAL RANGES - age & gender specific (from Latest2 sheet)
 //  getNorm(key, age, gender) → string
 // ════════════════════════════════════════════════════════════════
 
 var NR_STATIC = {
   fo_3step:      {l:'3 Min Step Test',    u:'bpm',   def:'104-110'},
-  fo_deadhang:   {l:'Dead Hang',          u:'วิ',    def:'—'},
-  fo_wallplank:  {l:'Wall Plank',         u:'วิ',    def:'—'},
-  fo_sls_r:      {l:'SLS ขวา',            u:'วิ',    def:'—'},
-  fo_sls_l:      {l:'SLS ซ้าย',           u:'วิ',    def:'—'},
-  fo_sls_close_l:{l:'Close Eyes ซ้าย',   u:'วิ',    def:'—'},
-  fo_sls_close_r:{l:'Close Eyes ขวา',    u:'วิ',    def:'—'},
-  fo_sls_open_l: {l:'Open Eyes ซ้าย',    u:'วิ',    def:'—'},
-  fo_sls_open_r: {l:'Open Eyes ขวา',     u:'วิ',    def:'—'},
+  fo_deadhang:   {l:'Dead Hang',          u:'วิ',    def:'-'},
+  fo_wallplank:  {l:'Wall Plank',         u:'วิ',    def:'-'},
+  fo_sls_r:      {l:'SLS ขวา',            u:'วิ',    def:'-'},
+  fo_sls_l:      {l:'SLS ซ้าย',           u:'วิ',    def:'-'},
+  fo_sls_close_l:{l:'Close Eyes ซ้าย',   u:'วิ',    def:'-'},
+  fo_sls_close_r:{l:'Close Eyes ขวา',    u:'วิ',    def:'-'},
+  fo_sls_open_l: {l:'Open Eyes ซ้าย',    u:'วิ',    def:'-'},
+  fo_sls_open_r: {l:'Open Eyes ขวา',     u:'วิ',    def:'-'},
   fo_bess:       {l:'BESS Score',         u:'คะแนน', def:'12-23'},
-  fo_ytest:      {l:'Y-Test',             u:'cm.',   def:'—'},
-  fo_romberg:    {l:'Sharpened Romberg',  u:'วิ',    def:'—'},
+  fo_ytest:      {l:'Y-Test',             u:'cm.',   def:'-'},
+  fo_romberg:    {l:'Sharpened Romberg',  u:'วิ',    def:'-'},
   fo_riskfall:   {l:'Risk to Fall',       u:'',      def:''},
   fo_bal_feet:   {l:'Balance: Feet Together',u:'วิ', def:'10'},
   fo_bal_sr:     {l:'Balance: Semi-tandem ขวา',u:'วิ',def:'10'},
   fo_bal_sl:     {l:'Balance: Semi-tandem ซ้าย',u:'วิ',def:'10'},
   fo_bal_tr:     {l:'Balance: Tandem ขวา',u:'วิ',   def:'10'},
   fo_bal_tl:     {l:'Balance: Tandem ซ้าย',u:'วิ',  def:'10'},
-  fo_tandemwalk: {l:'Tandem Walk',        u:'วิ',    def:'—'},
-  fo_pendulum:   {l:'Pendulum Jump',      u:'cm.',   def:'—'},
-  fo_waist:      {l:'Waist',             u:'cm.',   def:'—'},
-  fo_hip:        {l:'Hip',               u:'cm.',   def:'—'},
+  fo_tandemwalk: {l:'Tandem Walk',        u:'วิ',    def:'-'},
+  fo_pendulum:   {l:'Pendulum Jump',      u:'cm.',   def:'-'},
+  fo_waist:      {l:'Waist',             u:'cm.',   def:'-'},
+  fo_hip:        {l:'Hip',               u:'cm.',   def:'-'},
   fo_plank:      {l:'Plank',             u:'นาที',  def:'1-2'},
-  fo_calf:       {l:'Calf Raise',        u:'ครั้ง', def:'—'},
-  fo_pinch:      {l:'Pinch Strength',    u:'kg.',   def:'—'},
+  fo_calf:       {l:'Calf Raise',        u:'ครั้ง', def:'-'},
+  fo_pinch:      {l:'Pinch Strength',    u:'kg.',   def:'-'},
   fo_5sts:       {l:'5x Sit to Stand',   u:'วิ',    def:'<12'},
   fo_10step:     {l:'10 Step Test',      u:'วิ',    def:'5.58-7.78'},
 };
@@ -376,13 +376,13 @@ var NR_AGE = {
     l:'Quick Feet', u:'วิ',
     ranges: [
       [20,29, '3.7-4.4', '4.3-5.0'],
-      [30,39, '—', '—'],
-      [40,49, '—', '—'],
-      [50,59, '—', '—'],
-      [60,69, '—', '—'],
-      [70,79, '—', '—'],
-      [80,89, '—', '—'],
-      [90,99, '—', '—'],
+      [30,39, '-', '-'],
+      [40,49, '-', '-'],
+      [50,59, '-', '-'],
+      [60,69, '-', '-'],
+      [70,79, '-', '-'],
+      [80,89, '-', '-'],
+      [90,99, '-', '-'],
     ],
     def: '4.3-5.0'
   },
@@ -391,13 +391,13 @@ var NR_AGE = {
     l:'T-Test', u:'วิ',
     ranges: [
       [20,29, '10.51-11.50', '11.51-12.50'],
-      [30,39, '—', '—'],
-      [40,49, '—', '—'],
-      [50,59, '—', '—'],
+      [30,39, '-', '-'],
+      [40,49, '-', '-'],
+      [50,59, '-', '-'],
       [60,69, '10.51-11.50', '11.51-12.50'],
-      [70,79, '—', '—'],
-      [80,89, '—', '—'],
-      [90,99, '—', '—'],
+      [70,79, '-', '-'],
+      [80,89, '-', '-'],
+      [90,99, '-', '-'],
     ],
     def: '11.51-12.50'
   },
@@ -427,8 +427,8 @@ var NR_AGE = {
 
   fo_hip: {
     l:'Hip', u:'cm.',
-    ranges: [[-1,99, '—', '—']],
-    def: '—'
+    ranges: [[-1,99, '-', '-']],
+    def: '-'
   },
 };
 
@@ -452,7 +452,7 @@ function getNorm(key, age, gender) {
 
   // Static table fallback
   var s = NR_STATIC[key];
-  return s ? s.def : '—';
+  return s ? s.def : '-';
 }
 
 // Combined label lookup
@@ -577,7 +577,7 @@ function renderPtCard(t) {
   var ico = p.gender==='หญิง' ? '&#128105;' : (p.gender==='ชาย' ? '&#128104;' : '&#128100;');
   byId(t+'-ptc').innerHTML =
     '<div class="ptc"><div class="ptc-ico">'+ico+'</div>'+
-    '<div style="flex:1"><div class="ptc-name">'+htmlEsc(p.name||'—')+'</div>'+
+    '<div style="flex:1"><div class="ptc-name">'+htmlEsc(p.name||'-')+'</div>'+
     '<div class="ptc-meta">'+(p.age ? 'อายุ '+p.age+' ปี &nbsp; ' : '')+htmlEsc(p.gender||'')+
     ' &nbsp;<span class="ptc-cn">CN: '+htmlEsc(p.cn)+'</span></div></div>'+
     '<div style="font-family:var(--mo);font-size:11px;color:var(--td)">'+visits.length+' ครั้ง</div></div>';
@@ -609,7 +609,7 @@ function renderFO() {
   var row = ST.fo[ST.foIdx];
   if (!row) { el.innerHTML = ''; return; }
   var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
-        + 'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
+        + 'วันที่ '+(row.date||'-').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'-')+'</div>';
   if (row.fo_bp_pre || row.fo_hr_pre) h += renderVital(row);
   var tags = '';
   if (row.fo_riskfall) tags += '<span style="background:rgba(0,0,0,.05);border-radius:var(--r2);padding:5px 10px;font-size:12px">Fall Risk: <b style="color:'+(row.fo_riskfall==='High'?'var(--hi)':'var(--lo)')+'">'+htmlEsc(row.fo_riskfall)+'</b></span>';
@@ -646,7 +646,7 @@ function renderVital(row) {
    ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3']].forEach(function(r) {
     var bp=row[r[1]], hr=row[r[2]], sp=row[r[3]];
     if (!bp && !hr && !sp) return;
-    h += '<tr><td class="vl">'+r[0]+'</td><td>'+(bp||'—')+'</td><td>'+(hr||'—')+'</td><td>'+(sp||'—')+'</td></tr>';
+    h += '<tr><td class="vl">'+r[0]+'</td><td>'+(bp||'-')+'</td><td>'+(hr||'-')+'</td><td>'+(sp||'-')+'</td></tr>';
   });
   return h + '</tbody></table></div></div>';
 }
@@ -667,7 +667,7 @@ function renderFOCmp() {
         var d = val - vals[i-1];
         dlt = d > 0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d < 0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
       }
-      h += '<td>'+(val!==null?val:'—')+dlt+'</td>';
+      h += '<td>'+(val!==null?val:'-')+dlt+'</td>';
     });
     h += '</tr>';
   });
@@ -683,7 +683,7 @@ function renderBR() {
   var row = ST.br[ST.brIdx];
   if (!row) { el.innerHTML = ''; return; }
   var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
-        + 'วันที่ '+(row.date||'—').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'—')+'</div>';
+        + 'วันที่ '+(row.date||'-').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'-')+'</div>';
 
   // CQ
   var cqo = toNum(row.br_cq_overall);
@@ -693,10 +693,10 @@ function renderBR() {
      + '<div class="cq-g">';
   [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(p) {
     var v = toNum(row[p[1]]);
-    h += '<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'—')+'<span class="u">%</span></div></div>';
+    h += '<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'-')+'<span class="u">%</span></div></div>';
   });
   h += '<div class="cq-c" style="background:rgba(92,122,92,.08)"><div class="cq-l">CQ Overall</div>'
-     + '<div class="cq-v" style="color:'+cqClr+'">'+(cqo!==null?cqo:'—')+'<span class="u">%</span></div>'
+     + '<div class="cq-v" style="color:'+cqClr+'">'+(cqo!==null?cqo:'-')+'<span class="u">%</span></div>'
      + '<div style="font-size:11px;color:'+cqClr+'">'+cqTxt+'</div></div>'
      + '</div></div></div>';
 
@@ -706,7 +706,7 @@ function renderBR() {
   var taqClr = taq===null?'var(--td)':taq<=3?'var(--ok)':taq<=12?'#8a7a00':'var(--hi)';
   h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#9889;</div><div class="sec-t">TAQ Score</div></div><div class="sec-b">'
      + '<div style="display:flex;align-items:center;gap:14px">'
-     + '<div style="font:700 34px var(--mo);color:'+taqClr+'">'+(taq!==null?taq:'—')+'</div>'
+     + '<div style="font:700 34px var(--mo);color:'+taqClr+'">'+(taq!==null?taq:'-')+'</div>'
      + '<div><div style="font-size:14px;font-weight:700;color:'+taqClr+'">'+taqTxt+'</div>'
      + '<div style="font-size:11px;color:var(--td);margin-top:2px">Normal &lt;=3 · MCI 4-12 · Dementia &gt;12</div></div></div>'
      + '</div></div>';
@@ -721,11 +721,11 @@ function renderBR() {
    ['Abstraction','br_moca_abs','2'],['Delayed Recall','br_moca_del','5'],
    ['Orientation','br_moca_ori','6']].forEach(function(m) {
     var v = toNum(row[m[1]]);
-    h += '<div class="mr"><div>'+m[0]+'</div><div class="mr-m">/'+m[2]+'</div><div class="mr-s">'+(v!==null?v:'—')+'</div></div>';
+    h += '<div class="mr"><div>'+m[0]+'</div><div class="mr-m">/'+m[2]+'</div><div class="mr-s">'+(v!==null?v:'-')+'</div></div>';
   });
   h += '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
      + '<span style="font-size:11px;color:var(--td)">Total</span>'
-     + '<span style="font:700 26px var(--mo);color:'+moClr+'">'+(mo!==null?mo:'—')+'</span>'
+     + '<span style="font:700 26px var(--mo);color:'+moClr+'">'+(mo!==null?mo:'-')+'</span>'
      + '<span style="font-size:12px;color:var(--td)">/30</span>'
      + '<span style="font-size:13px;font-weight:700;color:'+moClr+'">'+moTxt+'</span></div>'
      + '</div></div>';
@@ -761,7 +761,7 @@ function renderBRCmp() {
         var d = val - vals[i-1];
         dlt = d>0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d<0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
       }
-      h += '<td>'+(val!==null?val:'—')+dlt+'</td>';
+      h += '<td>'+(val!==null?val:'-')+dlt+'</td>';
     });
     h += '</tr>';
   });
