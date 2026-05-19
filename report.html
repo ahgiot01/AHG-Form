@@ -671,6 +671,8 @@ function renderBR() {
   if (ST.brIdx === -1) { el.innerHTML = renderBRCmp(); return; }
   var row = ST.br[ST.brIdx];
   if (!row) { el.innerHTML = ''; return; }
+  console.log('BR row keys:', Object.keys(row));
+  console.log('BR row values:', JSON.stringify(row).substring(0, 500));
   var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
         + 'วันที่ '+(row.date||'-').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'-')+'</div>';
 
