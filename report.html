@@ -3,181 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AHG - Patient Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>AHG - FO Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f7f5f2;--s1:#fff;--s2:#f0ece6;--s3:#e8e2da;
-  --bd:#ddd7cf;--bd2:#c8c0b4;
-  --tx:#2c2820;--tm:#7a7268;--td:#b0a898;
-  --ac:#5c7a5c;--ac2:rgba(92,122,92,.12);
-  --hi:#d4531a;--lo:#3a6ea8;--ok:#5c7a5c;
-  --r:10px;--r2:7px;
+  --bg:#f7f5f2;--s1:#fff;--s2:#f0ece6;
+  --bd:#ccc6bc;--tx:#2c2820;--tm:#7a7268;--td:#b0a898;
+  --ac:#5c7a5c;--hi:#c0392b;
   --fn:"Sarabun",sans-serif;--mo:"IBM Plex Mono",monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh;}
-.tb{background:var(--s1);border-bottom:1px solid var(--bd);height:52px;display:flex;align-items:center;padding:0 14px;gap:10px;position:sticky;top:0;z-index:100;}
-.tb img{height:32px;width:auto;}
-.tb-t{font-size:13px;font-weight:600;color:var(--tm);flex:1;}
-.tb-cfg{background:none;border:none;color:var(--td);font:12px var(--fn);cursor:pointer;text-decoration:underline;}
-.sb{padding:12px 14px;background:var(--s1);border-bottom:1px solid var(--bd);display:flex;gap:8px;}
-.sb input{flex:1;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--r2);padding:9px 12px;font:14px var(--fn);color:var(--tx);outline:none;}
-.sb input:focus{border-color:var(--ac);}
-.sb input::placeholder{color:var(--td);}
-.sb button{padding:9px 18px;background:var(--tx);color:var(--bg);border:none;border-radius:var(--r2);font:600 13px var(--fn);cursor:pointer;}
-.sb button:disabled{opacity:.5;}
-.rp-tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--bd);}
-.rp-tabs button{flex:1;padding:10px 0;border:none;background:transparent;font:600 13px var(--fn);color:var(--tm);cursor:pointer;border-bottom:2px solid transparent;}
-.rp-tabs button.afo{color:var(--ac);border-color:var(--ac);}
-.rp-tabs button.abr{color:#8b6f4e;border-color:#8b6f4e;}
-.wrap{max-width:780px;margin:0 auto;padding:14px 12px 60px;}
+
+/* ── SCREEN UI ── */
+.screen-bar{background:var(--s1);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.screen-bar img{height:32px;width:auto;}
+.screen-bar .tb-t{flex:1;font-size:13px;font-weight:600;color:var(--tm);}
+.screen-bar button{padding:8px 14px;border:none;border-radius:6px;font:600 12px var(--fn);cursor:pointer;}
+.btn-print{background:#2c2820;color:#fff;}
+.btn-cfg{background:none;border:1px solid var(--bd) !important;color:var(--tm);font-size:11px !important;text-decoration:underline;}
+
+.search-row{padding:10px 16px;background:var(--s1);border-bottom:1px solid var(--bd);display:flex;gap:8px;}
+.search-row input{flex:1;background:var(--s2);border:1.5px solid var(--bd);border-radius:6px;padding:8px 11px;font:14px var(--fn);color:var(--tx);outline:none;}
+.search-row input:focus{border-color:var(--ac);}
+.search-row input::placeholder{color:var(--td);}
+.search-row button{padding:8px 18px;background:var(--tx);color:var(--bg);border:none;border-radius:6px;font:600 13px var(--fn);cursor:pointer;}
+.search-row button:disabled{opacity:.5;}
+
 .msg{text-align:center;padding:48px 16px;color:var(--td);}
-.msg .ic{font-size:40px;margin-bottom:10px;}
-.msg h2{font-size:15px;font-weight:600;color:var(--tm);margin-bottom:6px;}
+.msg .ic{font-size:38px;margin-bottom:10px;}
+.msg h2{font-size:15px;font-weight:600;color:var(--tm);margin-bottom:5px;}
 .spin{display:inline-block;animation:sp .7s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg)}}
-.pane{display:none;}
-.pane.on{display:block;}
-.ptc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
-.ptc-ico{font-size:30px;}
-.ptc-name{font-size:16px;font-weight:700;}
-.ptc-meta{font-size:11px;color:var(--tm);margin-top:2px;}
-.ptc-cn{font-family:var(--mo);font-size:10px;color:var(--td);background:var(--s2);padding:2px 6px;border-radius:4px;}
-.vbar{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
-.vbtn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--bd);background:var(--s1);font:600 11px var(--mo);color:var(--tm);cursor:pointer;white-space:nowrap;flex-shrink:0;}
-.vbtn.on{background:var(--tx);border-color:var(--tx);color:var(--bg);}
-.sec{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
-.sec-h{padding:10px 13px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;}
-.sec-ic{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;background:var(--ac2);color:var(--ac);}
-.sec-t{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tm);}
-.sec-b{padding:10px 13px;}
-.tr{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:13px;}
-.tr:last-child{border-bottom:none;}
-.sub{font-size:10px;color:var(--td);}
-.tr-norm{font-size:10px;color:var(--td);text-align:right;}
-.tr-v{font-family:var(--mo);font-weight:600;text-align:right;min-width:55px;}
-.tr-v.nil{color:var(--td);font-weight:400;}
-.cq-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
-.cq-c{background:var(--s2);border-radius:var(--r2);padding:10px 12px;}
-.cq-l{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--td);margin-bottom:4px;}
-.cq-v{font:700 22px var(--mo);}
-.cq-v .u{font-size:11px;font-weight:400;color:var(--tm);}
-.mr{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;}
-.mr:last-child{border-bottom:none;}
-.mr-s{font-family:var(--mo);font-weight:600;text-align:right;}
-.mr-m{font-size:10px;color:var(--td);}
-.vt{width:100%;border-collapse:collapse;font-size:12px;}
-.vt th{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--td);text-align:center;padding:4px 6px;background:var(--s2);}
-.vt td{padding:6px 8px;text-align:center;font-family:var(--mo);border-top:1px solid var(--bd);}
-.vl{text-align:left !important;font-family:var(--fn) !important;color:var(--tm);font-size:11px;font-weight:600;}
-.ct{width:100%;border-collapse:collapse;font-size:12px;}
-.ct th{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--td);text-align:center;padding:5px 6px;background:var(--s2);border:1px solid var(--bd);}
-.ct td{padding:5px 7px;border:1px solid var(--bd);text-align:center;font-family:var(--mo);}
-.nc{text-align:left !important;font-family:var(--fn) !important;color:var(--tm);font-size:11px;}
-.du{color:var(--hi);font-size:10px;}
-.dd{color:var(--lo);font-size:10px;}
-.de{color:var(--td);font-size:10px;}
-.fast-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(175,159,140,.12);border:1px solid rgba(175,159,140,.3);border-radius:var(--r2);padding:10px 14px;font-size:13px;font-weight:600;}
-.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--tx);color:var(--bg);border-radius:var(--r);padding:9px 16px;font-size:13px;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;max-width:92vw;}
+
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--tx);color:var(--bg);border-radius:8px;padding:9px 16px;font-size:13px;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;max-width:92vw;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.err{background:#c0392b;}
+
 .mov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;}
 .mov.open{opacity:1;pointer-events:all;}
-.mbox{background:var(--s1);border-radius:var(--r) var(--r) 0 0;padding:20px 16px 28px;width:100%;}
+.mbox{background:var(--s1);border-radius:10px 10px 0 0;padding:20px 16px 28px;width:100%;}
 .mbox h3{font-size:15px;margin-bottom:4px;}
 .mbox p{color:var(--tm);font-size:12px;margin-bottom:12px;}
-.mfi{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--r2);padding:9px 11px;font:14px var(--fn);color:var(--tx);outline:none;margin-top:4px;margin-bottom:10px;display:block;}
+.mfi{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:6px;padding:9px 11px;font:14px var(--fn);color:var(--tx);outline:none;margin-top:4px;margin-bottom:10px;display:block;}
 .mfi:focus{border-color:var(--ac);}
 .ma{display:flex;gap:8px;margin-top:12px;}
-.bms{flex:1;padding:10px;border-radius:var(--r2);border:1.5px solid var(--bd);background:var(--s2);color:var(--tx);font:600 13px var(--fn);cursor:pointer;}
-.bmp{flex:1;padding:10px;border-radius:var(--r2);border:none;background:var(--tx);color:var(--bg);font:700 13px var(--fn);cursor:pointer;}
+.bms{flex:1;padding:10px;border-radius:6px;border:1.5px solid var(--bd);background:var(--s2);color:var(--tx);font:600 13px var(--fn);cursor:pointer;}
+.bmp{flex:1;padding:10px;border-radius:6px;border:none;background:var(--tx);color:var(--bg);font:700 13px var(--fn);cursor:pointer;}
 
-/* FO PRINT TAB */
-.rp-tabs button.afo-print{color:#8b4513;border-color:#8b4513;}
-.fo-print-wrap{max-width:960px;margin:0 auto;padding:14px 12px 60px;}
-.btn-print-rpt{padding:9px 18px;background:#2c2820;color:#fff;border:none;border-radius:var(--r2);font:600 12px var(--fn);cursor:pointer;margin-bottom:12px;}
-/* Report table */
-.rpt-tbl{width:100%;border-collapse:collapse;font-size:11px;}
-.rpt-tbl th,.rpt-tbl td{border:1px solid #ccc6bc;padding:4px 6px;vertical-align:middle;}
-.rpt-tbl .sec-hdr td{background:#2c2820;color:#fff;font-weight:700;font-size:11px;letter-spacing:.05em;padding:5px 8px;}
-.rpt-tbl .sub-hdr td{background:#e8e2da;color:#7a7268;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;}
-.rpt-tbl .col-hdr th{background:#f0ece6;font-weight:700;text-align:center;font-size:10px;}
-.rpt-tbl .test-lbl{padding-left:10px;font-size:11px;color:#2c2820;}
-.rpt-tbl .test-lbl .u{font-size:9px;color:#b0a898;display:block;}
-.rpt-tbl .tv{text-align:center;font-family:var(--mo);font-size:11px;}
-.rpt-tbl .tv.nil{color:#b0a898;}
-.rpt-tbl .tnorm{text-align:center;font-size:10px;color:#7a7268;background:#fafaf8;}
-.rpt-header-blk{display:flex;align-items:flex-start;gap:14px;border-bottom:2px solid #2c2820;padding-bottom:10px;margin-bottom:12px;}
-.rpt-logo-sm{height:44px;width:auto;}
-.rpt-main-title{font-size:17px;font-weight:700;letter-spacing:.07em;color:#2c2820;}
-.rpt-sub-title{font-size:10px;color:#7a7268;margin-top:2px;}
-.rpt-pt-meta{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #ccc6bc;border-radius:4px;overflow:hidden;font-size:11px;margin-bottom:12px;}
-.rpt-pt-mh{background:#2c2820;color:#fff;padding:4px 7px;font-weight:700;text-align:center;font-size:10px;letter-spacing:.04em;}
-.rpt-pt-mv{padding:4px 7px;text-align:center;font-family:var(--mo);font-size:11px;}
-.vital-print{width:100%;border-collapse:collapse;font-size:10px;margin-top:10px;}
-.vital-print th{background:#e8e2da;padding:3px 5px;border:1px solid #ccc6bc;text-align:center;font-weight:700;font-size:9px;}
-.vital-print td{border:1px solid #ccc6bc;padding:3px 5px;text-align:center;font-family:var(--mo);}
-.vital-print .vl{text-align:left;font-family:var(--fn);font-weight:600;color:#7a7268;}
-@media print {
-  .screen-only,.tb,.sb,.rp-tabs,.btn-print-rpt,.mov,.rpt-toast{display:none!important;}
-  .fo-print-wrap{padding:0;}
-  @page{size:A4 portrait;margin:10mm;}
+/* ── REPORT (print area) ── */
+#report-wrap{padding:16px;max-width:960px;margin:0 auto;}
+
+.rpt{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:20px;font-size:12px;}
+
+/* REPORT HEADER */
+.rpt-header{display:flex;align-items:flex-start;gap:16px;border-bottom:2px solid var(--tx);padding-bottom:10px;margin-bottom:12px;}
+.rpt-logo{height:48px;width:auto;}
+.rpt-title-block{flex:1;}
+.rpt-title{font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--tx);}
+.rpt-subtitle{font-size:11px;color:var(--tm);margin-top:2px;}
+.rpt-meta-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;border:1px solid var(--bd);border-radius:4px;overflow:hidden;font-size:11px;}
+.rpt-meta-head{background:#2c2820;color:#fff;padding:4px 8px;font-weight:700;text-align:center;font-size:10px;letter-spacing:.04em;}
+.rpt-meta-val{padding:4px 8px;text-align:center;border-top:1px solid var(--bd);font-family:var(--mo);font-size:11px;}
+
+/* VISIT HEADER ROW */
+.visit-cols{grid-template-columns:180px repeat(4,1fr) 120px;}
+.col-head{background:#f0ece6;font-weight:700;text-align:center;padding:5px 4px;border:1px solid var(--bd);font-size:10px;letter-spacing:.03em;}
+.col-date{font-size:10px;color:var(--tm);font-weight:400;}
+.col-visit-num{font-size:11px;font-weight:700;}
+
+/* TABLE */
+.rpt-table{width:100%;border-collapse:collapse;margin-bottom:0;}
+.rpt-table th,.rpt-table td{border:1px solid var(--bd);padding:4px 6px;font-size:11px;vertical-align:middle;}
+.rpt-table th{background:#f0ece6;font-weight:700;text-align:center;}
+
+/* Section header row */
+.sec-row td{background:#2c2820 !important;color:#fff;font-weight:700;font-size:11px;letter-spacing:.05em;padding:5px 8px;}
+.sec-row .sec-ico{font-size:14px;margin-right:6px;}
+
+/* Sub-section header */
+.sub-row td{background:#e8e2da;font-weight:600;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--tm);padding:4px 8px;}
+
+/* Test name cell */
+.test-name{padding-left:12px;color:var(--tx);font-size:11px;}
+.test-val{text-align:center;font-family:var(--mo);font-size:11px;}
+.test-val.nil{color:var(--td);}
+.test-norm{text-align:center;color:var(--tm);font-size:10px;background:#fafaf8;}
+
+/* Vital signs mini table */
+.vital-mini{width:100%;border-collapse:collapse;font-size:10px;}
+.vital-mini th{background:#e8e2da;padding:3px 5px;border:1px solid var(--bd);text-align:center;font-weight:700;font-size:9px;letter-spacing:.03em;}
+.vital-mini td{border:1px solid var(--bd);padding:3px 6px;text-align:center;font-family:var(--mo);}
+.vital-mini .vl{text-align:left;font-family:var(--fn);font-weight:600;color:var(--tm);}
+
+/* Note row */
+.note-row{border-top:1px solid var(--bd);padding-top:8px;margin-top:8px;font-size:11px;color:var(--tm);}
+.note-label{font-weight:700;color:var(--tx);}
+
+/* ── PRINT ── */
+@media print{
+  .screen-bar,.search-row,#area-empty,#area-loading,#area-nf,.btn-print,.btn-cfg,.mov,.toast{display:none !important;}
+  body{background:#fff;}
+  #report-wrap{padding:0;max-width:100%;}
+  .rpt{border:none;border-radius:0;padding:12px;}
+  @page{size:A4;margin:10mm;}
 }
-
 </style>
 </head>
 <body>
 
-<div class="tb">
+<!-- SCREEN BAR -->
+<div class="screen-bar">
   <img src="data:image/png;base64,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" alt="AHG" onerror="this.style.display='none'">
-  <span class="tb-t">Patient Report</span>
-  <button class="tb-cfg" id="btn-cfg">&#9881; Script URL</button>
+  <span class="tb-t">FO Report</span>
+  <button class="btn-print" id="btn-print">&#128438; Print / Save PDF</button>
+  <button class="btn-cfg" id="btn-cfg">&#9881; URL</button>
 </div>
 
-<div class="sb">
+<div class="search-row">
   <input type="text" id="inp-cn" placeholder="กรอก CN..." inputmode="numeric">
   <button id="btn-srch">ค้นหา</button>
 </div>
 
-<div class="wrap">
-  <div id="area-empty" class="msg">
-    <div class="ic">&#128269;</div>
-    <h2>ค้นหาคนไข้</h2>
-    <p>กรอก CN ด้านบนเพื่อดูรายงาน</p>
-  </div>
-  <div id="area-loading" class="msg" style="display:none">
-    <div class="ic spin">&#8987;</div><br>กำลังโหลด...
-  </div>
-  <div id="area-nf" class="msg" style="display:none">
-    <div class="ic">&#128533;</div>
-    <h2>ไม่พบข้อมูล</h2>
-    <p id="nf-msg"></p>
-  </div>
-  <div id="area-result" style="display:none">
-    <div class="rp-tabs">
-      <button id="tb-fo">&#127939; Functional Outcome</button>
-      <button id="tb-br">&#129504; Brain Test</button>
-      <button id="tb-fo-print">&#128438; FO Report</button>
-    </div>
-    <div id="pane-fo" class="pane on">
-      <div id="fo-ptc"></div>
-      <div class="vbar" id="fo-vbar"></div>
-      <div id="fo-body"></div>
-    </div>
-    <div id="pane-br" class="pane">
-      <div id="br-ptc"></div>
-      <div class="vbar" id="br-vbar"></div>
-      <div id="br-body"></div>
-    </div>
-  </div>
-  </div>
-  <div id="pane-fo-print" class="pane">
-    <div class="fo-print-wrap">
-      <button class="btn-print-rpt" id="btn-do-print">&#128438; Print / Save PDF</button>
-      <div id="fo-print-content"></div>
-    </div>
-  </div>
+<div id="area-empty" class="msg"><div class="ic">&#128269;</div><h2>ค้นหาคนไข้</h2><p>กรอก CN เพื่อดู FO Report</p></div>
+<div id="area-loading" class="msg" style="display:none"><div class="ic spin">&#8987;</div><br>กำลังโหลด...</div>
+<div id="area-nf" class="msg" style="display:none"><div class="ic">&#128533;</div><h2>ไม่พบข้อมูล</h2><p id="nf-msg"></p></div>
+
+<div id="report-wrap" style="display:none">
+  <div class="rpt" id="rpt-content"></div>
 </div>
 
 <div class="toast" id="rpt-toast"></div>
@@ -196,903 +149,291 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 </div>
 
 <script>
-(function() {
+(function(){
 'use strict';
 
-// ── helpers ──
-function byId(id) { return document.getElementById(id); }
-function getCfg() { try { return JSON.parse(localStorage.getItem('ahg_rpt')||'{}'); } catch(e) { return {}; } }
-function htmlEsc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
-function toNum(v) { if (v===''||v===null||v===undefined) return null; var n = parseFloat(v); return isNaN(n) ? null : n; }
+function byId(id){return document.getElementById(id);}
+function getCfg(){try{return JSON.parse(localStorage.getItem('ahg_rpt')||'{}')}catch(e){return {};}}
+function esc(s){if(!s)return'';var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+function toNum(v){if(v===''||v===null||v===undefined)return null;var n=parseFloat(v);return isNaN(n)?null:n;}
+function fmtDate(d){return d?(d+'').substring(0,10):'';}
 
-// ── state ──
-var ST = { fo:[], br:[], patient:null, foIdx:0, brIdx:0, activeTab:'fo', foPrint:[] };
-
-
-// ════════════════════════════════════════════════════════════════
-//  NORMAL RANGES - age & gender specific (from Latest2 sheet)
-//  getNorm(key, age, gender) → string
-// ════════════════════════════════════════════════════════════════
-
-var NR_STATIC = {
-  fo_3step:      {l:'3 Min Step Test',    u:'bpm',   def:'104-110'},
-  fo_deadhang:   {l:'Dead Hang',          u:'วิ',    def:'-'},
-  fo_wallplank:  {l:'Wall Plank',         u:'วิ',    def:'-'},
-  fo_sls_r:      {l:'SLS ขวา',            u:'วิ',    def:'-'},
-  fo_sls_l:      {l:'SLS ซ้าย',           u:'วิ',    def:'-'},
-  fo_sls_close_l:{l:'Close Eyes ซ้าย',   u:'วิ',    def:'-'},
-  fo_sls_close_r:{l:'Close Eyes ขวา',    u:'วิ',    def:'-'},
-  fo_sls_open_l: {l:'Open Eyes ซ้าย',    u:'วิ',    def:'-'},
-  fo_sls_open_r: {l:'Open Eyes ขวา',     u:'วิ',    def:'-'},
-  fo_bess:       {l:'BESS Score',         u:'คะแนน', def:'12-23'},
-  fo_ytest:      {l:'Y-Test',             u:'cm.',   def:'-'},
-  fo_romberg:    {l:'Sharpened Romberg',  u:'วิ',    def:'-'},
-  fo_riskfall:   {l:'Risk to Fall',       u:'',      def:''},
-  fo_bal_feet:   {l:'Balance: Feet Together',u:'วิ', def:'10'},
-  fo_bal_sr:     {l:'Balance: Semi-tandem ขวา',u:'วิ',def:'10'},
-  fo_bal_sl:     {l:'Balance: Semi-tandem ซ้าย',u:'วิ',def:'10'},
-  fo_bal_tr:     {l:'Balance: Tandem ขวา',u:'วิ',   def:'10'},
-  fo_bal_tl:     {l:'Balance: Tandem ซ้าย',u:'วิ',  def:'10'},
-  fo_tandemwalk: {l:'Tandem Walk',        u:'วิ',    def:'-'},
-  fo_pendulum:   {l:'Pendulum Jump',      u:'cm.',   def:'-'},
-  fo_waist:      {l:'Waist',             u:'cm.',   def:'-'},
-  fo_hip:        {l:'Hip',               u:'cm.',   def:'-'},
-  fo_plank:      {l:'Plank',             u:'นาที',  def:'1-2'},
-  fo_calf:       {l:'Calf Raise',        u:'ครั้ง', def:'-'},
-  fo_pinch:      {l:'Pinch Strength',    u:'kg.',   def:'-'},
-  fo_5sts:       {l:'5x Sit to Stand',   u:'วิ',    def:'<12'},
-  fo_10step:     {l:'10 Step Test',      u:'วิ',    def:'5.58-7.78'},
+// ── Normal Ranges (age/gender based) ──
+var NR_AGE={
+  fo_2mwt:{l:'2 Min Walk Test',u:'m.',ranges:[
+    [20,29,'217.9','194.1'],[30,39,'202.1','181.4'],[40,49,'192.1','180.7'],
+    [50,59,'189.8','169.1'],[60,69,'183','163.7'],[70,99,'163.1','150.3']]},
+  fo_6mwt:{l:'6 Min Walk Test',u:'m.',ranges:[[-1,99,'>=479','>=406']]},
+  fo_grip_r:{l:'Grip ขวา',u:'kg.',ranges:[[65,99,'>27','>17'],[0,64,'>33','>19']]},
+  fo_grip_l:{l:'Grip ซ้าย',u:'kg.',ranges:[[65,99,'>27','>17'],[0,64,'>33','>19']]},
+  fo_pushup:{l:'Push Up',u:'ครั้ง',ranges:[[17,19,'19-34','11-20'],[20,29,'17-29','12-22'],[30,39,'13-24','10-21'],[40,49,'11-20','8-17'],[50,59,'9-17','7-14'],[60,65,'6-16','5-12']]},
+  fo_biceps:{l:'Biceps Curl',u:'ครั้ง',ranges:[[60,64,'16-22','13-19'],[65,69,'15-21','12-18'],[70,74,'14-21','12-17'],[75,79,'13-19','11-17'],[80,84,'13-19','10-16'],[85,89,'11-17','10-15'],[90,94,'10-14','8-13']]},
+  fo_30sts:{l:'30s Sit-Stand',u:'ครั้ง',ranges:[[60,64,'>=14','>=12'],[65,69,'>=12','>=11'],[70,74,'>=12','>=10'],[75,79,'>=11','>=10'],[80,84,'>=10','>=9'],[85,89,'>=8','>=8'],[90,94,'>=7','>=4']]},
+  fo_squat:{l:'Squat',u:'ครั้ง',ranges:[[20,29,'27-29','21-23'],[30,39,'24-26','18-20'],[40,49,'21-23','15-17'],[50,59,'18-20','12-14'],[60,99,'15-17','9-11']]},
+  fo_chair_r:{l:'Chair S&R ขวา',u:'inch',ranges:[[60,64,'-2.5-4.0','-0.5-5.0'],[65,69,'-3.0-3.0','-0.5-4.5'],[70,74,'-3.5-2.5','-1.0-4.0'],[75,79,'-4.0-2.0','-1.5-3.5'],[80,84,'-5.5-1.5','-2.0-3.0'],[85,89,'-5.5-0.5','-2.5-2.5'],[90,94,'-6.5-0.5','-4.5-1.0']]},
+  fo_chair_l:{l:'Chair S&R ซ้าย',u:'inch',ranges:[[60,64,'-2.5-4.0','-0.5-5.0'],[65,69,'-3.0-3.0','-0.5-4.5'],[70,74,'-3.5-2.5','-1.0-4.0'],[75,79,'-4.0-2.0','-1.5-3.5'],[80,84,'-5.5-1.5','-2.0-3.0'],[85,89,'-5.5-0.5','-2.5-2.5'],[90,94,'-6.5-0.5','-4.5-1.0']]},
+  fo_vsit:{l:'V-Sit & Reach',u:'inch',ranges:[[20,29,'15-19','14-18'],[30,39,'13-17','14-20'],[40,49,'11-17','13-19'],[50,59,'11-15','14-18'],[60,99,'9-15','14-18']]},
+  fo_10step:{l:'10 Step Test',u:'วิ',ranges:[[20,29,'4.95-6.29','5.32-6.32'],[30,39,'4.88-6.36','5.14-6.48'],[40,49,'5.02-6.34','5.20-6.80'],[50,59,'5.07-6.61','5.20-7.04'],[60,69,'5.75-7.65','5.58-7.78'],[70,79,'6.69-10.73','7.06-11.34'],[80,89,'7.33-12.43','7.56-13.38'],[90,99,'7.43-13.05','8.37-15.53']]},
+  fo_waist:{l:'Waist',u:'cm.',ranges:[[-1,99,'<=90','<=80']]},
+};
+var NR_STATIC={
+  fo_3step:{l:'3 Min Step Test (HR)',u:'bpm',def:'-'},
+  fo_pinch:{l:'Pinch Strength Test',u:'kg.',def:'>=10'},
+  fo_plank:{l:'Plank',u:'min.',def:'1-2 min.'},
+  fo_wallplank:{l:'Wall Plank',u:'',def:'-'},
+  fo_5sts:{l:'5 Time sit to stand',u:'วิ',def:'< 12 sec.'},
+  fo_deadhang:{l:'Dead Hang',u:'วิ',def:'-'},
+  fo_calf:{l:'Calf raise',u:'ครั้ง',def:'-'},
+  fo_bal_feet:{l:'- Feet together',u:'วิ',def:'10 sec.'},
+  fo_bal_sl:{l:'- Semi-tandem ซ้าย',u:'วิ',def:'10 sec.'},
+  fo_bal_sr:{l:'- Semi-tandem ขวา',u:'วิ',def:'10 sec.'},
+  fo_bal_tl:{l:'- Tandem ซ้าย',u:'วิ',def:'10 sec.'},
+  fo_bal_tr:{l:'- Tandem ขวา',u:'วิ',def:'10 sec.'},
+  fo_sls_l:{l:'- Single leg stance ซ้าย',u:'วิ',def:'-'},
+  fo_sls_r:{l:'- Single leg stance ขวา',u:'วิ',def:'-'},
+  fo_sls_close_l:{l:'- SLS (close-eyes) ซ้าย',u:'วิ',def:'-'},
+  fo_sls_close_r:{l:'- SLS (close-eyes) ขวา',u:'วิ',def:'-'},
+  fo_sls_open_l:{l:'- SLS (open-eyes) ซ้าย',u:'วิ',def:'-'},
+  fo_sls_open_r:{l:'- SLS (open-eyes) ขวา',u:'วิ',def:'-'},
+  fo_bess:{l:'Balance Error Scoring System',u:'คะแนน',def:'12-23'},
+  fo_ytest:{l:'Y-test',u:'cm.',def:'Compare Pre-Post'},
+  fo_romberg:{l:'Sharpened Romberg',u:'วิ',def:'-'},
+  fo_riskfall:{l:'Fall Risk',u:'',def:'-'},
+  fo_10m:{l:'10 Meters walk test',u:'m/s',def:'0.8-1.2 m/s'},
+  fo_tug:{l:'Timed up and go',u:'วิ',def:'<=12 sec.'},
+  fo_qft:{l:'Quick feet test',u:'วิ',def:'4.3-5.0'},
+  fo_ttest:{l:'T-test',u:'วิ',def:'11.51-12.50'},
+  fo_tandemwalk:{l:'Tandem Walk 3m.',u:'วิ',def:'-'},
+  fo_pendulum:{l:'Pendulum jump',u:'cm.',def:'-'},
+  fo_hip:{l:'Hip circumference',u:'cm.',def:'-'},
+  fo_chest:{l:'Chest expansion (middle lobe)',u:'cm.',def:'3-4 cm.'},
 };
 
-// Age/gender specific ranges
-// Each entry: [ageMin, ageMax, maleNorm, femaleNorm]
-// age -1 = any
-
-var NR_AGE = {
-
-  fo_2mwt: {
-    l:'2 Min Walk Test', u:'m.',
-    ranges: [
-      [20,29, '217.9 m.', '194.1 m.'],
-      [30,39, '202.1 m.', '181.4 m.'],
-      [40,49, '192.1 m.', '180.7 m.'],
-      [50,59, '189.8 m.', '169.1 m.'],
-      [60,69, '183 m.',   '163.7 m.'],
-      [70,99, '163.1 m.', '150.3 m.'],
-    ],
-    def: '163.7 m.'
-  },
-
-  fo_6mwt: {
-    l:'6 Min Walk Test', u:'m.',
-    ranges: [
-      [-1,99, '>=479 m.', '>=406 m.'],
-    ],
-    def: '>=406 m.'
-  },
-
-  fo_grip_r: {
-    l:'Grip Strength ขวา', u:'kg.',
-    ranges: [
-      [65,99, '>27 kg.', '>17 kg.'],
-      [0,64,  '>33 kg.', '>19 kg.'],
-    ],
-    def: '>17 kg.'
-  },
-  fo_grip_l: {
-    l:'Grip Strength ซ้าย', u:'kg.',
-    ranges: [
-      [65,99, '>27 kg.', '>17 kg.'],
-      [0,64,  '>33 kg.', '>19 kg.'],
-    ],
-    def: '>17 kg.'
-  },
-
-  fo_pushup: {
-    l:'Push Up', u:'ครั้ง',
-    ranges: [
-      [17,19, '19-34', '11-20'],
-      [20,29, '17-29', '12-22'],
-      [30,39, '13-24', '10-21'],
-      [40,49, '11-20', '8-17'],
-      [50,59, '9-17',  '7-14'],
-      [60,65, '6-16',  '5-12'],
-    ],
-    def: '5-12'
-  },
-
-  fo_biceps: {
-    l:'Biceps Curl', u:'ครั้ง',
-    ranges: [
-      [60,64, '16-22', '13-19'],
-      [65,69, '15-21', '12-18'],
-      [70,74, '14-21', '12-17'],
-      [75,79, '13-19', '11-17'],
-      [80,84, '13-19', '10-16'],
-      [85,89, '11-17', '10-15'],
-      [90,94, '10-14', '8-13'],
-    ],
-    def: '12-18'
-  },
-
-  fo_30sts: {
-    l:'30s Sit to Stand', u:'ครั้ง',
-    ranges: [
-      [60,64, '>=14', '>=12'],
-      [65,69, '>=12', '>=11'],
-      [70,74, '>=12', '>=10'],
-      [75,79, '>=11', '>=10'],
-      [80,84, '>=10', '>=9'],
-      [85,89, '>=8',  '>=8'],
-      [90,94, '>=7',  '>=4'],
-    ],
-    def: '>=11'
-  },
-
-  fo_squat: {
-    l:'Squat', u:'ครั้ง',
-    ranges: [
-      [20,29, '27-29', '21-23'],
-      [30,39, '24-26', '18-20'],
-      [40,49, '21-23', '15-17'],
-      [50,59, '18-20', '12-14'],
-      [60,99, '15-17', '9-11'],
-    ],
-    def: '9-11'
-  },
-
-  fo_chair_r: {
-    l:'Chair S&R ขวา', u:'inch',
-    ranges: [
-      [60,64, '-2.5 - 4.0 inch', '-0.5 - 5.0 inch'],
-      [65,69, '-3.0 - 3.0 inch', '-0.5 - 4.5 inch'],
-      [70,74, '-3.5 - 2.5 inch', '-1.0 - 4.0 inch'],
-      [75,79, '-4.0 - 2.0 inch', '-1.5 - 3.5 inch'],
-      [80,84, '-5.5 - 1.5 inch', '-2.0 - 3.0 inch'],
-      [85,89, '-5.5 - 0.5 inch', '-2.5 - 2.5 inch'],
-      [90,94, '-6.5 - 0.5 inch', '-4.5 - 1.0 inch'],
-    ],
-    def: '-0.5 - 4.5 inch'
-  },
-  fo_chair_l: {
-    l:'Chair S&R ซ้าย', u:'inch',
-    ranges: [
-      [60,64, '-2.5 - 4.0 inch', '-0.5 - 5.0 inch'],
-      [65,69, '-3.0 - 3.0 inch', '-0.5 - 4.5 inch'],
-      [70,74, '-3.5 - 2.5 inch', '-1.0 - 4.0 inch'],
-      [75,79, '-4.0 - 2.0 inch', '-1.5 - 3.5 inch'],
-      [80,84, '-5.5 - 1.5 inch', '-2.0 - 3.0 inch'],
-      [85,89, '-5.5 - 0.5 inch', '-2.5 - 2.5 inch'],
-      [90,94, '-6.5 - 0.5 inch', '-4.5 - 1.0 inch'],
-    ],
-    def: '-0.5 - 4.5 inch'
-  },
-
-  fo_vsit: {
-    l:'V-Sit & Reach', u:'inch',
-    ranges: [
-      [20,29, '15-19 inch', '14-18 inch'],
-      [30,39, '13-17 inch', '14-20 inch'],
-      [40,49, '11-17 inch', '13-19 inch'],
-      [50,59, '11-15 inch', '14-18 inch'],
-      [60,69, '9-15 inch',  '14-18 inch'],
-    ],
-    def: '14-18 inch'
-  },
-
-  fo_chest: {
-    l:'Chest Expansion', u:'cm.',
-    ranges: [
-      [-1,99, '>=3 cm.', '>=3 cm.'],
-    ],
-    def: '>=3 cm.'
-  },
-
-  fo_3step: {
-    l:'3 Min Step Test', u:'bpm',
-    ranges: [
-      [18,25, '104-110', '95-100'],
-      [26,35, '104-110', '96-102'],
-      [36,45, '107-112', '100-105'],
-      [46,55, '113-118', '103-111'],
-      [56,65, '113-118', '103-109'],
-      [66,99, '116-121', '104-110'],
-    ],
-    def: '103-109'
-  },
-
-  fo_10m: {
-    l:'10m Walk Test', u:'m/s',
-    ranges: [[-1,99, '0.8-1.2 m/s', '0.8-1.2 m/s']],
-    def: '0.8-1.2'
-  },
-
-  fo_tug: {
-    l:'Timed Up & Go', u:'วิ',
-    ranges: [[-1,99, '<=12 วิ', '<=12 วิ']],
-    def: '<=12 วิ'
-  },
-
-  fo_qft: {
-    l:'Quick Feet', u:'วิ',
-    ranges: [
-      [20,29, '3.7-4.4', '4.3-5.0'],
-      [30,39, '-', '-'],
-      [40,49, '-', '-'],
-      [50,59, '-', '-'],
-      [60,69, '-', '-'],
-      [70,79, '-', '-'],
-      [80,89, '-', '-'],
-      [90,99, '-', '-'],
-    ],
-    def: '4.3-5.0'
-  },
-
-  fo_ttest: {
-    l:'T-Test', u:'วิ',
-    ranges: [
-      [20,29, '10.51-11.50', '11.51-12.50'],
-      [30,39, '-', '-'],
-      [40,49, '-', '-'],
-      [50,59, '-', '-'],
-      [60,69, '10.51-11.50', '11.51-12.50'],
-      [70,79, '-', '-'],
-      [80,89, '-', '-'],
-      [90,99, '-', '-'],
-    ],
-    def: '11.51-12.50'
-  },
-
-  fo_10step: {
-    l:'10 Step Test', u:'วิ',
-    ranges: [
-      [20,29, '4.95-6.29', '5.32-6.32'],
-      [30,39, '4.88-6.36', '5.14-6.48'],
-      [40,49, '5.02-6.34', '5.20-6.80'],
-      [50,59, '5.07-6.61', '5.20-7.04'],
-      [60,69, '5.75-7.65', '5.58-7.78'],
-      [70,79, '6.69-10.73','7.06-11.34'],
-      [80,89, '7.33-12.43','7.56-13.38'],
-      [90,99, '7.43-13.05','8.37-15.53'],
-    ],
-    def: '5.58-7.78'
-  },
-
-  fo_waist: {
-    l:'Waist', u:'cm.',
-    ranges: [
-      [-1,99, '<=90 cm.', '<=80 cm.'],
-    ],
-    def: '<=80 cm.'
-  },
-
-  fo_hip: {
-    l:'Hip', u:'cm.',
-    ranges: [[-1,99, '-', '-']],
-    def: '-'
-  },
-};
-
-// Lookup function
-function getNorm(key, age, gender) {
-  var a = parseFloat(age) || 0;
-  var isMale = (gender === 'ชาย');
-
-  // Try age-specific table first
-  var entry = NR_AGE[key];
-  if (entry) {
-    for (var i = 0; i < entry.ranges.length; i++) {
-      var r = entry.ranges[i];
-      var minA = r[0], maxA = r[1];
-      if (minA === -1 || (a >= minA && a <= maxA)) {
-        return isMale ? r[2] : r[3];
-      }
-    }
-    return entry.def;
-  }
-
-  // Static table fallback
-  var s = NR_STATIC[key];
-  return s ? s.def : '-';
+function getNorm(k,age,gender){
+  var a=parseFloat(age)||0, male=(gender==='ชาย');
+  var e=NR_AGE[k];
+  if(e){for(var i=0;i<e.ranges.length;i++){var r=e.ranges[i];if(r[0]===-1||(a>=r[0]&&a<=r[1]))return male?r[2]:r[3];}return '-';}
+  var s=NR_STATIC[k];return s?s.def:'-';
 }
+function getLabel(k){var e=NR_AGE[k]||NR_STATIC[k];return e?e.l:null;}
+function getUnit(k){var e=NR_AGE[k]||NR_STATIC[k];return e?e.u:'';}
 
-// Combined label lookup
-function getLabel(key) {
-  var e = NR_AGE[key] || NR_STATIC[key];
-  return e ? e.l : key;
-}
-function getUnit(key) {
-  var e = NR_AGE[key] || NR_STATIC[key];
-  return e ? e.u : '';
-}
-
-var FO_SECS = [
-  {t:'Cardio',               k:['fo_2mwt','fo_6mwt','fo_3step']},
-  {t:'Strength - Upper',     k:['fo_grip_r','fo_grip_l','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
-  {t:'Strength - Core/Lower',k:['fo_plank','fo_wallplank','fo_5sts','fo_30sts','fo_squat','fo_calf']},
-  {t:'Flexibility',          k:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-  {t:'Balance - 4 Stage',    k:['fo_bal_feet','fo_bal_sr','fo_bal_sl','fo_bal_tr','fo_bal_tl']},
-  {t:'Balance - SLS',        k:['fo_sls_r','fo_sls_l','fo_sls_close_l','fo_sls_close_r','fo_sls_open_l','fo_sls_open_r']},
-  {t:'Balance - Other',      k:['fo_bess','fo_ytest','fo_romberg','fo_riskfall']},
-  {t:'Gait & Agility',       k:['fo_10m','fo_10step','fo_tug','fo_qft','fo_ttest','fo_tandemwalk','fo_pendulum']},
-  {t:'Body Composition',     k:['fo_waist','fo_hip']}
+// Row definitions
+var SECTIONS=[
+  {label:'CARDIO',icon:'&#10084;',rows:[
+    {k:'fo_2mwt'},{k:'fo_6mwt'},{k:'fo_3step'},
+  ]},
+  {label:'STRENGTH',icon:'&#128170;',subs:[
+    {sub:'Upper Body',rows:[{k:'fo_grip_l'},{k:'fo_grip_r'},{k:'fo_pinch'},{k:'fo_pushup'},{k:'fo_biceps'},{k:'fo_deadhang'}]},
+    {sub:'Core Body', rows:[{k:'fo_plank'},{k:'fo_wallplank'}]},
+    {sub:'Lower Body',rows:[{k:'fo_5sts'},{k:'fo_30sts'},{k:'fo_squat'},{k:'fo_calf'},
+      {k:'fo_sls_close_l'},{k:'fo_sls_close_r'},{k:'fo_sls_open_l'},{k:'fo_sls_open_r'}]},
+  ]},
+  {label:'FLEXIBILITY',icon:'&#129338;',rows:[
+    {k:'fo_chair_r'},{k:'fo_chair_l'},{k:'fo_vsit'},{k:'fo_chest'},
+  ]},
+  {label:'BALANCE',icon:'&#9878;',subs:[
+    {sub:'4 Stages balance (sec.)',rows:[{k:'fo_bal_feet'},{k:'fo_bal_sl'},{k:'fo_bal_sr'},{k:'fo_bal_tl'},{k:'fo_bal_tr'},{k:'fo_sls_l'},{k:'fo_sls_r'}]},
+    {sub:'',rows:[{k:'fo_bess'},{k:'fo_ytest'},{k:'fo_romberg'},{k:'fo_pendulum'},{k:'fo_tandemwalk'}]},
+  ]},
+  {label:'GAIT',icon:'&#127939;',rows:[{k:'fo_10m'}]},
+  {label:'AGILITY',icon:'&#128670;',rows:[{k:'fo_tug'},{k:'fo_qft'},{k:'fo_ttest'},{k:'fo_10step'}]},
+  {label:'BODY CIRCUMFERENCE',icon:'&#128207;',rows:[{k:'fo_waist'},{k:'fo_hip'},{k:'fo_riskfall'}]},
 ];
 
-// ── show/hide areas ──
-function showArea(name) {
-  var areas = ['empty','loading','nf','result'];
-  areas.forEach(function(a) {
-    byId('area-'+a).style.display = (a === name) ? '' : 'none';
-  });
+// ── STATE ──
+var ST={patient:null,visits:[]};
+
+function showArea(s){
+  byId('area-empty').style.display=s==='empty'?'':'none';
+  byId('area-loading').style.display=s==='loading'?'':'none';
+  byId('area-nf').style.display=s==='nf'?'':'none';
+  byId('report-wrap').style.display=s==='result'?'':'none';
 }
 
-// ── search ──
-function doSearch() {
-  var cn = byId('inp-cn').value.trim();
-  if (!cn) { showToast('กรุณากรอก CN','err'); return; }
-  var cfg = getCfg();
-  if (!cfg.url) { showToast('กรุณาตั้งค่า Script URL','err'); openCfg(); return; }
-
-  showArea('loading');
-  byId('btn-srch').disabled = true;
-
-  var url = cfg.url;
-  // Use XMLHttpRequest to avoid any async/await issues
-  var xhr1 = new XMLHttpRequest();
-  xhr1.open('GET', url + '?action=lookup&cn=' + encodeURIComponent(cn));
-  xhr1.onload = function() {
-    var d1;
-    try { d1 = JSON.parse(xhr1.responseText); } catch(e) { showToast('ข้อมูลผิดพลาด','err'); showArea('empty'); byId('btn-srch').disabled=false; return; }
-    if (d1.status !== 'found') {
-      showArea('nf');
-      byId('nf-msg').textContent = 'ไม่พบ CN: ' + cn + ' ใน PatientMaster';
-      byId('btn-srch').disabled = false;
-      return;
-    }
-    ST.patient = d1;
-
-    // Fetch FO rows
-    var xhr2 = new XMLHttpRequest();
-    xhr2.open('GET', url + '?action=getAllRows&cn=' + encodeURIComponent(cn) + '&sheet=Data2');
-    xhr2.onload = function() {
-      var d2; try { d2 = JSON.parse(xhr2.responseText); } catch(e) { d2 = {rows:[]}; }
-      ST.fo = (d2.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
-      ST.foIdx = Math.max(0, ST.fo.length - 1);
-
-      // Fetch Brain rows
-      var xhr3 = new XMLHttpRequest();
-      xhr3.open('GET', url + '?action=getAllRows&cn=' + encodeURIComponent(cn) + '&sheet=Data');
-      xhr3.onload = function() {
-        var d3; try { d3 = JSON.parse(xhr3.responseText); } catch(e) { d3 = {rows:[]}; }
-        ST.br = (d3.rows || []).sort(function(a,b){ return a.date > b.date ? 1 : -1; });
-        ST.brIdx = Math.max(0, ST.br.length - 1);
-
-        byId('btn-srch').disabled = false;
-        renderAll();
-        showArea('result');
-        activateTab('fo');
-      };
-      xhr3.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
-      xhr3.send();
+// ── SEARCH ──
+function doSearch(){
+  var cn=byId('inp-cn').value.trim();
+  if(!cn){showToast('กรุณากรอก CN','err');return;}
+  var cfg=getCfg();
+  if(!cfg.url){showToast('กรุณาตั้งค่า Script URL','err');openCfg();return;}
+  showArea('loading'); byId('btn-srch').disabled=true;
+  var url=cfg.url;
+  var x1=new XMLHttpRequest();
+  x1.open('GET',url+'?action=lookup&cn='+encodeURIComponent(cn));
+  x1.onload=function(){
+    var d1;try{d1=JSON.parse(x1.responseText);}catch(e){showToast('ข้อมูลผิดพลาด','err');showArea('empty');byId('btn-srch').disabled=false;return;}
+    if(d1.status!=='found'){showArea('nf');byId('nf-msg').textContent='ไม่พบ CN: '+cn;byId('btn-srch').disabled=false;return;}
+    ST.patient=d1;
+    var x2=new XMLHttpRequest();
+    x2.open('GET',url+'?action=getAllRows&cn='+encodeURIComponent(cn)+'&sheet=Data2');
+    x2.onload=function(){
+      var d2;try{d2=JSON.parse(x2.responseText);}catch(e){d2={rows:[]};}
+      var all=(d2.rows||[]).sort(function(a,b){return a.date>b.date?1:-1;});
+      // Take last 4 visits
+      ST.visits=all.slice(-4);
+      byId('btn-srch').disabled=false;
+      renderReport();
+      showArea('result');
     };
-    xhr2.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
-    xhr2.send();
+    x2.onerror=function(){showToast('เชื่อมต่อไม่ได้','err');showArea('empty');byId('btn-srch').disabled=false;};
+    x2.send();
   };
-  xhr1.onerror = function() { showToast('เชื่อมต่อไม่ได้','err'); showArea('empty'); byId('btn-srch').disabled=false; };
-  xhr1.send();
+  x1.onerror=function(){showToast('เชื่อมต่อไม่ได้','err');showArea('empty');byId('btn-srch').disabled=false;};
+  x1.send();
 }
 
-// ── tabs ──
-function activateTab(t) {
-  ST.activeTab = t;
-  byId('pane-fo').className         = (t==='fo')       ? 'pane on' : 'pane';
-  byId('pane-br').className         = (t==='br')       ? 'pane on' : 'pane';
-  byId('pane-fo-print').className   = (t==='fo-print') ? 'pane on' : 'pane';
-  byId('tb-fo').className           = (t==='fo')       ? 'afo' : '';
-  byId('tb-br').className           = (t==='br')       ? 'abr' : '';
-  byId('tb-fo-print').className     = (t==='fo-print') ? 'afo-print' : '';
-  if (t==='fo') renderFO();
-  else if (t==='br') renderBR();
-  else renderFOPrint();
-}
+// ── RENDER ──
+function renderReport(){
+  var p=ST.patient, vs=ST.visits;
+  var age=p.age||'?', gender=p.gender||'';
+  var nv=vs.length;
 
-// ── render all ──
-function renderAll() {
-  renderPtCard('fo'); renderPtCard('br');
-  renderVBar('fo');   renderVBar('br');
-  renderFO();         renderBR();
-  renderFOPrint();
-}
+  var h='';
 
-// ── patient card ──
-function renderPtCard(t) {
-  var p = ST.patient;
-  if (!p) return;
-  var visits = (t==='fo') ? ST.fo : ST.br;
-  var ico = p.gender==='หญิง' ? '&#128105;' : (p.gender==='ชาย' ? '&#128104;' : '&#128100;');
-  byId(t+'-ptc').innerHTML =
-    '<div class="ptc"><div class="ptc-ico">'+ico+'</div>'+
-    '<div style="flex:1"><div class="ptc-name">'+htmlEsc(p.name||'-')+'</div>'+
-    '<div class="ptc-meta">'+(p.age ? 'อายุ '+p.age+' ปี &nbsp; ' : '')+htmlEsc(p.gender||'')+
-    ' &nbsp;<span class="ptc-cn">CN: '+htmlEsc(p.cn)+'</span></div></div>'+
-    '<div style="font-family:var(--mo);font-size:11px;color:var(--td)">'+visits.length+' ครั้ง</div></div>';
-}
+  // ── REPORT HEADER ──
+  h+='<div class="rpt-header">';
+  h+='<img class="rpt-logo" src="data:image/png;base64,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" alt="AHG" onerror="this.style.display=\'none\'">';
+  h+='<div class="rpt-title-block"><div class="rpt-title">FUNCTIONAL OUTCOME</div>';
+  h+='<div class="rpt-subtitle">สวนสุขภาพอรุณ · Arun Health Garden</div></div>';
+  h+='</div>';
 
-// ── visit buttons ──
-function renderVBar(t) {
-  var visits = (t==='fo') ? ST.fo : ST.br;
-  var idx    = (t==='fo') ? ST.foIdx : ST.brIdx;
-  var h = '';
-  visits.forEach(function(v, i) {
-    var d = (v.date||'').substring(0,10);
-    h += '<button class="vbtn'+(i===idx?' on':'')
-      +'" data-tab="'+t+'" data-idx="'+i+'">ครั้ง '+(v.visit||i+1)
-      +'<br><span style="font-size:9px;font-weight:400">'+d+'</span></button>';
+  // ── PATIENT META ──
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;border:1px solid var(--bd);border-radius:4px;overflow:hidden;margin-bottom:12px;font-size:11px;">';
+  var metaHeads=['ชื่อ-สกุล','CN','AGE','GENDER','DATE'];
+  metaHeads.forEach(function(m){h+='<div class="rpt-meta-head">'+m+'</div>';});
+  var dates=vs.map(function(v){return fmtDate(v.date);});
+  var dateStr=dates.length?dates[0]+(dates.length>1?' - '+dates[dates.length-1]:''):'-';
+  [esc(p.name||'-'),esc(p.cn),esc(age),esc(gender),esc(dateStr)].forEach(function(v){
+    h+='<div class="rpt-meta-val">'+v+'</div>';
   });
-  if (visits.length > 1) {
-    h += '<button class="vbtn'+(idx===-1?' on':'')+'" data-tab="'+t+'" data-idx="-1">&#128202; เปรียบเทียบ</button>';
-  }
-  byId(t+'-vbar').innerHTML = h;
-}
+  h+='</div>';
 
-// ── FO render ──
-function renderFO() {
-  var el = byId('fo-body');
-  if (!el) return;
-  if (ST.fo.length === 0) { el.innerHTML = '<div class="msg"><div class="ic">&#128203;</div><h2>ไม่มีข้อมูล FO</h2></div>'; return; }
-  if (ST.foIdx === -1) { el.innerHTML = renderFOCmp(); return; }
-  var row = ST.fo[ST.foIdx];
-  if (!row) { el.innerHTML = ''; return; }
-  var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
-        + 'วันที่ '+(row.date||'-').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'-')+'</div>';
-  if (row.fo_bp_pre || row.fo_hr_pre) h += renderVital(row);
-  var tags = '';
-  if (row.fo_riskfall) tags += '<span style="background:rgba(0,0,0,.05);border-radius:var(--r2);padding:5px 10px;font-size:12px">Fall Risk: <b style="color:'+(row.fo_riskfall==='High'?'var(--hi)':'var(--lo)')+'">'+htmlEsc(row.fo_riskfall)+'</b></span>';
-  if (row.fo_suggestion) tags += '<span style="background:var(--ac2);border-radius:var(--r2);padding:5px 10px;font-size:12px;flex:1">'+htmlEsc(row.fo_suggestion)+'</span>';
-  if (tags) h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'+tags+'</div>';
-    var ptAge    = ST.patient ? ST.patient.age    : 0;
-  var ptGender = ST.patient ? ST.patient.gender : '';
-  FO_SECS.forEach(function(sec) {
-    var rows = '';
-    sec.k.forEach(function(k) {
-      var lbl  = getLabel(k); if (!lbl) return;
-      var unit = getUnit(k);
-      var norm = getNorm(k, ptAge, ptGender);
-      var v = row[k]; var has = (v!==''&&v!==null&&v!==undefined);
-      rows += '<div class="tr"><div><div>'+htmlEsc(lbl)+'</div>'+(unit?'<div class="sub">'+htmlEsc(unit)+'</div>':'')+'</div>'
-            + '<div class="tr-norm">'+htmlEsc(norm)+'</div>'
-            + '<div class="tr-v'+(has?'':' nil')+'">'+(has?htmlEsc(v):'&#8212;')+'</div></div>';
-    });
-    if (!rows) return;
-    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">'+htmlEsc(sec.t)+'</div></div><div class="sec-b">'+rows+'</div></div>';
-  });
-  if (row.fo_note && row.fo_note.trim()) {
-    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128221;</div><div class="sec-t">Note</div></div>'
-       + '<div class="sec-b" style="font-size:13px;line-height:1.7;color:var(--tm)">'+htmlEsc(row.fo_note)+'</div></div>';
-  }
-  el.innerHTML = h;
-}
+  // ── MAIN TABLE ──
+  h+='<table class="rpt-table" style="width:100%;border-collapse:collapse;">';
 
-function renderVital(row) {
-  var h = '<div class="sec" style="margin-bottom:10px"><div class="sec-h"><div class="sec-ic">&#129658;</div><div class="sec-t">Vital Signs</div></div>'
-        + '<div class="sec-b"><table class="vt"><thead><tr><th></th><th>BP</th><th>HR</th><th>SpO2</th></tr></thead><tbody>';
-  [['ก่อน','fo_bp_pre','fo_hr_pre','fo_spo2_pre'],
-   ['หลัง','fo_bp_post','fo_hr_post','fo_spo2_post'],
-   ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3']].forEach(function(r) {
-    var bp=row[r[1]], hr=row[r[2]], sp=row[r[3]];
-    if (!bp && !hr && !sp) return;
-    h += '<tr><td class="vl">'+r[0]+'</td><td>'+(bp||'-')+'</td><td>'+(hr||'-')+'</td><td>'+(sp||'-')+'</td></tr>';
-  });
-  return h + '</tbody></table></div></div>';
-}
-
-function renderFOCmp() {
-  var keys = ['fo_2mwt','fo_grip_r','fo_grip_l','fo_tug','fo_10m','fo_bal_feet','fo_30sts','fo_waist','fo_hip'];
-  var h = '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div>'
-        + '<div class="sec-b" style="overflow-x:auto"><table class="ct"><thead><tr><th class="nc">Test</th>';
-  ST.fo.forEach(function(v,i) { h += '<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>'; });
-  h += '</tr></thead><tbody>';
-  keys.forEach(function(k) {
-    var lbl = getLabel(k); if (!lbl) return;
-    var vals = ST.fo.map(function(v) { return toNum(v[k]); });
-    h += '<tr><td class="nc">'+htmlEsc(lbl)+'</td>';
-    vals.forEach(function(val, i) {
-      var dlt = '';
-      if (i > 0 && val !== null && vals[i-1] !== null) {
-        var d = val - vals[i-1];
-        dlt = d > 0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d < 0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
-      }
-      h += '<td>'+(val!==null?val:'-')+dlt+'</td>';
-    });
-    h += '</tr>';
-  });
-  return h + '</tbody></table></div></div>';
-}
-
-// ── Brain render ──
-function renderBR() {
-  var el = byId('br-body');
-  if (!el) return;
-  if (ST.br.length === 0) { el.innerHTML = '<div class="msg"><div class="ic">&#129504;</div><h2>ไม่มีข้อมูล Brain Test</h2></div>'; return; }
-  if (ST.brIdx === -1) { el.innerHTML = renderBRCmp(); return; }
-  var row = ST.br[ST.brIdx];
-  if (!row) { el.innerHTML = ''; return; }
-  console.log('BR row keys:', Object.keys(row));
-  console.log('BR row values:', JSON.stringify(row).substring(0, 500));
-  var h = '<div style="font-size:11px;color:var(--td);font-family:var(--mo);margin-bottom:10px">'
-        + 'วันที่ '+(row.date||'-').substring(0,10)+'  ·  ครั้งที่ '+(row.visit||'-')+'</div>';
-
-  // CQ
-  var cqo = toNum(row.br_cq_overall);
-  var cqTxt = cqo===null?'':cqo<25?'Low':cqo<75?'Average':'Above Average';
-  var cqClr = cqo===null?'var(--td)':cqo<25?'var(--hi)':cqo<75?'#8a7a00':'var(--ok)';
-  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#129504;</div><div class="sec-t">CQ Score</div></div><div class="sec-b">'
-     + '<div class="cq-g">';
-  [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(p) {
-    var v = toNum(row[p[1]]);
-    h += '<div class="cq-c"><div class="cq-l">'+p[0]+'</div><div class="cq-v">'+(v!==null?v:'-')+'<span class="u">%</span></div></div>';
-  });
-  h += '<div class="cq-c" style="background:rgba(92,122,92,.08)"><div class="cq-l">CQ Overall</div>'
-     + '<div class="cq-v" style="color:'+cqClr+'">'+(cqo!==null?cqo:'-')+'<span class="u">%</span></div>'
-     + '<div style="font-size:11px;color:'+cqClr+'">'+cqTxt+'</div></div>'
-     + '</div></div></div>';
-
-  // TAQ
-  var taq = toNum(row.br_taq);
-  var taqTxt = taq===null?'':taq<=3?'Normal':taq<=12?'MCI':'Dementia';
-  var taqClr = taq===null?'var(--td)':taq<=3?'var(--ok)':taq<=12?'#8a7a00':'var(--hi)';
-  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#9889;</div><div class="sec-t">TAQ Score</div></div><div class="sec-b">'
-     + '<div style="display:flex;align-items:center;gap:14px">'
-     + '<div style="font:700 34px var(--mo);color:'+taqClr+'">'+(taq!==null?taq:'-')+'</div>'
-     + '<div><div style="font-size:14px;font-weight:700;color:'+taqClr+'">'+taqTxt+'</div>'
-     + '<div style="font-size:11px;color:var(--td);margin-top:2px">Normal &lt;=3 · MCI 4-12 · Dementia &gt;12</div></div></div>'
-     + '</div></div>';
-
-  // MoCA
-  var mo = toNum(row.br_moca_overall);
-  var moTxt = mo===null?'':mo>=26?'Normal':mo>=19?'MCI':'Dementia';
-  var moClr = mo===null?'var(--td)':mo>=26?'var(--ok)':mo>=19?'#8a7a00':'var(--hi)';
-  var mocaFields = [
-    {l:'Visuospatial/\nExecutive', k:'br_moca_vis', max:5},
-    {l:'Naming',         k:'br_moca_nam', max:3},
-    {l:'Attention',      k:'br_moca_att', max:6},
-    {l:'Language',       k:'br_moca_lang',max:3},
-    {l:'Abstraction',    k:'br_moca_abs', max:2},
-    {l:'Delayed\nRecall',k:'br_moca_del', max:5},
-    {l:'Orientation',    k:'br_moca_ori', max:6},
-  ];
-  var mocaVals = mocaFields.map(function(mf){ return toNum(row[mf.k]); });
-  h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128203;</div><div class="sec-t">MoCA Score</div></div><div class="sec-b">';
-  // Radar chart
-  var svgId = 'moca-radar-'+Date.now();
-  var cx=160, cy=160, R=100, n=7;
-  var svgParts = '';
-  // Draw grid rings (20%,40%,60%,80%,100%)
-  for(var ring=1;ring<=5;ring++){
-    var rr=R*ring/5;
-    var pts='';
-    for(var ii=0;ii<n;ii++){
-      var ang = (Math.PI*2/n)*ii - Math.PI/2;
-      pts += (cx+rr*Math.cos(ang)).toFixed(1)+','+(cy+rr*Math.sin(ang)).toFixed(1)+' ';
-    }
-    svgParts += '<polygon points="'+pts.trim()+'" fill="none" stroke="#ddd7cf" stroke-width="'+(ring===5?1.5:0.8)+'"/>';
-  }
-  // Axis lines
-  for(var ii=0;ii<n;ii++){
-    var ang = (Math.PI*2/n)*ii - Math.PI/2;
-    svgParts += '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(ang)).toFixed(1)+'" y2="'+(cy+R*Math.sin(ang)).toFixed(1)+'" stroke="#ddd7cf" stroke-width="0.8"/>';
-  }
-  // Data polygon
-  var dataPts = '';
-  for(var ii=0;ii<n;ii++){
-    var ang = (Math.PI*2/n)*ii - Math.PI/2;
-    var v = mocaVals[ii]; var mx = mocaFields[ii].max;
-    var ratio = (v!==null && mx>0) ? v/mx : 0;
-    dataPts += (cx+R*ratio*Math.cos(ang)).toFixed(1)+','+(cy+R*ratio*Math.sin(ang)).toFixed(1)+' ';
-  }
-  svgParts += '<polygon points="'+dataPts.trim()+'" fill="rgba(92,122,92,.18)" stroke="#5c7a5c" stroke-width="2"/>';
-  // Dots
-  for(var ii=0;ii<n;ii++){
-    var ang = (Math.PI*2/n)*ii - Math.PI/2;
-    var v = mocaVals[ii]; var mx = mocaFields[ii].max;
-    var ratio = (v!==null && mx>0) ? v/mx : 0;
-    var px = (cx+R*ratio*Math.cos(ang)).toFixed(1);
-    var py = (cy+R*ratio*Math.sin(ang)).toFixed(1);
-    svgParts += '<circle cx="'+px+'" cy="'+py+'" r="4" fill="#5c7a5c"/>';
-  }
-  // Labels
-  for(var ii=0;ii<n;ii++){
-    var ang = (Math.PI*2/n)*ii - Math.PI/2;
-    var lx = (cx+(R+28)*Math.cos(ang)).toFixed(1);
-    var ly = (cy+(R+28)*Math.sin(ang)).toFixed(1);
-    var v = mocaVals[ii]; var mx = mocaFields[ii].max;
-    var lbl = (v!==null?v:'-')+'/'+mx+' '+mocaFields[ii].l.replace('\n',' ');
-    var anchor = Math.cos(ang)>0.1?'start':Math.cos(ang)<-0.1?'end':'middle';
-    svgParts += '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" font-size="11" font-family="Sarabun,sans-serif" fill="#7a7268" dominant-baseline="middle">'+lbl+'</text>';
-  }
-  h += '<svg viewBox="0 0 320 320" style="width:100%;max-width:360px;display:block;margin:0 auto">'+svgParts+'</svg>';
-  // Total row
-  h += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;">'
-     + '<span style="font-size:11px;color:var(--td)">MoCA Total</span>'
-     + '<span style="font:700 26px var(--mo);color:'+moClr+'">'+(mo!==null?mo:'-')+'</span>'
-     + '<span style="font-size:12px;color:var(--td)">/30</span>'
-     + '<span style="font-size:13px;font-weight:700;color:'+moClr+'">'+moTxt+'</span></div>';
-  h += '</div></div>';
-
-  // FAST
-  if (row.br_fast && row.br_fast.trim()) {
-    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">FAST Stage</div></div>'
-       + '<div class="sec-b"><div class="fast-chip">'+htmlEsc(row.br_fast)+'</div></div></div>';
-  }
-
-  // Summary
-  if (row.br_summary || row.br_suggestion) {
-    h += '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128221;</div><div class="sec-t">Summary / Suggestion</div></div><div class="sec-b">';
-    if (row.br_summary) h += '<div style="font-size:13px;font-weight:600;margin-bottom:6px">'+htmlEsc(row.br_summary)+'</div>';
-    if (row.br_suggestion) h += '<div style="font-size:12px;color:var(--tm);line-height:1.7">'+htmlEsc(row.br_suggestion)+'</div>';
-    h += '</div></div>';
-  }
-  el.innerHTML = h;
-}
-
-function renderBRCmp() {
-  var h = '<div class="sec"><div class="sec-h"><div class="sec-ic">&#128202;</div><div class="sec-t">เปรียบเทียบทุกครั้ง</div></div>'
-        + '<div class="sec-b" style="overflow-x:auto"><table class="ct"><thead><tr><th class="nc">Test</th>';
-  ST.br.forEach(function(v,i) { h += '<th>ครั้ง'+(v.visit||i+1)+'<br><span style="font-size:9px;font-weight:400">'+(v.date||'').substring(0,10)+'</span></th>'; });
-  h += '</tr></thead><tbody>';
-  [['CQ Executive','br_cq_exf'],['CQ Memory','br_cq_mem'],['CQ Processing','br_cq_ps'],
-   ['CQ Overall','br_cq_overall'],['TAQ','br_taq'],['MoCA Total','br_moca_overall']].forEach(function(p) {
-    var vals = ST.br.map(function(v) { return toNum(v[p[1]]); });
-    h += '<tr><td class="nc">'+p[0]+'</td>';
-    vals.forEach(function(val, i) {
-      var dlt = '';
-      if (i > 0 && val !== null && vals[i-1] !== null) {
-        var d = val - vals[i-1];
-        dlt = d>0 ? '<span class="du"> +'+Math.abs(d).toFixed(1)+'</span>' : d<0 ? '<span class="dd"> -'+Math.abs(d).toFixed(1)+'</span>' : '<span class="de"> =</span>';
-      }
-      h += '<td>'+(val!==null?val:'-')+dlt+'</td>';
-    });
-    h += '</tr>';
-  });
-  return h + '</tbody></table></div></div>';
-}
-
-
-// ══════════════════════════════════════════════
-//  FO PRINT REPORT
-// ══════════════════════════════════════════════
-var FO_PRINT_SECS = [
-  {label:'CARDIO',         icon:'&#10084;', rows:['fo_2mwt','fo_6mwt','fo_3step']},
-  {label:'STRENGTH',       icon:'&#128170;', subs:[
-    {sub:'Upper Body', rows:['fo_grip_l','fo_grip_r','fo_pinch','fo_pushup','fo_biceps','fo_deadhang']},
-    {sub:'Core Body',  rows:['fo_plank','fo_wallplank']},
-    {sub:'Lower Body', rows:['fo_5sts','fo_30sts','fo_squat','fo_calf',
-                              'fo_sls_close_l','fo_sls_close_r','fo_sls_open_l','fo_sls_open_r']},
-  ]},
-  {label:'FLEXIBILITY',    icon:'&#129338;', rows:['fo_chair_r','fo_chair_l','fo_vsit','fo_chest']},
-  {label:'BALANCE',        icon:'&#9878;', subs:[
-    {sub:'4 Stages balance (sec.)', rows:['fo_bal_feet','fo_bal_sl','fo_bal_sr','fo_bal_tl','fo_bal_tr','fo_sls_l','fo_sls_r']},
-    {sub:'Other',                   rows:['fo_bess','fo_ytest','fo_romberg','fo_pendulum','fo_tandemwalk']},
-  ]},
-  {label:'GAIT',           icon:'&#127939;', rows:['fo_10m']},
-  {label:'AGILITY',        icon:'&#128670;', rows:['fo_tug','fo_qft','fo_ttest','fo_10step']},
-  {label:'BODY CIRCUMFERENCE', icon:'&#128207;', rows:['fo_waist','fo_hip','fo_riskfall']},
-];
-
-var PRINT_NR_LABELS = {
-  fo_2mwt:'2 Min Walk Test', fo_6mwt:'6 Min Walk Test', fo_3step:'3 Min Step Test (HR)',
-  fo_grip_r:'Grip Strength ขวา', fo_grip_l:'Grip Strength ซ้าย', fo_pinch:'Pinch Strength Test',
-  fo_pushup:'Push Up', fo_biceps:'Biceps Curl', fo_deadhang:'Dead Hang',
-  fo_plank:'Plank', fo_wallplank:'Wall Plank',
-  fo_5sts:'5 Time sit to stand', fo_30sts:'30 Sit to stand', fo_squat:'Squat', fo_calf:'Calf raise',
-  fo_sls_close_l:'Single Leg Stand (close-eyes) ซ้าย', fo_sls_close_r:'Single Leg Stand (close-eyes) ขวา',
-  fo_sls_open_l:'Single Leg Stand (open-eyes) ซ้าย',  fo_sls_open_r:'Single Leg Stand (open-eyes) ขวา',
-  fo_chair_r:'Chair sit and reach ขวา', fo_chair_l:'Chair sit and reach ซ้าย',
-  fo_vsit:'V-sit and reach', fo_chest:'Chest expansion (middle lobe)',
-  fo_bal_feet:'- Feet together', fo_bal_sl:'- Semi-tandem ซ้าย', fo_bal_sr:'- Semi-tandem ขวา',
-  fo_bal_tl:'- Tandem ซ้าย', fo_bal_tr:'- Tandem ขวา',
-  fo_sls_l:'- Single leg stance ซ้าย', fo_sls_r:'- Single leg stance ขวา',
-  fo_bess:'Balance Error Scoring System', fo_ytest:'Y-test',
-  fo_romberg:'Sharpened Romberg', fo_pendulum:'Pendulum jump', fo_tandemwalk:'Tandem Walk 3m.',
-  fo_10m:'10 Meters walk test', fo_tug:'Timed up and go', fo_qft:'Quick feet test',
-  fo_ttest:'T-test', fo_10step:'10 Step test',
-  fo_waist:'Waist circumference', fo_hip:'Hip circumference', fo_riskfall:'Fall Risk',
-};
-var PRINT_NR_UNITS = {
-  fo_2mwt:'m.',fo_6mwt:'m.',fo_3step:'HR',fo_grip_r:'kg.',fo_grip_l:'kg.',fo_pinch:'kg.',
-  fo_pushup:'times',fo_biceps:'times',fo_deadhang:'sec',fo_plank:'min.',fo_wallplank:'',
-  fo_5sts:'sec.',fo_30sts:'times',fo_squat:'times',fo_calf:'times',
-  fo_sls_close_l:'วิ',fo_sls_close_r:'วิ',fo_sls_open_l:'วิ',fo_sls_open_r:'วิ',
-  fo_chair_r:'inch',fo_chair_l:'inch',fo_vsit:'inch',fo_chest:'cm.',
-  fo_bal_feet:'sec.',fo_bal_sl:'sec.',fo_bal_sr:'sec.',fo_bal_tl:'sec.',fo_bal_tr:'sec.',
-  fo_sls_l:'sec.',fo_sls_r:'sec.',
-  fo_bess:'score',fo_ytest:'cm.',fo_romberg:'วิ',fo_pendulum:'cm.',fo_tandemwalk:'sec.',
-  fo_10m:'m/s',fo_tug:'sec.',fo_qft:'sec.',fo_ttest:'sec.',fo_10step:'sec.',
-  fo_waist:'cm.',fo_hip:'cm.',fo_riskfall:'',
-};
-
-function getPrintNorm(k, age, gender) {
-  // reuse existing getNorm if available
-  if (typeof getNorm === 'function') { var n = getNorm(k, age, gender); if (n && n !== '-') return n; }
-  var fallback = {
-    fo_pinch:'>=10 kg.', fo_plank:'1-2 min.', fo_5sts:'< 12 sec.',
-    fo_bal_feet:'10 sec.',fo_bal_sl:'10 sec.',fo_bal_sr:'10 sec.',fo_bal_tl:'10 sec.',fo_bal_tr:'10 sec.',
-    fo_bess:'12-23', fo_ytest:'Compare Pre-Post',
-    fo_10m:'0.8-1.2 m/s', fo_tug:'<=12 sec.', fo_qft:'4.3-5.0', fo_ttest:'11.51-12.50',
-    fo_waist:'<=80 cm. (F) / <=90 cm. (M)',
-  };
-  return fallback[k] || '-';
-}
-
-function renderFOPrint() {
-  var el = byId('fo-print-content');
-  if (!el) return;
-  var vs = ST.foPrint || [];
-  var p  = ST.patient || {};
-  var nv = vs.length;
-  var age = p.age || 0, gender = p.gender || '';
-
-  if (nv === 0) {
-    el.innerHTML = '<div class="msg"><div class="ic">&#128203;</div><h2>ไม่มีข้อมูล FO</h2></div>';
-    return;
-  }
-
-  var h = '';
-
-  // ── Header ──
-  var logoSrc = byId("rpt-logo-ref") ? byId("rpt-logo-ref").src : '';
-  h += '<div class="rpt-header-blk">';
-  h += '<img class="rpt-logo-sm" src="' + logoSrc + '" alt="AHG" onerror="this.style.display='none'">';
-  h += '<div><div class="rpt-main-title">FUNCTIONAL OUTCOME</div>';
-  h += '<div class="rpt-sub-title">Arun Health Garden - สวนสุขภาพอรุณสหคลินิก</div></div>';
-  h += '</div>';
-
-  // ── Patient meta ──
-  var dates = vs.map(function(v){ return (v.date||'').substring(0,10); });
-  var dateRange = dates[0] + (dates.length > 1 ? ' - ' + dates[dates.length-1] : '');
-  h += '<div class="rpt-pt-meta">';
-  ['ชื่อ-สกุล','CN','AGE','GENDER','DATE'].forEach(function(lbl){ h += '<div class="rpt-pt-mh">'+lbl+'</div>'; });
-  [htmlEsc(p.name||'-'), htmlEsc(p.cn||'-'), htmlEsc(String(age)), htmlEsc(gender), htmlEsc(dateRange)].forEach(function(v){
-    h += '<div class="rpt-pt-mv">'+v+'</div>';
-  });
-  h += '</div>';
-
-  // ── Main table ──
-  h += '<table class="rpt-tbl"><thead>';
-  h += '<tr class="col-hdr"><th style="width:180px;text-align:left">Physical Performance Test</th><th style="width:130px;text-align:left">Test</th>';
-  for (var vi = 0; vi < 4; vi++) {
-    if (vi < nv) {
-      h += '<th style="min-width:65px;text-align:center">ครั้งที่ '+ htmlEsc(String(vs[vi].visit||(vi+1))) +'<br>'
-         + '<span style="font-size:9px;font-weight:400">'+(vs[vi].date||'').substring(0,10)+'</span></th>';
+  // Column header row
+  h+='<thead><tr>';
+  h+='<th style="width:180px;text-align:left;padding:5px 8px;">Physical Performance Test</th>';
+  h+='<th style="width:140px;text-align:left;padding:5px 8px;">Test</th>';
+  for(var vi=0;vi<4;vi++){
+    if(vi<nv){
+      var v=vs[vi];
+      h+='<th style="text-align:center;padding:5px 4px;min-width:70px;">';
+      h+='<div class="col-visit-num">ครั้งที่ '+esc(v.visit||(vi+1))+'</div>';
+      h+='<div class="col-date">'+fmtDate(v.date)+'</div></th>';
     } else {
-      h += '<th style="min-width:65px;text-align:center;color:#b0a898">-</th>';
+      h+='<th style="text-align:center;padding:5px 4px;min-width:70px;color:var(--td);">-</th>';
     }
   }
-  h += '<th style="width:110px;text-align:center;background:#fafaf8">Normal Range</th></tr></thead><tbody>';
+  h+='<th style="width:120px;text-align:center;padding:5px 4px;background:#fafaf8;">Normal Range</th>';
+  h+='</tr></thead><tbody>';
 
-  FO_PRINT_SECS.forEach(function(sec) {
-    h += '<tr class="sec-hdr"><td colspan="7">' + sec.icon + '&nbsp;&nbsp;' + sec.label + '</td></tr>';
-    var allRows = sec.rows ? [{sub:null, rows:sec.rows}] : sec.subs;
-    allRows.forEach(function(block) {
-      if (block.sub) {
-        h += '<tr class="sub-hdr"><td colspan="7">' + htmlEsc(block.sub) + '</td></tr>';
-      }
-      block.rows.forEach(function(k) {
-        var lbl = PRINT_NR_LABELS[k]; if (!lbl) return;
-        var unit = PRINT_NR_UNITS[k] || '';
-        var norm = getPrintNorm(k, age, gender);
-        h += '<tr><td class="test-lbl">'+htmlEsc(lbl)+(unit?'<span class="u">('+htmlEsc(unit)+')</span>':'')+'</td>';
-        h += '<td style="font-size:10px;color:#b0a898;padding:3px 5px;">'+htmlEsc(unit)+'</td>';
-        for (var vi = 0; vi < 4; vi++) {
-          if (vi < nv) {
-            var val = vs[vi][k];
-            var has = (val !== '' && val !== null && val !== undefined);
-            h += '<td class="tv'+(has ? '' : ' nil')+'">'+(has ? htmlEsc(String(val)) : '-')+'</td>';
-          } else {
-            h += '<td class="tv nil">-</td>';
-          }
+  // Sections
+  SECTIONS.forEach(function(sec){
+    // Section header
+    h+='<tr class="sec-row"><td colspan="7"><span class="sec-ico">'+sec.icon+'</span>'+sec.label+'</td></tr>';
+
+    if(sec.subs){
+      sec.subs.forEach(function(sub){
+        if(sub.sub){
+          h+='<tr class="sub-row"><td colspan="7">'+esc(sub.sub)+'</td></tr>';
         }
-        h += '<td class="tnorm">'+htmlEsc(norm)+'</td></tr>';
+        sub.rows.forEach(function(r){h+=renderRow(r.k,vs,nv,age,gender);});
       });
-    });
-  });
-  h += '</tbody></table>';
-
-  // ── Vital Signs ──
-  var hasV = vs.some(function(v){ return v.fo_bp_pre || v.fo_hr_pre; });
-  if (hasV) {
-    h += '<div style="border:1px solid #ccc6bc;border-radius:4px;overflow:hidden;margin-top:10px;">';
-    h += '<div style="background:#2c2820;color:#fff;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.05em">VITAL SIGNS</div>';
-    h += '<table class="vital-print"><thead><tr><th class="vl"></th>';
-    for (var vi = 0; vi < 4; vi++) {
-      if (vi < nv) h += '<th colspan="3">ครั้งที่ '+htmlEsc(String(vs[vi].visit||(vi+1)))+'</th>';
-      else h += '<th colspan="3">-</th>';
+    } else {
+      sec.rows.forEach(function(r){h+=renderRow(r.k,vs,nv,age,gender);});
     }
-    h += '</tr><tr><th class="vl"></th>';
-    for (var vi = 0; vi < 4; vi++) h += '<th>BP</th><th>HR</th><th>SpO2</th>';
-    h += '</tr></thead><tbody>';
-    [['ก่อน','fo_bp_pre','fo_hr_pre','fo_spo2_pre'],
-     ['หลัง','fo_bp_post','fo_hr_post','fo_spo2_post'],
-     ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3']].forEach(function(row) {
-      h += '<tr><td class="vl">'+row[0]+'</td>';
-      for (var vi = 0; vi < 4; vi++) {
-        if (vi < nv) {
-          h += '<td>'+(vs[vi][row[1]]||'-')+'</td><td>'+(vs[vi][row[2]]||'-')+'</td><td>'+(vs[vi][row[3]]||'-')+'</td>';
-        } else h += '<td>-</td><td>-</td><td>-</td>';
+  });
+
+  h+='</tbody></table>';
+
+  // ── VITAL SIGNS ──
+  var hasVital=vs.some(function(v){return v.fo_bp_pre||v.fo_hr_pre||v.fo_spo2_pre;});
+  if(hasVital){
+    h+='<div style="margin-top:12px;border:1px solid var(--bd);border-radius:4px;overflow:hidden;">';
+    h+='<div style="background:#2c2820;color:#fff;padding:5px 10px;font-size:11px;font-weight:700;letter-spacing:.05em;">VITAL SIGNS</div>';
+    h+='<div style="padding:8px;">';
+    h+='<table class="vital-mini"><thead><tr><th class="vl"></th>';
+    for(var vi=0;vi<4;vi++){
+      if(vi<nv) h+='<th colspan="3">ครั้งที่ '+esc(vs[vi].visit||(vi+1))+'</th>';
+      else h+='<th colspan="3">-</th>';
+    }
+    h+='</tr><tr><th class="vl"></th>';
+    for(var vi=0;vi<4;vi++){h+='<th>BP</th><th>HR</th><th>SpO2</th>';}
+    h+='</tr></thead><tbody>';
+    [
+      ['ก่อน','fo_bp_pre','fo_hr_pre','fo_spo2_pre'],
+      ['หลัง','fo_bp_post','fo_hr_post','fo_spo2_post'],
+      ['+3min','fo_bp_post3','fo_hr_post3','fo_spo2_post3'],
+    ].forEach(function(row){
+      h+='<tr><td class="vl">'+row[0]+'</td>';
+      for(var vi=0;vi<4;vi++){
+        if(vi<nv){var v=vs[vi];h+='<td>'+(v[row[1]]||'-')+'</td><td>'+(v[row[2]]||'-')+'</td><td>'+(v[row[3]]||'-')+'</td>';}
+        else h+='<td>-</td><td>-</td><td>-</td>';
       }
-      h += '</tr>';
+      h+='</tr>';
     });
-    h += '</tbody></table></div>';
+    h+='</tbody></table></div></div>';
   }
 
-  // ── Note / Suggestion ──
-  var notes = vs.map(function(v,i){
-    var parts = [];
-    if (v.fo_suggestion) parts.push(v.fo_suggestion);
-    if (v.fo_note) parts.push(v.fo_note);
-    return parts.length ? 'ครั้ง '+(v.visit||(i+1))+': '+parts.join(' | ') : null;
-  }).filter(Boolean);
-  if (notes.length) {
-    h += '<div style="margin-top:8px;font-size:11px;border-top:1px solid #ccc6bc;padding-top:6px;">';
-    h += '<span style="font-weight:700">Note: </span>'+notes.map(htmlEsc).join('&nbsp;&nbsp;|&nbsp;&nbsp;');
-    h += '</div>';
+  // ── NOTE & SUGGESTION ──
+  var notes=vs.map(function(v,i){return v.fo_note||v.fo_suggestion?'ครั้ง'+(v.visit||(i+1))+': '+(v.fo_suggestion?v.fo_suggestion+' ':'')+' '+(v.fo_note||'')+'':null;}).filter(Boolean);
+  if(notes.length){
+    h+='<div class="note-row"><span class="note-label">Note: </span>'+notes.map(esc).join('  |  ')+'</div>';
   }
 
-  el.innerHTML = h;
-  // Inject logo src from topbar img
-  var logoEl = document.querySelector('.tb img');
-  if (logoEl) {
-    var imgs = el.querySelectorAll('.rpt-logo-sm');
-    imgs.forEach(function(img){ img.src = logoEl.src; });
-  }
+  byId('rpt-content').innerHTML=h;
 }
 
-
-// ── config ──
-function openCfg() { byId('cfg-url').value = getCfg().url||''; byId('rpt-modal').classList.add('open'); }
-function closeCfg() { byId('rpt-modal').classList.remove('open'); }
-
-// ── toast ──
-function showToast(msg, type) {
-  var t = byId('rpt-toast');
-  t.textContent = msg;
-  t.className = 'toast ' + (type==='err'?'err':'') + ' show';
-  clearTimeout(t._tid);
-  t._tid = setTimeout(function() { t.classList.remove('show'); }, 3500);
+function renderRow(k,vs,nv,age,gender){
+  var lbl=getLabel(k); if(!lbl) return '';
+  var unit=getUnit(k);
+  var norm=getNorm(k,age,gender);
+  var h='<tr>';
+  h+='<td class="test-name">'+esc(lbl)+(unit?'<br><span style="font-size:9px;color:var(--td)">('+esc(unit)+')</span>':'')+'</td>';
+  h+='<td style="padding:3px 6px;font-size:10px;color:var(--td);">'+esc(unit)+'</td>';
+  for(var vi=0;vi<4;vi++){
+    if(vi<nv){
+      var val=vs[vi][k];
+      var has=(val!==''&&val!==null&&val!==undefined);
+      h+='<td class="test-val'+(has?'':' nil')+'">';
+      h+=(has?esc(val):'-')+'</td>';
+    } else {
+      h+='<td class="test-val nil">-</td>';
+    }
+  }
+  h+='<td class="test-norm">'+esc(norm)+'</td>';
+  return h+'</tr>';
 }
 
-// ── event listeners (no inline onclick) ──
-document.addEventListener('DOMContentLoaded', function() {
-  // search
-  byId('btn-srch').addEventListener('click', doSearch);
-  byId('inp-cn').addEventListener('keydown', function(e) { if (e.key === 'Enter') doSearch(); });
-  // tabs
-  byId('tb-fo').addEventListener('click', function() { activateTab('fo'); });
-  byId('tb-br').addEventListener('click', function() { activateTab('br'); });
-  // visit buttons (delegated)
-  byId('fo-vbar').addEventListener('click', function(e) {
-    var btn = e.target.closest('[data-idx]'); if (!btn) return;
-    ST.foIdx = parseInt(btn.dataset.idx); renderVBar('fo'); renderFO();
-  });
-  byId('br-vbar').addEventListener('click', function(e) {
-    var btn = e.target.closest('[data-idx]'); if (!btn) return;
-    ST.brIdx = parseInt(btn.dataset.idx); renderVBar('br'); renderBR();
-  });
-  // config
-  byId('btn-cfg').addEventListener('click', openCfg);
-  byId('btn-cfg-cancel').addEventListener('click', closeCfg);
-  byId('btn-cfg-save').addEventListener('click', function() {
-    localStorage.setItem('ahg_rpt', JSON.stringify({url: byId('cfg-url').value.trim()}));
+// ── CONFIG ──
+function openCfg(){byId('cfg-url').value=getCfg().url||'';byId('rpt-modal').classList.add('open');}
+function closeCfg(){byId('rpt-modal').classList.remove('open');}
+
+// ── TOAST ──
+function showToast(msg,type){
+  var t=byId('rpt-toast');
+  t.textContent=msg; t.className='toast '+(type==='err'?'err':'')+' show';
+  clearTimeout(t._tid); t._tid=setTimeout(function(){t.classList.remove('show');},3500);
+}
+
+// ── EVENTS ──
+document.addEventListener('DOMContentLoaded',function(){
+  byId('btn-srch').addEventListener('click',doSearch);
+  byId('inp-cn').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
+  byId('btn-print').addEventListener('click',function(){window.print();});
+  byId('btn-cfg').addEventListener('click',openCfg);
+  byId('btn-cfg-cancel').addEventListener('click',closeCfg);
+  byId('btn-cfg-save').addEventListener('click',function(){
+    localStorage.setItem('ahg_rpt',JSON.stringify({url:byId('cfg-url').value.trim()}));
     closeCfg(); showToast('บันทึกแล้ว');
   });
-  byId('rpt-modal').addEventListener('click', function(e) { if (e.target===this) closeCfg(); });
-  byId('tb-fo-print').addEventListener('click', function() { activateTab('fo-print'); });
-  byId('btn-do-print').addEventListener('click', function() { window.print(); });
-  // auto open config
-  if (!getCfg().url) setTimeout(openCfg, 600);
+  byId('rpt-modal').addEventListener('click',function(e){if(e.target===this)closeCfg();});
+  if(!getCfg().url) setTimeout(openCfg,600);
 });
 
-})(); // end IIFE
+})();
 </script>
 </body>
 </html>
