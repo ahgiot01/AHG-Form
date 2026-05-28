@@ -395,8 +395,8 @@ input[readonly].fi{color:var(--tm);cursor:default;}
   <div class="acc" id="s-fo-bdy">
     <div class="acc-head" onclick="tog(this)"><div class="acc-ico ic-fo">📏</div><div class="acc-label">Body Composition</div><div class="acc-count" id="cnt-fo-bdy">0/2</div><div class="acc-arr">▼</div></div>
     <div class="acc-body"><div class="g2">
-        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_waist" id="fo_waist" placeholder="—" oninput=\"countFilled('fo');calcWHR()\"></div>
-        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_hip" id="fo_hip" placeholder="—" oninput=\"countFilled('fo');calcWHR()\"></div>
+        <div class="field"><label>Waist <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_waist" id="fo_waist" placeholder="—"></div>
+        <div class="field"><label>Hip <span class="unit">cm.</span></label><input class="fi" type="text" inputmode="decimal" pattern="[0-9.]*" name="fo_hip" id="fo_hip" placeholder="—"></div>
         <div class="field"><label>Waist-Hip Ratio (WHR) <span class="unit">อัตโนมัติ</span></label><input class="fi" type="text" name="fo_whr" id="fo_whr" placeholder="—" readonly style="color:var(--ac);font-weight:600;background:var(--s2);cursor:default;"></div>
     </div></div>
   </div>
@@ -736,6 +736,15 @@ function attachValidation(root){
 window.addEventListener('DOMContentLoaded',function(){
   g('fo_date').value=today();
   g('br_date').value=today();
+
+  // WHR auto-calc
+  ['fo_waist','fo_hip'].forEach(function(id){
+    var el = g(id);
+    if(el){
+      el.addEventListener('input', function(){ calcWHR(); countFilled('fo'); });
+      el.addEventListener('blur',  function(){ numBlur(this, true); calcWHR(); });
+    }
+  });
   attachValidation();
   countFilled('fo'); countFilled('br');
   mpAddCard();
