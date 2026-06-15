@@ -311,6 +311,7 @@ function renderBR(){
   h+='</tbody></table>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
   [['Very Low','&lt;2'],['Low','2-8'],['Low Average','9-24'],['Average','25-74'],['Above Average','&gt;74']].forEach(function(r){h+='<div class="ref-row"><span>'+r[0]+':</span><span>'+r[1]+'</span></div>';});
+  if(ST.br.length>1){var cqVals=ST.br.map(function(v){return toNum(v.br_cq_overall);});h+=trendChart(cqVals,100,'CQ Overall (%)');}
   h+='</div></div></div></div>';
   var taq=toNum(row.br_taq);var taqT=taq===null?'-':taq<=3?'Normal':taq<=12?'MCI':'Dementia';var taqC=taq===null?'var(--td)':taq<=3?'#2d5a27':taq<=12?'#8a7a00':'var(--hi)';
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">2</div><div class="cog-sec-t">TAQ Score</div></div>';
@@ -319,6 +320,7 @@ function renderBR(){
   h+='<div style="font:700 32px var(--mo);color:'+taqC+'">'+(taq!==null?taq:'-')+'</div><div style="font-size:13px;font-weight:700;margin-top:4px;color:'+taqC+'">'+taqT+'</div></div>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
   [['Normal','0-3'],['MCI','4-12'],['Dementia','&gt;12']].forEach(function(r){h+='<div class="ref-row"><span>'+r[0]+':</span><span>'+r[1]+'</span></div>';});
+  if(ST.br.length>1){var taqVals=ST.br.map(function(v){return toNum(v.br_taq);});h+=trendChart(taqVals,12,'TAQ Score');}
   h+='</div></div></div></div>';
   var mo=toNum(row.br_moca_overall);var moT=mo===null?'-':mo>=26?'Normal':mo>=19?'MCI':'Dementia';var moC=mo===null?'var(--td)':mo>=26?'#2d5a27':mo>=19?'#8a7a00':'var(--hi)';
   var MF=[{l:'Visuospatial /\nExecutive',k:'br_moca_vis',m:5},{l:'Naming',k:'br_moca_nam',m:3},{l:'Attention',k:'br_moca_att',m:6},{l:'Language',k:'br_moca_lang',m:3},{l:'Abstraction',k:'br_moca_abs',m:2},{l:'Delayed\nRecall',k:'br_moca_del',m:5},{l:'Orientation',k:'br_moca_ori',m:6}];
@@ -364,6 +366,37 @@ function renderBR(){
   h+='</div>';
   el.innerHTML=h;
 }
+
+function trendChart(vals, maxY, label){
+  if(!vals||vals.length<1) return '';
+  var tw=160,th=70,tp=16;
+  var svg='<svg viewBox="0 0 '+(tw+tp*2)+' '+(th+tp*2)+'" style="width:100%;margin-top:10px">';
+  svg+='<line x1="'+tp+'" y1="'+tp+'" x2="'+tp+'" y2="'+(tp+th)+'" stroke="#ccc" stroke-width="1"/>';
+  svg+='<line x1="'+tp+'" y1="'+(tp+th)+'" x2="'+(tp+tw)+'" y2="'+(tp+th)+'" stroke="#ccc" stroke-width="1"/>';
+  var steps=maxY<=30?[10,20,30]:maxY<=12?[4,8,12]:[25,50,75,100];
+  steps.forEach(function(v){
+    var y=tp+th-(v/maxY)*th;
+    svg+='<line x1="'+(tp-3)+'" y1="'+y.toFixed(0)+'" x2="'+(tp+tw)+'" y2="'+y.toFixed(0)+'" stroke="#eee" stroke-width="1"/>';
+    svg+='<text x="'+(tp-4)+'" y="'+(y+3).toFixed(0)+'" text-anchor="end" font-size="8" fill="#aaa">'+v+'</text>';
+  });
+  var pts=vals.map(function(v,i){
+    var x=tp+(i/Math.max(vals.length-1,1))*tw;
+    var y=v!==null?(tp+th-(v/maxY)*th):(tp+th);
+    return{x:x.toFixed(1),y:y.toFixed(1),v:v};
+  });
+  var pl=pts.filter(function(p){return p.v!==null;}).map(function(p){return p.x+','+p.y;}).join(' ');
+  if(pl) svg+='<polyline points="'+pl+'" fill="none" stroke="#2d5a27" stroke-width="2"/>';
+  pts.forEach(function(p){
+    if(p.v!==null){
+      svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#2d5a27"/>';
+      svg+='<text x="'+p.x+'" y="'+(parseFloat(p.y)+13).toFixed(0)+'" text-anchor="middle" font-size="9" fill="#2d5a27">'+p.v+'</text>';
+    }
+  });
+  svg+='<text x="'+(tp+tw/2)+'" y="'+(tp+th+tp-2)+'" text-anchor="middle" font-size="9" fill="#aaa">'+label+'</text>';
+  svg+='</svg>';
+  return svg;
+}
+
 function renderBRCmp(){
   var h='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">&#128202;</div><div class="cog-sec-t">เปรียบเทียบทุกครั้ง</div></div><div class="cog-sec-b" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>';
   h+='<th style="text-align:left;padding:5px 8px;background:#e8f2e4;border:1px solid #c8e0c0">Test</th>';
