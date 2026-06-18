@@ -362,17 +362,16 @@ function renderBR(){
   var mo=toNum(row.br_moca_overall);var moT=mo===null?'-':mo>=26?'Normal':mo>=19?'MCI':'Dementia';var moC=mo===null?'var(--td)':mo>=26?'#2d5a27':mo>=19?'#8a7a00':'var(--hi)';
   var MF=[{l:'Visuospatial /\nExecutive',k:'br_moca_vis',m:5},{l:'Naming',k:'br_moca_nam',m:3},{l:'Attention',k:'br_moca_att',m:6},{l:'Language',k:'br_moca_lang',m:3},{l:'Abstraction',k:'br_moca_abs',m:2},{l:'Delayed\nRecall',k:'br_moca_del',m:5},{l:'Orientation',k:'br_moca_ori',m:6}];
   var MV=MF.map(function(f){return toNum(row[f.k]);});
-  var cx=130,cy=130,R=80,n7=7,svg='';
-  for(var ri=1;ri<=4;ri++){var rr=R*ri/4,pp='';for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;pp+=(cx+rr*Math.cos(ang)).toFixed(1)+','+(cy+rr*Math.sin(ang)).toFixed(1)+' ';}svg+='<polygon points="'+pp.trim()+'" fill="none" stroke="#c8e0c0" stroke-width="'+(ri===4?1.5:.7)+'"/>';}
-  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(ang)).toFixed(1)+'" y2="'+(cy+R*Math.sin(ang)).toFixed(1)+'" stroke="#c8e0c0" stroke-width=".7"/>';}
-  [25,50,75,100].forEach(function(pct,ri){var rr=R*(ri+1)/4;svg+='<text x="'+(cx+3)+'" y="'+(cy-rr+4)+'" font-size="7" fill="#bbb">'+pct+'</text>';});
+  var cx=95,cy=95,R=48,n7=7,svg='';
+  for(var ri=1;ri<=4;ri++){var rr=R*ri/4,pp='';for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;pp+=(cx+rr*Math.cos(ang)).toFixed(1)+','+(cy+rr*Math.sin(ang)).toFixed(1)+' ';}svg+='<polygon points="'+pp.trim()+'" fill="none" stroke="#c8e0c0" stroke-width="'+(ri===4?1.2:.6)+'"/>';}
+  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(ang)).toFixed(1)+'" y2="'+(cy+R*Math.sin(ang)).toFixed(1)+'" stroke="#c8e0c0" stroke-width=".6"/>';}
   var dp='';for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;dp+=(cx+R*rt*Math.cos(ang)).toFixed(1)+','+(cy+R*rt*Math.sin(ang)).toFixed(1)+' ';}
-  svg+='<polygon points="'+dp.trim()+'" fill="rgba(45,90,39,.15)" stroke="#2d5a27" stroke-width="2"/>';
-  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;svg+='<circle cx="'+(cx+R*rt*Math.cos(ang)).toFixed(1)+'" cy="'+(cy+R*rt*Math.sin(ang)).toFixed(1)+'" r="3.5" fill="#2d5a27"/>';}
-  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var lx=(cx+(R+22)*Math.cos(ang)).toFixed(1),ly=(cy+(R+22)*Math.sin(ang)).toFixed(1);var v=MV[ii],mx=MF[ii].m;var lb=(v!==null?v:'-')+'/'+mx+' '+MF[ii].l.replace('\n',' ');var anc=Math.cos(ang)>.1?'start':Math.cos(ang)<-.1?'end':'middle';svg+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" font-size="9" font-family="Sarabun,sans-serif" fill="#555" dominant-baseline="middle">'+lb+'</text>';}
+  svg+='<polygon points="'+dp.trim()+'" fill="rgba(45,90,39,.15)" stroke="#2d5a27" stroke-width="1.5"/>';
+  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;svg+='<circle cx="'+(cx+R*rt*Math.cos(ang)).toFixed(1)+'" cy="'+(cy+R*rt*Math.sin(ang)).toFixed(1)+'" r="2.5" fill="#2d5a27"/>';}
+  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var lx=(cx+(R+34)*Math.cos(ang)).toFixed(1),ly=(cy+(R+34)*Math.sin(ang)).toFixed(1);var v=MV[ii],mx=MF[ii].m;var lb=(v!==null?v:'-')+'/'+mx+' '+MF[ii].l.replace('\n',' ');var anc=Math.cos(ang)>.15?'start':Math.cos(ang)<-.15?'end':'middle';svg+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" font-size="7" font-family="Sarabun,sans-serif" fill="#555" dominant-baseline="middle">'+lb+'</text>';}
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">3</div><div class="cog-sec-t">MoCA Score</div></div>';
   h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:230px 130px 1fr;gap:12px;align-items:start;">';
-  h+='<div><svg viewBox="0 0 260 260" style="width:100%;max-width:230px">'+svg+'</svg></div>';
+  h+='<div><svg viewBox="0 0 190 190" style="width:100%;max-width:230px;overflow:visible">'+svg+'</svg></div>';
   h+='<div>';
   h+='<div style="text-align:center;background:#e8f2e4;border-radius:6px;padding:8px 10px;margin-bottom:8px;">';
   h+='<div style="font-size:10px;color:var(--tm);font-weight:600">Score</div>';
@@ -395,15 +394,15 @@ function renderBR(){
 
 function trendChart(vals, maxY, label){
   if(!vals||vals.length<1) return '';
-  var tw=160,th=70,tp=16;
-  var svg='<svg viewBox="0 0 '+(tw+tp*2)+' '+(th+tp*2)+'" style="width:100%;margin-top:10px">';
+  var tw=95,th=48,tp=11;
+  var svg='<svg viewBox="0 0 '+(tw+tp*2)+' '+(th+tp*2)+'" style="width:100%;max-width:130px;display:block;margin:0 auto;">';
   svg+='<line x1="'+tp+'" y1="'+tp+'" x2="'+tp+'" y2="'+(tp+th)+'" stroke="#ccc" stroke-width="1"/>';
   svg+='<line x1="'+tp+'" y1="'+(tp+th)+'" x2="'+(tp+tw)+'" y2="'+(tp+th)+'" stroke="#ccc" stroke-width="1"/>';
   var steps=maxY<=30?[10,20,30]:maxY<=12?[4,8,12]:[25,50,75,100];
   steps.forEach(function(v){
     var y=tp+th-(v/maxY)*th;
-    svg+='<line x1="'+(tp-3)+'" y1="'+y.toFixed(0)+'" x2="'+(tp+tw)+'" y2="'+y.toFixed(0)+'" stroke="#eee" stroke-width="1"/>';
-    svg+='<text x="'+(tp-4)+'" y="'+(y+3).toFixed(0)+'" text-anchor="end" font-size="8" fill="#aaa">'+v+'</text>';
+    svg+='<line x1="'+(tp-2)+'" y1="'+y.toFixed(0)+'" x2="'+(tp+tw)+'" y2="'+y.toFixed(0)+'" stroke="#eee" stroke-width=".6"/>';
+    svg+='<text x="'+(tp-3)+'" y="'+(y+2.5).toFixed(0)+'" text-anchor="end" font-size="5.5" fill="#aaa">'+v+'</text>';
   });
   var pts=vals.map(function(v,i){
     var x=tp+(i/Math.max(vals.length-1,1))*tw;
@@ -411,14 +410,14 @@ function trendChart(vals, maxY, label){
     return{x:x.toFixed(1),y:y.toFixed(1),v:v};
   });
   var pl=pts.filter(function(p){return p.v!==null;}).map(function(p){return p.x+','+p.y;}).join(' ');
-  if(pl) svg+='<polyline points="'+pl+'" fill="none" stroke="#2d5a27" stroke-width="2"/>';
+  if(pl) svg+='<polyline points="'+pl+'" fill="none" stroke="#2d5a27" stroke-width="1.5"/>';
   pts.forEach(function(p){
     if(p.v!==null){
-      svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#2d5a27"/>';
-      svg+='<text x="'+p.x+'" y="'+(parseFloat(p.y)+13).toFixed(0)+'" text-anchor="middle" font-size="9" fill="#2d5a27">'+p.v+'</text>';
+      svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="2.5" fill="#2d5a27"/>';
+      svg+='<text x="'+p.x+'" y="'+(parseFloat(p.y)+8.5).toFixed(0)+'" text-anchor="middle" font-size="6" fill="#2d5a27">'+p.v+'</text>';
     }
   });
-  svg+='<text x="'+(tp+tw/2)+'" y="'+(tp+th+tp-2)+'" text-anchor="middle" font-size="9" fill="#aaa">'+label+'</text>';
+  svg+='<text x="'+(tp+tw/2)+'" y="'+(tp+th+tp-1)+'" text-anchor="middle" font-size="6" fill="#aaa">'+label+'</text>';
   svg+='</svg>';
   return svg;
 }
