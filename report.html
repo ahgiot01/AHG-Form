@@ -114,8 +114,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
   .ref-box{padding:5px 7px;}
   .ref-title{font-size:9px;margin-bottom:3px;}
   .ref-row{font-size:8px;padding:1px 0;}
-  .cog-sec-b svg{max-width:200px!important;}
-  .cog-sec-b > div > div > svg[viewBox="0 0 300 300"]{max-width:170px!important;}
+  .cog-sec-b svg{max-width:140px!important;}
 }
 </style>
 </head>
@@ -347,52 +346,43 @@ function renderBR(){
   h+='</tbody></table>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
   [['Very Low','&lt;2'],['Low','2-8'],['Low Average','9-24'],['Average','25-74'],['Above Average','&gt;74']].forEach(function(r){h+='<div class="ref-row"><span>'+r[0]+':</span><span>'+r[1]+'</span></div>';});
-  if(ST.br.length>1){var cqVals=ST.br.map(function(v){return toNum(v.br_cq_overall);});h+=trendChart(cqVals,100,'CQ Overall (%)');}
-  h+='</div></div></div></div>';
+  h+='</div>';
+  if(ST.br.length>1){var cqVals=ST.br.map(function(v){return toNum(v.br_cq_overall);});h+='<div>'+trendChart(cqVals,100,'CQ Overall (%)')+'</div>';} else h+='<div></div>';
+  h+='</div></div></div>';
   var taq=toNum(row.br_taq);var taqT=taq===null?'-':taq<=3?'Normal':taq<=12?'MCI':'Dementia';var taqC=taq===null?'var(--td)':taq<=3?'#2d5a27':taq<=12?'#8a7a00':'var(--hi)';
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">2</div><div class="cog-sec-t">TAQ Score</div></div>';
-  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 175px;gap:14px;align-items:start;">';
-  h+='<div style="border:1px solid var(--bd);border-radius:6px;padding:14px;text-align:center;"><div style="font-size:11px;color:var(--tm);margin-bottom:4px;font-weight:600">Score</div>';
-  h+='<div style="font:700 32px var(--mo);color:'+taqC+'">'+(taq!==null?taq:'-')+'</div><div style="font-size:13px;font-weight:700;margin-top:4px;color:'+taqC+'">'+taqT+'</div></div>';
+  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:130px 175px 1fr;gap:12px;align-items:start;">';
+  h+='<div style="border:1px solid var(--bd);border-radius:6px;padding:10px;text-align:center;"><div style="font-size:11px;color:var(--tm);margin-bottom:4px;font-weight:600">Score</div>';
+  h+='<div style="font:700 30px var(--mo);color:'+taqC+'">'+(taq!==null?taq:'-')+'</div><div style="font-size:12px;font-weight:700;margin-top:4px;color:'+taqC+'">'+taqT+'</div></div>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
   [['Normal','0-3'],['MCI','4-12'],['Dementia','&gt;12']].forEach(function(r){h+='<div class="ref-row"><span>'+r[0]+':</span><span>'+r[1]+'</span></div>';});
-  if(ST.br.length>1){var taqVals=ST.br.map(function(v){return toNum(v.br_taq);});h+=trendChart(taqVals,12,'TAQ Score');}
-  h+='</div></div></div></div>';
+  h+='</div>';
+  if(ST.br.length>1){var taqVals=ST.br.map(function(v){return toNum(v.br_taq);});h+='<div>'+trendChart(taqVals,12,'TAQ Score')+'</div>';} else h+='<div></div>';
+  h+='</div></div></div>';
   var mo=toNum(row.br_moca_overall);var moT=mo===null?'-':mo>=26?'Normal':mo>=19?'MCI':'Dementia';var moC=mo===null?'var(--td)':mo>=26?'#2d5a27':mo>=19?'#8a7a00':'var(--hi)';
   var MF=[{l:'Visuospatial /\nExecutive',k:'br_moca_vis',m:5},{l:'Naming',k:'br_moca_nam',m:3},{l:'Attention',k:'br_moca_att',m:6},{l:'Language',k:'br_moca_lang',m:3},{l:'Abstraction',k:'br_moca_abs',m:2},{l:'Delayed\nRecall',k:'br_moca_del',m:5},{l:'Orientation',k:'br_moca_ori',m:6}];
   var MV=MF.map(function(f){return toNum(row[f.k]);});
-  var cx=150,cy=150,R=95,n7=7,svg='';
+  var cx=130,cy=130,R=80,n7=7,svg='';
   for(var ri=1;ri<=4;ri++){var rr=R*ri/4,pp='';for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;pp+=(cx+rr*Math.cos(ang)).toFixed(1)+','+(cy+rr*Math.sin(ang)).toFixed(1)+' ';}svg+='<polygon points="'+pp.trim()+'" fill="none" stroke="#c8e0c0" stroke-width="'+(ri===4?1.5:.7)+'"/>';}
   for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(ang)).toFixed(1)+'" y2="'+(cy+R*Math.sin(ang)).toFixed(1)+'" stroke="#c8e0c0" stroke-width=".7"/>';}
-  [25,50,75,100].forEach(function(pct,ri){var rr=R*(ri+1)/4;svg+='<text x="'+(cx+3)+'" y="'+(cy-rr+4)+'" font-size="8" fill="#bbb">'+pct+'</text>';});
+  [25,50,75,100].forEach(function(pct,ri){var rr=R*(ri+1)/4;svg+='<text x="'+(cx+3)+'" y="'+(cy-rr+4)+'" font-size="7" fill="#bbb">'+pct+'</text>';});
   var dp='';for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;dp+=(cx+R*rt*Math.cos(ang)).toFixed(1)+','+(cy+R*rt*Math.sin(ang)).toFixed(1)+' ';}
   svg+='<polygon points="'+dp.trim()+'" fill="rgba(45,90,39,.15)" stroke="#2d5a27" stroke-width="2"/>';
-  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;svg+='<circle cx="'+(cx+R*rt*Math.cos(ang)).toFixed(1)+'" cy="'+(cy+R*rt*Math.sin(ang)).toFixed(1)+'" r="4" fill="#2d5a27"/>';}
-  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var lx=(cx+(R+26)*Math.cos(ang)).toFixed(1),ly=(cy+(R+26)*Math.sin(ang)).toFixed(1);var v=MV[ii],mx=MF[ii].m;var lb=(v!==null?v:'-')+'/'+mx+' '+MF[ii].l.replace('\n',' ');var anc=Math.cos(ang)>.1?'start':Math.cos(ang)<-.1?'end':'middle';svg+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" font-size="10.5" font-family="Sarabun,sans-serif" fill="#555" dominant-baseline="middle">'+lb+'</text>';}
+  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;svg+='<circle cx="'+(cx+R*rt*Math.cos(ang)).toFixed(1)+'" cy="'+(cy+R*rt*Math.sin(ang)).toFixed(1)+'" r="3.5" fill="#2d5a27"/>';}
+  for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var lx=(cx+(R+22)*Math.cos(ang)).toFixed(1),ly=(cy+(R+22)*Math.sin(ang)).toFixed(1);var v=MV[ii],mx=MF[ii].m;var lb=(v!==null?v:'-')+'/'+mx+' '+MF[ii].l.replace('\n',' ');var anc=Math.cos(ang)>.1?'start':Math.cos(ang)<-.1?'end':'middle';svg+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" font-size="9" font-family="Sarabun,sans-serif" fill="#555" dominant-baseline="middle">'+lb+'</text>';}
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">3</div><div class="cog-sec-t">MoCA Score</div></div>';
-  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 200px;gap:16px;align-items:start;">';
-  h+='<div><svg viewBox="0 0 300 300" style="width:100%;max-width:300px">'+svg+'</svg></div>';
-  h+='<div><div style="font-size:11px;font-weight:600;color:var(--tm);margin-bottom:4px">Score</div>';
-  h+='<div style="text-align:center;background:#e8f2e4;border-radius:6px;padding:12px 20px;margin-bottom:10px;">';
-  h+='<div style="font:700 32px var(--mo);color:'+moC+'">'+(mo!==null?mo:'-')+'</div>';
-  h+='<div style="font-size:13px;font-weight:700;margin-top:4px;color:'+moC+'">'+moT+'</div></div>';
+  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:230px 130px 1fr;gap:12px;align-items:start;">';
+  h+='<div><svg viewBox="0 0 260 260" style="width:100%;max-width:230px">'+svg+'</svg></div>';
+  h+='<div>';
+  h+='<div style="text-align:center;background:#e8f2e4;border-radius:6px;padding:8px 10px;margin-bottom:8px;">';
+  h+='<div style="font-size:10px;color:var(--tm);font-weight:600">Score</div>';
+  h+='<div style="font:700 28px var(--mo);color:'+moC+'">'+(mo!==null?mo:'-')+'</div>';
+  h+='<div style="font-size:11px;font-weight:700;color:'+moC+'">'+moT+'</div></div>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
   [['Normal','28-30'],['MCI','19-27'],['Dementia','&lt;19']].forEach(function(r){h+='<div class="ref-row"><span>'+r[0]+':</span><span>'+r[1]+'</span></div>';});
-  h+='</div>';
-  if(ST.br.length>1){
-    var tw=160,th2=70,tp=16;var moVals=ST.br.map(function(v){return toNum(v.br_moca_overall);});
-    var tsvg='<svg viewBox="0 0 '+(tw+tp*2)+' '+(th2+tp*2)+'" style="width:100%;margin-top:10px">';
-    tsvg+='<line x1="'+tp+'" y1="'+tp+'" x2="'+tp+'" y2="'+(tp+th2)+'" stroke="#ccc" stroke-width="1"/>';
-    tsvg+='<line x1="'+tp+'" y1="'+(tp+th2)+'" x2="'+(tp+tw)+'" y2="'+(tp+th2)+'" stroke="#ccc" stroke-width="1"/>';
-    [10,20,30].forEach(function(v){var y=tp+th2-(v/30)*th2;tsvg+='<line x1="'+(tp-3)+'" y1="'+y.toFixed(0)+'" x2="'+(tp+tw)+'" y2="'+y.toFixed(0)+'" stroke="#eee" stroke-width="1"/><text x="'+(tp-4)+'" y="'+(y+3).toFixed(0)+'" text-anchor="end" font-size="8" fill="#aaa">'+v+'</text>';});
-    var pts=moVals.map(function(v,i){var x=tp+(i/Math.max(moVals.length-1,1))*tw;var y=v!==null?(tp+th2-(v/30)*th2):(tp+th2);return{x:x.toFixed(1),y:y.toFixed(1),v:v};});
-    var pl=pts.filter(function(p){return p.v!==null;}).map(function(p){return p.x+','+p.y;}).join(' ');
-    if(pl)tsvg+='<polyline points="'+pl+'" fill="none" stroke="#2d5a27" stroke-width="2"/>';
-    pts.forEach(function(p){if(p.v!==null){tsvg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#2d5a27"/><text x="'+p.x+'" y="'+(parseFloat(p.y)+13).toFixed(0)+'" text-anchor="middle" font-size="9" fill="#2d5a27">'+p.v+'</text>';}});
-    tsvg+='<text x="'+(tp+tw/2)+'" y="'+(tp+th2+tp-2)+'" text-anchor="middle" font-size="9" fill="#aaa">MoCA Score</text></svg>';
-    h+=tsvg;
-  }
-  h+='</div></div></div></div>';
+  h+='</div></div>';
+  if(ST.br.length>1){var moVals=ST.br.map(function(v){return toNum(v.br_moca_overall);});h+='<div>'+trendChart(moVals,30,'MoCA Score')+'</div>';} else h+='<div></div>';
+  h+='</div></div></div>';
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">4</div><div class="cog-sec-t">Functional Assessment Scale (FAST)</div></div>';
   h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
   h+='<div style="border:1px solid var(--bd);border-radius:6px;padding:14px;text-align:center;font-size:13px;font-weight:600;background:var(--s2);">'+(row.br_fast?esc(row.br_fast):'—')+'</div>';
