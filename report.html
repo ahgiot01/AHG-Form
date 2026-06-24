@@ -61,9 +61,9 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 .cq-tbl{width:100%;border-collapse:collapse;font-size:12px;}
 .cq-tbl th{background:#c8e0c0;padding:5px 8px;text-align:left;font-weight:700;border:1px solid #b8d4b0;}
 .cq-tbl td{padding:5px 8px;border:1px solid #d4e8ce;}.cq-overall td{font-weight:700;background:#e8f2e4;}
-.ref-box{background:#fff8e8;border:1px solid #e8d8a0;border-radius:4px;padding:8px 10px;font-size:11px;display:flex;flex-direction:column;justify-content:center;}
-.ref-title{display:flex;align-items:center;gap:4px;font-weight:700;margin-bottom:6px;color:#2d5a27;font-size:12px;}
-.ref-row{display:flex;justify-content:space-between;padding:2px 0;font-size:11px;}.ref-row span:first-child{color:var(--tm);}
+.ref-box{background:#fff8e8;border:1px solid #e8d8a0;border-radius:4px;padding:8px 9px;font-size:11px;display:flex;flex-direction:column;justify-content:center;}
+.ref-title{display:flex;align-items:center;gap:4px;font-weight:700;margin-bottom:6px;color:#2d5a27;font-size:11px;white-space:nowrap;}
+.ref-row{display:flex;justify-content:space-between;gap:6px;padding:2px 0;font-size:10.5px;}.ref-row span:first-child{color:var(--tm);}
 .score-box{border:1px solid var(--bd);border-radius:6px;padding:10px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;}
 .score-lbl{font-size:11px;color:var(--tm);margin-bottom:4px;font-weight:600;}
 .score-val{font:700 30px var(--mo);line-height:1;}
@@ -345,7 +345,7 @@ function renderBR(){
   var cqI=function(v){return v===null?'':v<2?'Very Low':v<9?'Low':v<25?'Low Average':v<75?'Average':'Above Average';};
   var cqo=toNum(row.br_cq_overall);
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">1</div><div class="cog-sec-t">CQ Score</div></div>';
-  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 175px;gap:14px;align-items:start;">';
+  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 145px 155px;gap:10px;align-items:stretch;">';
   h+='<table class="cq-tbl"><thead><tr><th>Domain</th><th>Score</th><th>Interpretation</th></tr></thead><tbody>';
   [['Executive Function','br_cq_exf'],['Memory','br_cq_mem'],['Processing Speed','br_cq_ps']].forEach(function(d){var v=toNum(row[d[1]]);h+='<tr><td>'+d[0]+'</td><td style="text-align:center;font-family:var(--mo)">'+(v!==null?v:'')+'</td><td>'+cqI(v)+'</td></tr>';});
   h+='<tr class="cq-overall"><td>Overall Score</td><td style="text-align:center;font-family:var(--mo)">'+(cqo!==null?cqo:'0')+'</td><td>'+cqI(cqo)+'</td></tr>';
@@ -357,7 +357,7 @@ function renderBR(){
   h+='</div></div></div>';
   var taq=toNum(row.br_taq);var taqT=taq===null?'-':taq<=3?'Normal':taq<=12?'MCI':'Dementia';var taqC=taq===null?'var(--td)':taq<=3?'#2d5a27':taq<=12?'#8a7a00':'var(--hi)';
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">2</div><div class="cog-sec-t">TAQ Score</div></div>';
-  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:110px 1fr 175px;gap:10px;align-items:stretch;">';
+  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:90px 135px 155px;gap:10px;align-items:stretch;justify-content:start;">';
   h+='<div class="score-box"><div class="score-lbl">Score</div>';
   h+='<div class="score-val" style="color:'+taqC+'">'+(taq!==null?taq:'-')+'</div><div class="score-interp" style="color:'+taqC+'">'+taqT+'</div></div>';
   h+='<div class="ref-box"><div class="ref-title">&#9654; Reference Range</div>';
@@ -376,7 +376,7 @@ function renderBR(){
   for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var v=MV[ii],mx=MF[ii].m;var rt=(v!==null&&mx>0)?v/mx:0;svg+='<circle cx="'+(cx+R*rt*Math.cos(ang)).toFixed(1)+'" cy="'+(cy+R*rt*Math.sin(ang)).toFixed(1)+'" r="2.8" fill="#2d5a27"/>';}
   for(var ii=0;ii<n7;ii++){var ang=(Math.PI*2/n7)*ii-Math.PI/2;var lx=(cx+(R+38)*Math.cos(ang)).toFixed(1),ly=(cy+(R+38)*Math.sin(ang)).toFixed(1);var v=MV[ii],mx=MF[ii].m;var lb=(v!==null?v:'-')+'/'+mx+' '+MF[ii].l.replace('\n',' ');var anc=Math.cos(ang)>.15?'start':Math.cos(ang)<-.15?'end':'middle';svg+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" font-size="7.5" font-family="Sarabun,sans-serif" fill="#555" dominant-baseline="middle">'+lb+'</text>';}
   h+='<div class="cog-sec"><div class="cog-sec-h"><div class="cog-num">3</div><div class="cog-sec-t">MoCA Score</div></div>';
-  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 110px 175px;gap:10px;align-items:stretch;">';
+  h+='<div class="cog-sec-b"><div style="display:grid;grid-template-columns:1fr 110px 155px;gap:10px;align-items:stretch;">';
   h+='<div style="display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 210 210" style="width:100%;max-width:260px;overflow:visible">'+svg+'</svg></div>';
   h+='<div class="score-box"><div class="score-lbl">Score</div>';
   h+='<div class="score-val" style="color:'+moC+'">'+(mo!==null?mo:'-')+'</div>';
