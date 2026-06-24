@@ -169,7 +169,7 @@ body{font-family:var(--fn);background:var(--bg);color:var(--tx);min-height:100vh
 function byId(id){return document.getElementById(id);}
 function getCfg(){try{return JSON.parse(localStorage.getItem('ahg_rpt')||'{}');}catch(e){return{};}}
 function esc(s){if(!s)return'';var d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
-function toNum(v){if(v===''||v===null||v===undefined)return null;var n=parseFloat(v);return isNaN(n)?null:n;}
+function toNum(v){if(v===''||v===null||v===undefined)return null;var n=parseFloat(v);return isNaN(n)?null:Math.round(n*100)/100;}
 function fmt(v){return(v!==''&&v!==null&&v!==undefined)?String(v):'-';}
 function fmtD(d){return d?(d+'').substring(0,10):'-';}
 var ST={fo:[],br:[],patient:null,brIdx:0,tab:'fo'};
