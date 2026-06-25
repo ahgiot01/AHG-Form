@@ -245,6 +245,9 @@ function doSearch(){
         var d3;try{d3=JSON.parse(x3.responseText);}catch(e){d3={rows:[]};}
         ST.br=(d3.rows||[]).sort(function(a,b){return a.date>b.date?1:-1;});
         ST.brIdx=Math.max(0,ST.br.length-1);
+        console.log('=== DEBUG BR DATA ===');
+        console.log('Total visits:', ST.br.length);
+        ST.br.forEach(function(v,i){console.log('Visit '+i+': date='+JSON.stringify(v.date)+' visit='+v.visit+' moca_vis='+v.br_moca_vis+' moca_nam='+v.br_moca_nam);});
         byId('btn-srch').disabled=false;
         renderFO();renderBrVbar();renderBR();
         showArea('result');activateTab(ST.tab);
